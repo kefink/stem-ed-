@@ -46,7 +46,9 @@ export default function AboutPage() {
               </div>
             </div>
             <div className="bg-navy/5 p-8 rounded-2xl">
-              <h3 className="text-3xl font-bebas text-navy mb-4">Who We Serve</h3>
+              <h3 className="text-3xl font-bebas text-navy mb-4">
+                Who We Serve
+              </h3>
               <p className="font-lato text-gray-700 mb-6">
                 We partner with schools, governments, NGOs, and private
                 institutions to design and deploy scalable, AI-integrated STEM

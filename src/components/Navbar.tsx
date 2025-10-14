@@ -157,21 +157,40 @@ const Navbar = () => {
                       onMouseEnter={() => setActiveSubmenu("teachers")}
                       onMouseLeave={() => setActiveSubmenu(null)}
                     >
-                      <div className="px-6 py-3 hover:bg-orange/20 transition-colors duration-300 border-b border-white/10 cursor-pointer flex items-center justify-between">
-                        <span className="font-montserrat font-medium">
-                          {coursesMenu.teachers.name}
-                        </span>
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
+                      <div className="hover:bg-orange/20 transition-colors duration-300 border-b border-white/10 flex items-stretch justify-between">
+                        <Link
+                          href={coursesMenu.teachers.href}
+                          className="flex-1 px-6 py-3 font-montserrat font-medium"
                         >
-                          <path d="M9 5l7 7-7 7" />
-                        </svg>
+                          {coursesMenu.teachers.name}
+                        </Link>
+                        <button
+                          type="button"
+                          aria-haspopup="menu"
+                          aria-expanded={activeSubmenu === "teachers"}
+                          className="px-4 py-3"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setIsCoursesOpen(true);
+                            setActiveSubmenu((prev) =>
+                              prev === "teachers" ? null : "teachers"
+                            );
+                          }}
+                          title="Show teacher levels"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path d="M9 5l7 7-7 7" />
+                          </svg>
+                        </button>
                       </div>
 
                       {/* Teachers Submenu */}
