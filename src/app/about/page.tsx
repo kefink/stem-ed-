@@ -46,70 +46,26 @@ export default function AboutPage() {
               </div>
             </div>
             <div className="bg-navy/5 p-8 rounded-2xl">
-              <h3 className="text-3xl font-bebas text-navy mb-6">
-                🏗️ The 5-Pillar Framework
-              </h3>
-              <ul className="space-y-4">
-                <li className="flex items-start">
-                  <span className="text-orange text-2xl mr-3">1.</span>
-                  <div>
-                    <strong className="font-montserrat text-navy">
-                      Vision:
-                    </strong>
-                    <p className="font-lato text-gray-700">
-                      To become the definitive leader in African STEM
-                      transformation
-                    </p>
-                  </div>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-orange text-2xl mr-3">2.</span>
-                  <div>
-                    <strong className="font-montserrat text-navy">
-                      Core Identity:
-                    </strong>
-                    <p className="font-lato text-gray-700">
-                      Not a vendor. Not a trainer. An architect of educational
-                      systems.
-                    </p>
-                  </div>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-orange text-2xl mr-3">3.</span>
-                  <div>
-                    <strong className="font-montserrat text-navy">
-                      Unique Value:
-                    </strong>
-                    <p className="font-lato text-gray-700">
-                      The only East African firm engineering complete,
-                      AI-integrated curricula
-                    </p>
-                  </div>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-orange text-2xl mr-3">4.</span>
-                  <div>
-                    <strong className="font-montserrat text-navy">
-                      Service Domains:
-                    </strong>
-                    <p className="font-lato text-gray-700">
-                      Consulting, Training, Student Programs, EdTech,
-                      Competitions
-                    </p>
-                  </div>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-orange text-2xl mr-3">5.</span>
-                  <div>
-                    <strong className="font-montserrat text-navy">
-                      Brand Tone:
-                    </strong>
-                    <p className="font-lato text-gray-700">
-                      Authoritative, visionary, empowering, African-futurist
-                    </p>
-                  </div>
-                </li>
-              </ul>
+              <h3 className="text-3xl font-bebas text-navy mb-4">Who We Serve</h3>
+              <p className="font-lato text-gray-700 mb-6">
+                We partner with schools, governments, NGOs, and private
+                institutions to design and deploy scalable, AI-integrated STEM
+                learning ecosystems—end to end.
+              </p>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-4 rounded-xl bg-white shadow">
+                  <p className="font-montserrat text-navy">K-12 Schools</p>
+                </div>
+                <div className="p-4 rounded-xl bg-white shadow">
+                  <p className="font-montserrat text-navy">Teacher Colleges</p>
+                </div>
+                <div className="p-4 rounded-xl bg-white shadow">
+                  <p className="font-montserrat text-navy">EdTech Programs</p>
+                </div>
+                <div className="p-4 rounded-xl bg-white shadow">
+                  <p className="font-montserrat text-navy">Govt & NGOs</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
