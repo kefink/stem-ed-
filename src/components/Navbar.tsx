@@ -17,7 +17,6 @@ const Navbar = () => {
     { name: "Services", href: "/services" },
     { name: "Products", href: "/products" },
     { name: "Portfolio", href: "/portfolio" },
-    { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
   ];
 
@@ -71,13 +70,13 @@ const Navbar = () => {
               />
             </div>
             <div className="text-orange font-bebas tracking-wide">
-              <span className="hidden xl:block text-3xl">STEM-ED-ARCHITECTS</span>
-              <span className="hidden lg:block xl:hidden text-2xl">STEM-ED</span>
+              <span className="hidden 2xl:block text-3xl">STEM-ED-ARCHITECTS</span>
+              <span className="hidden lg:block 2xl:hidden text-2xl">STEM-ED</span>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center justify-center flex-1 min-w-0 gap-4 xl:gap-7">
+          <div className="hidden lg:flex items-center justify-center flex-1 min-w-0 overflow-hidden gap-4 xl:gap-7">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
@@ -210,12 +209,6 @@ const Navbar = () => {
 
           {/* Auth Buttons - Desktop */}
           <div className="hidden lg:flex items-center gap-4 xl:gap-6 flex-shrink-0 ml-auto">
-            <Link
-              href="/newsletter"
-              className="font-montserrat font-medium text-sm lg:text-[15px] xl:text-base hover:text-orange transition-colors duration-300 whitespace-nowrap"
-            >
-              Newsletter
-            </Link>
             <Link
               href="/login"
               className="font-montserrat font-medium text-sm lg:text-[15px] xl:text-base hover:text-orange transition-colors duration-300 whitespace-nowrap"
