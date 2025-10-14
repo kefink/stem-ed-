@@ -55,12 +55,13 @@ const Navbar = () => {
   const isActive = (href: string) => pathname === href;
 
   return (
-    <nav className="backdrop-blur-2xl bg-gradient-to-br from-navy/95 via-navy/90 to-navy/95 text-white shadow-[0_8px_32px_0_rgba(0,119,182,0.37)] sticky top-0 z-50 border-b border-cyan-500/30">
-      <div className="max-w-[1400px] mx-auto px-6 py-4">
-        <div className="flex justify-between items-center gap-4">
+    <nav className="sticky top-0 z-50 bg-transparent">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-6 py-3">
+        <div className="relative rounded-2xl px-3 md:px-5 py-3 text-white backdrop-blur-2xl bg-gradient-to-br from-navy/95 via-navy/90 to-navy/95 border border-cyan-500/30 shadow-[0_8px_32px_0_rgba(0,119,182,0.37)] before:content-[''] before:absolute before:inset-0 before:rounded-2xl before:ring-1 before:ring-cyan-400/30 before:shadow-[0_0_22px_rgba(0,200,255,0.25)] before:pointer-events-none">
+          <div className="flex items-center gap-3 md:gap-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3 group">
-            <div className="relative w-16 h-16 md:w-20 md:h-20 group-hover:scale-105 transition-transform duration-300">
+          <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
+            <div className="relative w-14 h-14 md:w-16 md:h-16 group-hover:scale-105 transition-transform duration-300">
               <Image
                 src="/stemed.png"
                 alt="STEM-ED-ARCHITECTS Logo"
@@ -69,18 +70,19 @@ const Navbar = () => {
                 priority
               />
             </div>
-            <div className="text-orange text-xl md:text-2xl lg:text-3xl font-bebas tracking-wider">
-              STEM-ED-ARCHITECTS
+            <div className="text-orange font-bebas tracking-wide">
+              <span className="hidden xl:block text-3xl">STEM-ED-ARCHITECTS</span>
+              <span className="hidden lg:block xl:hidden text-2xl">STEM-ED</span>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center justify-center flex-1 min-w-0 gap-4 xl:gap-7">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
-                className={`font-montserrat font-medium hover:text-orange transition-colors duration-300 relative group ${
+                className={`whitespace-nowrap font-montserrat font-medium text-sm lg:text-[15px] xl:text-base hover:text-orange transition-colors duration-300 relative group ${
                   isActive(link.href) ? "text-orange" : ""
                 }`}
               >
@@ -103,7 +105,7 @@ const Navbar = () => {
               }}
             >
               <button
-                className={`font-montserrat font-medium hover:text-orange transition-colors duration-300 relative group flex items-center gap-1 ${
+                className={`whitespace-nowrap font-montserrat font-medium hover:text-orange transition-colors duration-300 relative group flex items-center gap-1 ${
                   pathname.startsWith("/courses") ? "text-orange" : ""
                 }`}
               >
@@ -130,7 +132,7 @@ const Navbar = () => {
 
               {/* Dropdown Menu */}
               {isCoursesOpen && (
-                <div className="absolute top-full left-0 mt-2 w-64 backdrop-blur-2xl bg-gradient-to-br from-navy/95 via-navy/90 to-navy/95 border border-cyan-500/30 rounded-xl shadow-[0_8px_32px_0_rgba(0,119,182,0.37)] overflow-hidden">
+                <div className="absolute top-full left-0 mt-2 w-64 backdrop-blur-2xl bg-gradient-to-br from-navy/95 via-navy/90 to-navy/95 border border-cyan-500/30 rounded-xl shadow-[0_8px_32px_0_rgba(0,119,182,0.37)] overflow-hidden before:content-[''] before:absolute before:inset-0 before:rounded-xl before:ring-1 before:ring-cyan-400/30 before:shadow-[0_0_18px_rgba(0,200,255,0.22)] before:pointer-events-none">
                   {/* For Students */}
                   <Link
                     href={coursesMenu.students.href}
@@ -166,7 +168,7 @@ const Navbar = () => {
 
                     {/* Teachers Submenu */}
                     {activeSubmenu === "teachers" && (
-                      <div className="absolute left-full top-0 ml-2 w-56 backdrop-blur-2xl bg-gradient-to-br from-navy/95 via-navy/90 to-navy/95 border border-cyan-500/30 rounded-xl shadow-[0_8px_32px_0_rgba(0,119,182,0.37)] overflow-hidden">
+                      <div className="absolute left-full top-0 ml-2 w-56 backdrop-blur-2xl bg-gradient-to-br from-navy/95 via-navy/90 to-navy/95 border border-cyan-500/30 rounded-xl shadow-[0_8px_32px_0_rgba(0,119,182,0.37)] overflow-hidden before:content-[''] before:absolute before:inset-0 before:rounded-xl before:ring-1 before:ring-cyan-400/30 before:shadow-[0_0_18px_rgba(0,200,255,0.22)] before:pointer-events-none">
                         {coursesMenu.teachers.levels.map((level) => (
                           <Link
                             key={level.name}
@@ -207,22 +209,22 @@ const Navbar = () => {
           </div>
 
           {/* Auth Buttons - Desktop */}
-          <div className="hidden lg:flex items-center gap-6 flex-shrink-0">
+          <div className="hidden lg:flex items-center gap-4 xl:gap-6 flex-shrink-0 ml-auto">
             <Link
               href="/newsletter"
-              className="font-montserrat font-medium hover:text-orange transition-colors duration-300 whitespace-nowrap"
+              className="font-montserrat font-medium text-sm lg:text-[15px] xl:text-base hover:text-orange transition-colors duration-300 whitespace-nowrap"
             >
               Newsletter
             </Link>
             <Link
               href="/login"
-              className="font-montserrat font-medium hover:text-orange transition-colors duration-300 whitespace-nowrap"
+              className="font-montserrat font-medium text-sm lg:text-[15px] xl:text-base hover:text-orange transition-colors duration-300 whitespace-nowrap"
             >
               Login
             </Link>
             <Link
               href="/register"
-              className="bg-gradient-to-r from-orange to-orange/90 hover:from-orange-dark hover:to-orange px-6 py-2.5 rounded-lg font-montserrat font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-orange/50 whitespace-nowrap"
+              className="bg-gradient-to-r from-orange to-orange/90 hover:from-orange-dark hover:to-orange px-5 xl:px-6 py-2.5 rounded-lg font-montserrat font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-orange/50 whitespace-nowrap"
             >
               Register
             </Link>
@@ -385,6 +387,7 @@ const Navbar = () => {
             </div>
           </div>
         )}
+        </div>
       </div>
     </nav>
   );
