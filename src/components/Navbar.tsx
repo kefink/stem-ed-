@@ -55,9 +55,9 @@ const Navbar = () => {
   const isActive = (href: string) => pathname === href;
 
   return (
-    <nav className="backdrop-blur-xl bg-navy/90 text-white shadow-2xl sticky top-0 z-50 border-b border-white/10">
-      <div className="max-w-7xl mx-auto px-6 py-4">
-        <div className="flex justify-between items-center">
+    <nav className="backdrop-blur-2xl bg-gradient-to-br from-navy/95 via-navy/90 to-navy/95 text-white shadow-[0_8px_32px_0_rgba(0,119,182,0.37)] sticky top-0 z-50 border-b border-cyan-500/30">
+      <div className="max-w-[1400px] mx-auto px-6 py-4">
+        <div className="flex justify-between items-center gap-4">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3 group">
             <div className="relative w-16 h-16 md:w-20 md:h-20 group-hover:scale-105 transition-transform duration-300">
@@ -130,7 +130,7 @@ const Navbar = () => {
 
               {/* Dropdown Menu */}
               {isCoursesOpen && (
-                <div className="absolute top-full left-0 mt-2 w-64 backdrop-blur-xl bg-navy/95 border border-white/20 rounded-xl shadow-2xl overflow-hidden">
+                <div className="absolute top-full left-0 mt-2 w-64 backdrop-blur-2xl bg-gradient-to-br from-navy/95 via-navy/90 to-navy/95 border border-cyan-500/30 rounded-xl shadow-[0_8px_32px_0_rgba(0,119,182,0.37)] overflow-hidden">
                   {/* For Students */}
                   <Link
                     href={coursesMenu.students.href}
@@ -166,7 +166,7 @@ const Navbar = () => {
 
                     {/* Teachers Submenu */}
                     {activeSubmenu === "teachers" && (
-                      <div className="absolute left-full top-0 ml-2 w-56 backdrop-blur-xl bg-navy/95 border border-white/20 rounded-xl shadow-2xl overflow-hidden">
+                      <div className="absolute left-full top-0 ml-2 w-56 backdrop-blur-2xl bg-gradient-to-br from-navy/95 via-navy/90 to-navy/95 border border-cyan-500/30 rounded-xl shadow-[0_8px_32px_0_rgba(0,119,182,0.37)] overflow-hidden">
                         {coursesMenu.teachers.levels.map((level) => (
                           <Link
                             key={level.name}
@@ -207,22 +207,22 @@ const Navbar = () => {
           </div>
 
           {/* Auth Buttons - Desktop */}
-          <div className="hidden lg:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-6 flex-shrink-0">
             <Link
               href="/newsletter"
-              className="font-montserrat font-medium hover:text-orange transition-colors duration-300"
+              className="font-montserrat font-medium hover:text-orange transition-colors duration-300 whitespace-nowrap"
             >
               Newsletter
             </Link>
             <Link
               href="/login"
-              className="font-montserrat font-medium hover:text-orange transition-colors duration-300"
+              className="font-montserrat font-medium hover:text-orange transition-colors duration-300 whitespace-nowrap"
             >
               Login
             </Link>
             <Link
               href="/register"
-              className="bg-orange hover:bg-orange-dark px-6 py-2 rounded-lg font-montserrat font-semibold transition-all duration-300 hover:scale-105"
+              className="bg-gradient-to-r from-orange to-orange/90 hover:from-orange-dark hover:to-orange px-6 py-2.5 rounded-lg font-montserrat font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-orange/50 whitespace-nowrap"
             >
               Register
             </Link>
@@ -254,7 +254,7 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="lg:hidden mt-4 pb-4 space-y-4 animate-slide-up backdrop-blur-md bg-navy/80 rounded-xl p-4 border border-white/10">
+          <div className="lg:hidden mt-4 pb-4 space-y-4 animate-slide-up backdrop-blur-2xl bg-gradient-to-br from-navy/95 via-navy/90 to-navy/95 rounded-xl p-4 border border-cyan-500/30 shadow-[0_8px_32px_0_rgba(0,119,182,0.37)]">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
