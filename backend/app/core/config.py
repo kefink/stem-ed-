@@ -28,3 +28,14 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+def get_cors_origins() -> list[str]:
+    raw = settings.CORS_ORIGINS.strip()
+    if not raw:
+        return []
+    if raw.startswith("["):
+        # JSON-like list
+        cleaned = raw.strip("[] ")
+        parts = [p.strip().strip('"\'') for p in cleaned.split(',') if p.strip()]
+        return parts
+    return [o.strip() for o in raw.split(",") if o.strip()]
