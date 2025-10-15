@@ -53,6 +53,11 @@ class Settings(BaseSettings):
     SMTP_TO: str | None = None
     SMTP_TLS: bool = True
 
+    # Google Sheets Integration (optional - for saving contact messages & newsletter)
+    GOOGLE_SHEETS_CREDENTIALS_FILE: str | None = None
+    GOOGLE_SHEETS_CONTACT_SHEET_ID: str | None = None
+    GOOGLE_SHEETS_NEWSLETTER_SHEET_ID: str | None = None
+
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", case_sensitive=False)
 
 

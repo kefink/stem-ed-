@@ -1,6 +1,24 @@
+"use client";
+
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function StudentsCoursesPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  const handleEnroll = () => {
+    if (status === "authenticated") {
+      // User is logged in - show success message or redirect to course materials
+      alert("🎉 Enrollment successful! Course materials coming soon.");
+      // Future: router.push("/courses/students/materials");
+    } else {
+      // User not logged in - redirect to register
+      router.push("/register?next=/courses/students");
+    }
+  };
+
   return (
     <main className="min-h-screen bg-white">
       <section className="bg-navy text-white pt-10 pb-6 px-6 md:px-12 lg:px-24">
@@ -95,18 +113,38 @@ export default function StudentsCoursesPage() {
           {/* CTA */}
           <div className="p-6 rounded-2xl bg-gradient-to-r from-orange/20 to-orange/10 border border-orange/30">
             <h3 className="font-bebas text-2xl text-navy mb-2">
-              Enroll a Student Cohort
+              Ready to Get Started?
             </h3>
             <p className="font-lato text-gray-700 mb-4">
-              Bring a structured STEM track to your school or club. We’ll help
-              you choose modules and timelines.
+              {status === "authenticated"
+                ? "Enroll in this course to access materials and track your progress."
+                : "Register now to enroll in this course and access all learning materials."}
             </p>
-            <a
-              href="/contact"
-              className="btn-primary bg-orange hover:bg-orange-dark"
-            >
-              Request a Program
-            </a>
+            <div className="flex flex-wrap gap-3">
+              <button
+                onClick={handleEnroll}
+                className="btn-primary bg-orange hover:bg-orange-dark font-montserrat font-bold py-3 px-6 rounded-lg transition-all duration-300 hover:scale-105"
+              >
+                {status === "authenticated" ? "Enroll in This Course" : "Register & Enroll"}
+              </button>
+              <a
+                href="/contact"
+                className="btn-secondary border-2 border-navy text-navy hover:bg-navy hover:text-white font-montserrat font-bold py-3 px-6 rounded-lg transition-all duration-300"
+              >
+                Request Group Program
+              </a>
+            </div>
+            {status !== "authenticated" && (
+              <p className="mt-3 text-sm font-lato text-gray-600">
+                Already have an account?{" "}
+                <a
+                  href="/login?next=/courses/students"
+                  className="text-orange hover:text-orange-dark font-semibold"
+                >
+                  Sign in here
+                </a>
+              </p>
+            )}
           </div>
         </div>
       </section>

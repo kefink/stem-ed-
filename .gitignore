@@ -29,9 +29,19 @@ yarn-error.log*
 .env*.local
 .env
 
+# Google Sheets credentials (NEVER commit these!)
+google-sheets-credentials.json
+*-credentials.json
+
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Python virtual environment
+.venv/
+venv/
+*.pyc
+__pycache__/

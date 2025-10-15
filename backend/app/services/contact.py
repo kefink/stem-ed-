@@ -5,6 +5,7 @@ from app.models.contact_message import ContactMessage
 from app.models.newsletter_subscription import NewsletterSubscription
 from app.core.config import settings
 from app.services.email import get_email_provider
+from app.services.google_sheets import get_sheets_service
 
 
 async def create_contact_message(
@@ -28,6 +29,22 @@ async def create_contact_message(
     db.add(cm)
     await db.commit()
     await db.refresh(cm)
+    
+    # Save to Google Sheets (non-blocking)
+    try:
+        sheets_service = get_sheets_service()
+        sheets_service.add_contact_message(
+            name=cm.name,
+            email=cm.email,
+            organization=cm.organization,
+            phone=cm.phone,
+            service=cm.service,
+            message=cm.message,
+            created_at=cm.created_at
+        )
+    except Exception as e:
+        print(f"⚠️  Failed to save to Google Sheets: {e}")
+    
     # Optional: send email notification
     try:
         await _maybe_send_contact_email(cm)
@@ -58,6 +75,22 @@ async def subscribe_newsletter(
         existing.interests = ",".join(interests) if interests else None
         await db.commit()
         await db.refresh(existing)
+        
+        # Save to Google Sheets (non-blocking)
+        try:
+            sheets_service = get_sheets_service()
+            sheets_service.add_newsletter_subscriber(
+                email=existing.email,
+                first_name=existing.first_name,
+                last_name=existing.last_name,
+                organization=existing.organization,
+                role=existing.role,
+                interests=existing.interests.split(",") if existing.interests else None,
+                created_at=existing.created_at
+            )
+        except Exception as e:
+            print(f"⚠️  Failed to save to Google Sheets: {e}")
+        
         return existing
 
     sub = NewsletterSubscription(
@@ -71,6 +104,22 @@ async def subscribe_newsletter(
     db.add(sub)
     await db.commit()
     await db.refresh(sub)
+    
+    # Save to Google Sheets (non-blocking)
+    try:
+        sheets_service = get_sheets_service()
+        sheets_service.add_newsletter_subscriber(
+            email=sub.email,
+            first_name=sub.first_name,
+            last_name=sub.last_name,
+            organization=sub.organization,
+            role=sub.role,
+            interests=sub.interests.split(",") if sub.interests else None,
+            created_at=sub.created_at
+        )
+    except Exception as e:
+        print(f"⚠️  Failed to save to Google Sheets: {e}")
+    
     return sub
 
 

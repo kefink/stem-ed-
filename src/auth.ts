@@ -9,16 +9,13 @@ async function loginFastAPI(email: string, password: string) {
 
   // Use absolute URL for server-side fetch in NextAuth
   const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
-  const res = await fetch(
-    `${baseUrl}/api/v1/auth/login`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: body.toString(),
-      // Important: include credentials so backend can set cookies if enabled
-      credentials: "include",
-    }
-  );
+  const res = await fetch(`${baseUrl}/api/v1/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: body.toString(),
+    // Important: include credentials so backend can set cookies if enabled
+    credentials: "include",
+  });
   if (!res.ok) return null;
   const data = await res.json();
   return data; // { access_token, refresh_token, token_type }
@@ -27,17 +24,14 @@ async function loginFastAPI(email: string, password: string) {
 async function fetchMe(accessToken?: string) {
   const headers: Record<string, string> = {};
   if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`;
-  
+
   // Use absolute URL for server-side fetch in NextAuth
   const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
-  const res = await fetch(
-    `${baseUrl}/api/v1/users/me`,
-    {
-      method: "GET",
-      headers,
-      credentials: "include",
-    }
-  );
+  const res = await fetch(`${baseUrl}/api/v1/users/me`, {
+    method: "GET",
+    headers,
+    credentials: "include",
+  });
   if (!res.ok) return null;
   return res.json(); // { id, email, role, full_name }
 }

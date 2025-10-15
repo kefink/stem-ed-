@@ -1,7 +1,23 @@
+"use client";
+
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function TeachersCoursesPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  const handleEnroll = () => {
+    if (status === "authenticated") {
+      alert("🎉 Enrollment successful! Course materials coming soon.");
+      // Future: router.push("/courses/teachers/materials");
+    } else {
+      router.push("/register?next=/courses/teachers");
+    }
+  };
+
   const levels = [
     { name: "Elementary Level", href: "/courses/teachers/elementary" },
     { name: "Middle School", href: "/courses/teachers/middle-school" },
@@ -87,17 +103,38 @@ export default function TeachersCoursesPage() {
 
           <div className="p-6 rounded-2xl bg-gradient-to-r from-orange/20 to-orange/10 border border-orange/30">
             <h3 className="font-bebas text-2xl text-navy mb-2">
-              Kickstart Teacher Certification
+              Ready to Get Certified?
             </h3>
             <p className="font-lato text-gray-700 mb-4">
-              We’ll tailor a pathway for your teachers’ level and goals.
+              {status === "authenticated"
+                ? "Enroll in teacher certification to access course materials and track your progress."
+                : "Register now to enroll and begin your teacher certification journey."}
             </p>
-            <a
-              href="/contact"
-              className="btn-primary bg-orange hover:bg-orange-dark"
-            >
-              Talk to Us
-            </a>
+            <div className="flex flex-wrap gap-3">
+              <button
+                onClick={handleEnroll}
+                className="btn-primary bg-orange hover:bg-orange-dark font-montserrat font-bold py-3 px-6 rounded-lg transition-all duration-300 hover:scale-105"
+              >
+                {status === "authenticated" ? "Enroll in Certification" : "Register & Enroll"}
+              </button>
+              <a
+                href="/contact"
+                className="btn-secondary border-2 border-navy text-navy hover:bg-navy hover:text-white font-montserrat font-bold py-3 px-6 rounded-lg transition-all duration-300"
+              >
+                Talk to Us
+              </a>
+            </div>
+            {status !== "authenticated" && (
+              <p className="mt-3 text-sm font-lato text-gray-600">
+                Already have an account?{" "}
+                <a
+                  href="/login?next=/courses/teachers"
+                  className="text-orange hover:text-orange-dark font-semibold"
+                >
+                  Sign in here
+                </a>
+              </p>
+            )}
           </div>
         </div>
       </section>

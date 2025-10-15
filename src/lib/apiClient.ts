@@ -33,7 +33,8 @@ export async function apiFetch<T = any>(
   try {
     const session = await getSession();
     const at = (session as any)?.accessToken as string | undefined;
-    if (at && !headers.has("Authorization")) headers.set("Authorization", `Bearer ${at}`);
+    if (at && !headers.has("Authorization"))
+      headers.set("Authorization", `Bearer ${at}`);
   } catch {}
   // If backend cookie-session is enabled, attach CSRF header if present
   if (typeof document !== "undefined") {
@@ -64,7 +65,8 @@ export async function apiFetch<T = any>(
       try {
         const session = await getSession();
         const at = (session as any)?.accessToken as string | undefined;
-        if (at && !retryHeaders.has("Authorization")) retryHeaders.set("Authorization", `Bearer ${at}`);
+        if (at && !retryHeaders.has("Authorization"))
+          retryHeaders.set("Authorization", `Bearer ${at}`);
       } catch {}
       if (
         options.body &&
@@ -73,7 +75,11 @@ export async function apiFetch<T = any>(
       ) {
         retryHeaders.set("Content-Type", "application/json");
       }
-      res = await fetch(url, { ...options, headers: retryHeaders, credentials: "include" });
+      res = await fetch(url, {
+        ...options,
+        headers: retryHeaders,
+        credentials: "include",
+      });
     }
   }
 

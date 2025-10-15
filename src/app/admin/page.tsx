@@ -84,7 +84,8 @@ export default function AdminPage() {
       }
     };
     run();
-  }, [status, session, router, limit, msgOffset, subOffset, q]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, limit, msgOffset, subOffset, q]);
 
   if (status === "loading" || loading) {
     return (

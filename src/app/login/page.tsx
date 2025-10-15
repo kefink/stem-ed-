@@ -39,8 +39,10 @@ export default function LoginPage() {
       if (result?.error) {
         setError("Invalid email or password");
       } else if (result?.ok) {
-        // Redirect to dashboard after successful login
-        window.location.href = "/portfolio";
+        // Check for ?next= parameter or redirect to home
+        const urlParams = new URLSearchParams(window.location.search);
+        const next = urlParams.get("next");
+        window.location.href = next || "/";
       }
     } catch (err) {
       setError("Network error. Please try again.");
