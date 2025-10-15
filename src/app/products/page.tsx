@@ -1,51 +1,68 @@
+interface Product {
+  id: number;
+  name: string;
+  category: string;
+  description: string;
+  features: string[];
+  price: string;
+  icon: string;
+  link?: string;
+}
+
 export default function ProductsPage() {
-  const products = [
+  const products: Product[] = [
     {
       id: 1,
       name: "STEM Curriculum Kit",
       category: "Curriculum",
       description:
-        "Complete CBC/Cambridge/IB-aligned robotics curriculum for K-12",
+        "Complete CBC/Cambridge/IB-aligned STEM curriculum for K-12. Includes Robotics, Coding, AI, Game Dev, Web Dev, App Dev, Drone Tech, VR/AR, Data Science, PCB Design, and Digital Design.",
       features: [
-        "300+ lesson plans",
-        "Teacher guides & resources",
-        "Student workbooks",
-        "Assessment tools",
-        "Digital resources",
+        "11+ specialized curriculum tracks",
+        "300+ lesson plans per track",
+        "Block-based & text-based coding",
+        "Beginner to expert levels",
+        "Ages 5-18+ customizable content",
+        "Teacher training included",
       ],
       price: "Contact for pricing",
       icon: "📚",
+      link: "/products/curriculum",
     },
     {
       id: 2,
-      name: "Robotics Starter Kit",
+      name: "Robotics Kits & Components",
       category: "Hardware",
       description:
-        "Complete robotics kit for beginners with sensors and components",
+        "Educational robotics kits, competition-grade equipment, and individual electronic components. Includes RCUs, sensors, actuators, cables, and mechanical structures.",
       features: [
-        "Arduino-compatible board",
-        "10+ sensors & actuators",
-        "Building components",
-        "Project guidebook",
-        "Online tutorials",
+        "Educational kits (ages 5-18+)",
+        "Competition kits (FLL, WRO)",
+        "Robot control units (Arduino, RPi)",
+        "Sensors & actuators library",
+        "Custom mechanical parts",
+        "AI-integrated options available",
       ],
-      price: "KES 45,000",
+      price: "From KES 350",
       icon: "🤖",
+      link: "/products/robotics-kits",
     },
     {
       id: 3,
       name: "AI Learning Platform",
       category: "Software",
-      description: "AI-powered LMS for personalized STEM learning experiences",
+      description: "Revolutionary AI-powered learning management system with personalized education, intelligent 24/7 tutoring, and comprehensive analytics for students, teachers, schools, and admins.",
       features: [
-        "Adaptive learning paths",
-        "Real-time progress tracking",
-        "Interactive simulations",
-        "Teacher dashboard",
-        "Parent portal",
+        "AI tutor available 24/7",
+        "Personalized adaptive learning paths",
+        "Real-time progress analytics",
+        "Interactive STEM simulations",
+        "Teacher & admin dashboards",
+        "Role-based features & pricing",
       ],
-      price: "From KES 5,000/month",
+      price: "From KES 1,500/month",
       icon: "💻",
+      link: "/products/ai-platform",
     },
     {
       id: 4,
@@ -97,47 +114,68 @@ export default function ProductsPage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-navy via-navy-light to-navy text-white py-20 px-6 md:px-12 lg:px-24">
-        <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-5xl md:text-7xl font-bebas mb-6">Our Products</h1>
-          <p className="text-xl md:text-2xl font-lato max-w-4xl mx-auto text-white/90">
-            Complete STEM education solutions - from curriculum to lab equipment
+      <section className="relative bg-gradient-to-br from-navy via-navy-dark to-navy-light text-white py-24 px-6 md:px-12 lg:px-24 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,107,53,0.1),transparent_50%)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(255,107,53,0.08),transparent_50%)]"></div>
+        <div className="max-w-7xl mx-auto text-center relative z-10">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bebas mb-6 tracking-wide animate-fade-in">
+            Our Products
+          </h1>
+          <div className="w-24 h-1 bg-orange mx-auto mb-6"></div>
+          <p className="text-xl md:text-2xl lg:text-3xl font-lato max-w-4xl mx-auto text-white/95 leading-relaxed">
+            Complete STEM education solutions - from industry-aligned curriculum
+            to cutting-edge lab equipment
           </p>
         </div>
       </section>
 
       {/* Products Grid */}
-      <section className="py-20 px-6 md:px-12 lg:px-24 bg-white">
+      <section className="py-24 px-6 md:px-12 lg:px-24 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bebas text-navy mb-4">
+              Comprehensive STEM Solutions
+            </h2>
+            <div className="w-24 h-1 bg-orange mx-auto mb-6"></div>
+            <p className="text-xl font-lato text-gray-600 max-w-3xl mx-auto">
+              Everything you need to build a world-class STEM education program
+            </p>
+          </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {products.map((product) => (
               <div
                 key={product.id}
-                className="bg-white border border-gray-200 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden"
+                className="group bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden hover:border-orange/30"
               >
                 {/* Header */}
-                <div className="bg-gradient-to-br from-orange to-orange-dark text-white p-6 text-center">
-                  <div className="text-6xl mb-4">{product.icon}</div>
+                <div className="bg-gradient-to-br from-orange to-orange-dark text-white p-8 text-center">
+                  <div className="text-7xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                    {product.icon}
+                  </div>
                   <span className="text-sm font-montserrat bg-white/20 px-3 py-1 rounded-full">
                     {product.category}
                   </span>
-                  <h3 className="text-2xl font-bebas mt-4">{product.name}</h3>
+                  <h3 className="text-2xl font-bebas mt-4 tracking-wide">
+                    {product.name}
+                  </h3>
                 </div>
 
                 {/* Content */}
-                <div className="p-6">
-                  <p className="font-lato text-gray-700 mb-4">
+                <div className="p-8">
+                  <p className="font-lato text-gray-700 mb-6 leading-relaxed">
                     {product.description}
                   </p>
 
-                  <h4 className="font-montserrat font-semibold text-navy mb-3">
-                    Features:
+                  <h4 className="font-montserrat font-semibold text-navy mb-4 text-lg">
+                    Key Features:
                   </h4>
-                  <ul className="space-y-2 mb-6">
+                  <ul className="space-y-3 mb-6">
                     {product.features.map((feature, idx) => (
                       <li key={idx} className="flex items-start">
-                        <span className="text-orange mr-2">✓</span>
-                        <span className="font-lato text-gray-600 text-sm">
+                        <span className="text-orange mr-2 text-lg flex-shrink-0">
+                          ✓
+                        </span>
+                        <span className="font-lato text-gray-600 text-sm leading-relaxed">
                           {feature}
                         </span>
                       </li>
@@ -148,12 +186,23 @@ export default function ProductsPage() {
                     <p className="text-2xl font-bebas text-navy mb-4">
                       {product.price}
                     </p>
-                    <a
-                      href="/contact"
-                      className="block w-full bg-navy hover:bg-navy-light text-white text-center font-montserrat font-semibold py-3 rounded-lg transition-all duration-300"
-                    >
-                      Request Quote
-                    </a>
+                    {product.link ? (
+                      <a
+                        href={product.link}
+                        className="block w-full bg-orange hover:bg-orange-dark text-white text-center font-montserrat font-semibold py-3 rounded-lg transition-all duration-300 mb-2"
+                      >
+                        {product.id === 1
+                          ? "Explore Curriculum"
+                          : "Browse Products"}
+                      </a>
+                    ) : (
+                      <a
+                        href="/contact"
+                        className="block w-full bg-navy hover:bg-navy-light text-white text-center font-montserrat font-semibold py-3 rounded-lg transition-all duration-300"
+                      >
+                        Request Quote
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>
@@ -163,17 +212,22 @@ export default function ProductsPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-6 md:px-12 lg:px-24 bg-gradient-to-r from-orange to-orange-dark text-white">
-        <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-4xl md:text-6xl font-bebas mb-6">
+      <section className="relative py-24 px-6 md:px-12 lg:px-24 bg-gradient-to-br from-orange via-orange-dark to-orange text-white overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent_70%)]"></div>
+        <div className="absolute top-10 left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
+        <div className="max-w-5xl mx-auto text-center relative z-10">
+          <h2 className="text-4xl md:text-6xl lg:text-7xl font-bebas mb-6 tracking-wide">
             Need a Custom Solution?
           </h2>
-          <p className="text-xl font-lato mb-8 text-white/90">
-            We can design products tailored to your specific needs
+          <div className="w-24 h-1 bg-white mx-auto mb-8"></div>
+          <p className="text-xl md:text-2xl font-lato mb-10 text-white/95 max-w-3xl mx-auto leading-relaxed">
+            We can design products and curriculum tailored to your institution's
+            specific needs and goals
           </p>
           <a
             href="/contact"
-            className="btn-primary bg-navy hover:bg-navy-light"
+            className="inline-block btn-primary bg-navy hover:bg-navy-light text-lg px-10 py-4 rounded-xl shadow-2xl hover:shadow-navy/50 transition-all duration-300"
           >
             Contact Our Team
           </a>
