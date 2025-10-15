@@ -28,11 +28,17 @@ export default function ContactPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // TODO: Connect to FastAPI backend
-    console.log("Form submitted:", formData);
-    setTimeout(() => {
+    try {
+      const res = await fetch("/api/v1/public/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err?.detail || "Failed to submit contact message");
+      }
       alert("Thank you! We'll be in touch soon.");
-      setIsSubmitting(false);
       setFormData({
         name: "",
         email: "",
@@ -41,7 +47,11 @@ export default function ContactPage() {
         service: "",
         message: "",
       });
-    }, 1000);
+    } catch (err: any) {
+      alert(err?.message || "Submission failed");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

@@ -2,14 +2,71 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { clearTokens, logout } from "@/lib/apiClient";
+import { useSession, signOut } from "next-auth/react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCoursesOpen, setIsCoursesOpen] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const pathname = usePathname();
+  const { data: session, status } = useSession();
+  const isAuthed = status === "authenticated";
+
+  // Get user's first name or email
+  const getUserDisplayName = () => {
+    if (session?.user?.name) {
+      return session.user.name.split(" ")[0];
+    }
+    if (session?.user?.email) {
+      return session.user.email.split("@")[0];
+    }
+    return "User";
+  };
+
+  // Get user's initials for avatar
+  const getUserInitials = () => {
+    if (session?.user?.name) {
+      return session.user.name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2);
+    }
+    if (session?.user?.email) {
+      return session.user.email[0].toUpperCase();
+    }
+    return "U";
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch {}
+    clearTokens();
+    await signOut({ callbackUrl: "/" });
+  };
+
+  // Close profile dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (isProfileOpen && !target.closest(".profile-dropdown-container")) {
+        setIsProfileOpen(false);
+      }
+    };
+
+    if (isProfileOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }
+  }, [isProfileOpen]);
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -88,6 +145,7 @@ const Navbar = () => {
                 <Link
                   key={link.name}
                   href={link.href}
+                  prefetch
                   className={`whitespace-nowrap font-montserrat font-medium text-sm lg:text-[15px] xl:text-base hover:text-orange transition-colors duration-300 relative group ${
                     isActive(link.href) ? "text-orange" : ""
                   }`}
@@ -237,18 +295,110 @@ const Navbar = () => {
 
             {/* Auth Buttons - Desktop */}
             <div className="hidden lg:flex items-center gap-4 xl:gap-6 flex-shrink-0 ml-auto">
-              <Link
-                href="/login"
-                className="font-montserrat font-medium text-sm lg:text-[15px] xl:text-base hover:text-orange transition-colors duration-300 whitespace-nowrap"
-              >
-                Login
-              </Link>
-              <Link
-                href="/register"
-                className="bg-gradient-to-r from-orange to-orange/90 hover:from-orange-dark hover:to-orange px-5 xl:px-6 py-2.5 rounded-lg font-montserrat font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-orange/50 whitespace-nowrap"
-              >
-                Register
-              </Link>
+              {isAuthed ? (
+                <div className="relative profile-dropdown-container">
+                  <button
+                    onClick={() => setIsProfileOpen(!isProfileOpen)}
+                    className="flex items-center gap-3 hover:opacity-80 transition-opacity duration-300"
+                  >
+                    <div className="w-10 h-10 bg-gradient-to-br from-orange to-orange-dark rounded-full flex items-center justify-center text-white text-sm font-bebas">
+                      {getUserInitials()}
+                    </div>
+                    <span className="font-montserrat font-medium text-sm lg:text-[15px] xl:text-base whitespace-nowrap">
+                      {getUserDisplayName()}
+                    </span>
+                    <svg
+                      className={`w-4 h-4 transition-transform duration-300 ${
+                        isProfileOpen ? "rotate-180" : ""
+                      }`}
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+
+                  {/* Profile Dropdown */}
+                  {isProfileOpen && (
+                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 z-50">
+                      <div className="px-4 py-3 border-b border-gray-200">
+                        <p className="font-montserrat font-semibold text-navy text-sm">
+                          {session?.user?.name || "User"}
+                        </p>
+                        <p className="font-lato text-xs text-gray-500 truncate">
+                          {session?.user?.email}
+                        </p>
+                      </div>
+                      <Link
+                        href="/profile"
+                        onClick={() => setIsProfileOpen(false)}
+                        className="block px-4 py-2 font-montserrat text-sm text-gray-700 hover:bg-orange/10 transition-colors duration-300"
+                      >
+                        <div className="flex items-center gap-2">
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                            />
+                          </svg>
+                          My Profile
+                        </div>
+                      </Link>
+
+                      <button
+                        onClick={() => {
+                          setIsProfileOpen(false);
+                          handleLogout();
+                        }}
+                        className="w-full text-left px-4 py-2 font-montserrat text-sm text-red-600 hover:bg-red-50 transition-colors duration-300"
+                      >
+                        <div className="flex items-center gap-2">
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                            />
+                          </svg>
+                          Logout
+                        </div>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="font-montserrat font-medium text-sm lg:text-[15px] xl:text-base hover:text-orange transition-colors duration-300 whitespace-nowrap"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="bg-gradient-to-r from-orange to-orange/90 hover:from-orange-dark hover:to-orange px-5 xl:px-6 py-2.5 rounded-lg font-montserrat font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-orange/50 whitespace-nowrap"
+                  >
+                    Register
+                  </Link>
+                </>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -391,20 +541,58 @@ const Navbar = () => {
                 >
                   Newsletter
                 </Link>
-                <Link
-                  href="/login"
-                  className="block font-montserrat font-medium hover:text-orange transition-colors duration-300"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/register"
-                  className="block bg-orange hover:bg-orange-dark px-6 py-2 rounded-lg font-montserrat font-semibold text-center transition-all duration-300"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Register
-                </Link>
+                {isAuthed ? (
+                  <>
+                    {/* User Info */}
+                    <div className="flex items-center gap-3 px-3 py-2 bg-white/10 rounded-lg">
+                      <div className="w-10 h-10 bg-gradient-to-br from-orange to-orange-dark rounded-full flex items-center justify-center text-white text-sm font-bebas">
+                        {getUserInitials()}
+                      </div>
+                      <div>
+                        <p className="font-montserrat font-semibold text-sm">
+                          {getUserDisplayName()}
+                        </p>
+                        <p className="font-lato text-xs text-white/70 truncate">
+                          {session?.user?.email}
+                        </p>
+                      </div>
+                    </div>
+                    <Link
+                      href="/profile"
+                      className="block font-montserrat font-medium hover:text-orange transition-colors duration-300"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      My Profile
+                    </Link>
+
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        handleLogout();
+                      }}
+                      className="block w-full bg-orange hover:bg-orange-dark px-6 py-2 rounded-lg font-montserrat font-semibold text-center transition-all duration-300"
+                    >
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href="/login"
+                      className="block font-montserrat font-medium hover:text-orange transition-colors duration-300"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      href="/register"
+                      className="block bg-orange hover:bg-orange-dark px-6 py-2 rounded-lg font-montserrat font-semibold text-center transition-all duration-300"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Register
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           )}

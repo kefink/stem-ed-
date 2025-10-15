@@ -51,6 +51,7 @@ Auth endpoints:
 ### Create MySQL database & user
 
 Run inside MySQL shell (after `mysql -u root -p`):
+
 ```sql
 CREATE DATABASE stemeddb CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
 CREATE USER 'stemed'@'localhost' IDENTIFIED BY 'stemed123';
@@ -59,6 +60,7 @@ FLUSH PRIVILEGES;
 ```
 
 ### Test connection
+
 ```bash
 mysql -u stemed -p stemeddb
 ```

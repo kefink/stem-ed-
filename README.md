@@ -198,3 +198,36 @@ Engineering Learning Solutions
 ## 🙏 Credits
 
 Built with ❤️ for transforming STEM education across Africa.
+
+---
+
+## Development
+
+Run frontend and backend together from the repo root:
+
+```
+npm install
+npm run dev:all
+```
+
+This starts:
+
+- API (FastAPI) on http://localhost:8000
+- Web (Next.js) on http://localhost:3000
+
+Prerequisites:
+
+- Backend venv at `backend/.venv` with requirements installed
+- Node dev dependencies installed (includes `concurrently`)
+
+Auth configuration (required):
+
+- Set a NextAuth secret in your shell before starting:
+
+```
+# Git Bash / bash
+export AUTH_SECRET="$(node -e \"console.log(require('crypto').randomBytes(32).toString('base64'))\")"
+
+# Windows PowerShell
+$env:AUTH_SECRET = [Convert]::ToBase64String([byte[]](1..32 | ForEach-Object {Get-Random -Max 256}))
+```

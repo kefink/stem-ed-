@@ -47,12 +47,29 @@ export default function NewsletterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // TODO: Connect to backend API
-    console.log("Newsletter subscription:", formData);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const res = await fetch("/api/v1/public/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.email,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          organization: formData.organization,
+          role: formData.role,
+          interests: formData.interests,
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err?.detail || "Subscription failed");
+      }
       setIsSubscribed(true);
-    }, 1000);
+    } catch (err: any) {
+      alert(err?.message || "Subscription failed");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (isSubscribed) {

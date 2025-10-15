@@ -10,8 +10,8 @@ async def get_user_by_email(db: AsyncSession, email: str) -> User | None:
     return res.scalars().first()
 
 
-async def create_user(db: AsyncSession, email: str, password: str, full_name: str | None = None) -> User:
-    user = User(email=email, hashed_password=hash_password(password), full_name=full_name)
+async def create_user(db: AsyncSession, email: str, password: str, full_name: str | None = None, role: str = "student") -> User:
+    user = User(email=email, hashed_password=hash_password(password), full_name=full_name, role=role)
     db.add(user)
     await db.commit()
     await db.refresh(user)

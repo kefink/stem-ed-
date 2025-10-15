@@ -13,6 +13,26 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "change-me"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
     ALGORITHM: str = "HS256"
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+
+    # Password policy
+    PASSWORD_MIN_LENGTH: int = 8
+    PASSWORD_REQUIRE_UPPERCASE: bool = True
+    PASSWORD_REQUIRE_LOWERCASE: bool = True
+    PASSWORD_REQUIRE_DIGIT: bool = True
+    PASSWORD_REQUIRE_SPECIAL: bool = True
+
+    # Rate limiting
+    RATE_LIMIT_ENABLED: bool = True
+    RATE_LIMIT_LOGIN_MAX_ATTEMPTS: int = 5
+    RATE_LIMIT_LOGIN_WINDOW_SECONDS: int = 300  # 5 minutes
+
+    # Cookie sessions (optional mode alongside JWT)
+    COOKIE_SESSION_ENABLED: bool = True
+    COOKIE_NAME: str = "stemed_session"
+    COOKIE_DOMAIN: str | None = None  # Set for production (e.g., ".yourdomain.com")
+    COOKIE_SECURE: bool = False  # Set True in production (requires HTTPS)
+    COOKIE_SAMESITE: str = "lax"  # "lax", "strict", or "none"
 
     CORS_ORIGINS: str = "http://localhost:3000"
 
@@ -23,6 +43,15 @@ class Settings(BaseSettings):
     AWS_SECRET_ACCESS_KEY: str | None = None
     AWS_S3_REGION: str | None = None
     AWS_S3_BUCKET: str | None = None
+
+    # SMTP (optional for notifications)
+    SMTP_HOST: str | None = None
+    SMTP_PORT: int | None = 587
+    SMTP_USER: str | None = None
+    SMTP_PASSWORD: str | None = None
+    SMTP_FROM: str | None = None
+    SMTP_TO: str | None = None
+    SMTP_TLS: bool = True
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", case_sensitive=False)
 
