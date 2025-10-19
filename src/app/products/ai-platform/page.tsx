@@ -29,7 +29,8 @@ const platformFeatures: Feature[] = [
   {
     id: "personalized-learning",
     name: "Personalized Learning Paths",
-    description: "AI-driven adaptive learning that customizes content, pace, and difficulty based on individual student performance, learning style, and progress.",
+    description:
+      "AI-driven adaptive learning that customizes content, pace, and difficulty based on individual student performance, learning style, and progress.",
     icon: "🎯",
     benefits: [
       "Adaptive curriculum that adjusts to student pace",
@@ -37,14 +38,15 @@ const platformFeatures: Feature[] = [
       "Skill gap identification and targeted remediation",
       "Personalized content recommendations",
       "Dynamic difficulty adjustment",
-      "Individual learning goals and milestones"
+      "Individual learning goals and milestones",
     ],
-    targetUsers: ["students", "teachers"]
+    targetUsers: ["students", "teachers"],
   },
   {
     id: "ai-tutor",
     name: "24/7 AI Tutor Assistant",
-    description: "Intelligent virtual tutor powered by advanced AI that provides instant help, explanations, and guidance across all STEM subjects at any time.",
+    description:
+      "Intelligent virtual tutor powered by advanced AI that provides instant help, explanations, and guidance across all STEM subjects at any time.",
     icon: "🤖",
     benefits: [
       "Instant answers to student questions",
@@ -53,14 +55,15 @@ const platformFeatures: Feature[] = [
       "Voice and text interaction",
       "Context-aware explanations",
       "Learning style adaptation",
-      "Homework help and practice problems"
+      "Homework help and practice problems",
     ],
-    targetUsers: ["students"]
+    targetUsers: ["students"],
   },
   {
     id: "progress-tracking",
     name: "Real-Time Progress Analytics",
-    description: "Comprehensive dashboard with AI-powered insights tracking student performance, engagement, and learning outcomes across all subjects and activities.",
+    description:
+      "Comprehensive dashboard with AI-powered insights tracking student performance, engagement, and learning outcomes across all subjects and activities.",
     icon: "📊",
     benefits: [
       "Live performance dashboards",
@@ -69,14 +72,15 @@ const platformFeatures: Feature[] = [
       "Time-on-task analysis",
       "Engagement metrics",
       "Parent/guardian notifications",
-      "Customizable reports"
+      "Customizable reports",
     ],
-    targetUsers: ["teachers", "admins", "schools"]
+    targetUsers: ["teachers", "admins", "schools"],
   },
   {
     id: "interactive-simulations",
     name: "Interactive STEM Simulations",
-    description: "Physics, chemistry, biology, and mathematics simulations powered by AI to create safe, engaging virtual lab experiences.",
+    description:
+      "Physics, chemistry, biology, and mathematics simulations powered by AI to create safe, engaging virtual lab experiences.",
     icon: "🔬",
     benefits: [
       "Virtual lab experiments",
@@ -84,14 +88,15 @@ const platformFeatures: Feature[] = [
       "Real-time feedback on experiments",
       "Safe exploration of dangerous scenarios",
       "Unlimited trial and error learning",
-      "Multi-sensory learning experiences"
+      "Multi-sensory learning experiences",
     ],
-    targetUsers: ["students", "teachers"]
+    targetUsers: ["students", "teachers"],
   },
   {
     id: "assessment-generation",
     name: "AI-Powered Assessment Tools",
-    description: "Automatically generate quizzes, tests, and assignments tailored to curriculum standards and student learning levels.",
+    description:
+      "Automatically generate quizzes, tests, and assignments tailored to curriculum standards and student learning levels.",
     icon: "📝",
     benefits: [
       "Auto-generated assessments",
@@ -100,14 +105,15 @@ const platformFeatures: Feature[] = [
       "Instant grading and feedback",
       "Plagiarism detection",
       "Performance analytics",
-      "Custom rubrics"
+      "Custom rubrics",
     ],
-    targetUsers: ["teachers"]
+    targetUsers: ["teachers"],
   },
   {
     id: "collaborative-learning",
     name: "Collaborative Learning Spaces",
-    description: "AI-facilitated group work environments that promote peer learning, project collaboration, and knowledge sharing.",
+    description:
+      "AI-facilitated group work environments that promote peer learning, project collaboration, and knowledge sharing.",
     icon: "👥",
     benefits: [
       "Virtual study groups",
@@ -115,14 +121,15 @@ const platformFeatures: Feature[] = [
       "Peer tutoring matching",
       "Group project management",
       "Discussion forums with AI moderation",
-      "Shared workspaces"
+      "Shared workspaces",
     ],
-    targetUsers: ["students", "teachers"]
+    targetUsers: ["students", "teachers"],
   },
   {
     id: "teacher-dashboard",
     name: "Comprehensive Teacher Dashboard",
-    description: "Centralized control center for managing classes, assignments, grading, and student communication with AI-powered insights.",
+    description:
+      "Centralized control center for managing classes, assignments, grading, and student communication with AI-powered insights.",
     icon: "👨‍🏫",
     benefits: [
       "Class management tools",
@@ -131,14 +138,15 @@ const platformFeatures: Feature[] = [
       "Student performance insights",
       "Lesson planning assistance",
       "Parent communication portal",
-      "Resource library"
+      "Resource library",
     ],
-    targetUsers: ["teachers"]
+    targetUsers: ["teachers"],
   },
   {
     id: "admin-portal",
     name: "School Admin Portal",
-    description: "Enterprise-level management system for school administrators to oversee multiple classes, teachers, and school-wide performance metrics.",
+    description:
+      "Enterprise-level management system for school administrators to oversee multiple classes, teachers, and school-wide performance metrics.",
     icon: "🏫",
     benefits: [
       "Multi-class/school management",
@@ -147,14 +155,15 @@ const platformFeatures: Feature[] = [
       "Curriculum compliance tracking",
       "Budget and resource allocation",
       "Staff management",
-      "Parent engagement metrics"
+      "Parent engagement metrics",
     ],
-    targetUsers: ["admins", "schools"]
+    targetUsers: ["admins", "schools"],
   },
   {
     id: "gamification",
     name: "Gamification & Rewards",
-    description: "AI-powered game mechanics including points, badges, leaderboards, and challenges to increase student engagement and motivation.",
+    description:
+      "AI-powered game mechanics including points, badges, leaderboards, and challenges to increase student engagement and motivation.",
     icon: "🎮",
     benefits: [
       "Achievement badges and trophies",
@@ -162,14 +171,15 @@ const platformFeatures: Feature[] = [
       "Daily challenges",
       "Progress streaks",
       "Virtual rewards system",
-      "Competitive learning modes"
+      "Competitive learning modes",
     ],
-    targetUsers: ["students"]
+    targetUsers: ["students"],
   },
   {
     id: "content-library",
     name: "AI-Curated Content Library",
-    description: "Vast repository of STEM resources, videos, articles, and interactive content curated and recommended by AI based on curriculum and student needs.",
+    description:
+      "Vast repository of STEM resources, videos, articles, and interactive content curated and recommended by AI based on curriculum and student needs.",
     icon: "📚",
     benefits: [
       "10,000+ learning resources",
@@ -177,14 +187,15 @@ const platformFeatures: Feature[] = [
       "Curriculum-aligned materials",
       "Multi-format content (video, text, interactive)",
       "Regular content updates",
-      "Custom resource upload"
+      "Custom resource upload",
     ],
-    targetUsers: ["teachers", "students"]
+    targetUsers: ["teachers", "students"],
   },
   {
     id: "accessibility",
     name: "Accessibility & Inclusion",
-    description: "Built-in accessibility features ensuring all students can learn effectively, including those with special needs or learning differences.",
+    description:
+      "Built-in accessibility features ensuring all students can learn effectively, including those with special needs or learning differences.",
     icon: "♿",
     benefits: [
       "Text-to-speech functionality",
@@ -193,14 +204,15 @@ const platformFeatures: Feature[] = [
       "Screen reader compatibility",
       "Dyslexia-friendly fonts",
       "Multi-language support",
-      "Closed captioning"
+      "Closed captioning",
     ],
-    targetUsers: ["students", "teachers", "schools"]
+    targetUsers: ["students", "teachers", "schools"],
   },
   {
     id: "mobile-app",
     name: "Mobile Learning App",
-    description: "Full-featured mobile application for iOS and Android enabling learning anywhere, anytime with offline capabilities.",
+    description:
+      "Full-featured mobile application for iOS and Android enabling learning anywhere, anytime with offline capabilities.",
     icon: "📱",
     benefits: [
       "iOS and Android apps",
@@ -208,10 +220,10 @@ const platformFeatures: Feature[] = [
       "Push notifications",
       "Mobile-optimized content",
       "Cross-device sync",
-      "Touch-optimized interface"
+      "Touch-optimized interface",
     ],
-    targetUsers: ["students", "teachers"]
-  }
+    targetUsers: ["students", "teachers"],
+  },
 ];
 
 // Pricing Plans
@@ -229,9 +241,9 @@ const pricingPlans: PricingPlan[] = [
       "Gamification & rewards",
       "Mobile app access",
       "Homework help",
-      "Offline learning mode"
+      "Offline learning mode",
     ],
-    targetUser: "students"
+    targetUser: "students",
   },
   {
     id: "teacher",
@@ -247,10 +259,10 @@ const pricingPlans: PricingPlan[] = [
       "Progress analytics",
       "Parent communication",
       "Resource library",
-      "All student plan features"
+      "All student plan features",
     ],
     targetUser: "teachers",
-    popular: true
+    popular: true,
   },
   {
     id: "school",
@@ -266,9 +278,9 @@ const pricingPlans: PricingPlan[] = [
       "Priority support",
       "Training & onboarding",
       "API access",
-      "All teacher plan features"
+      "All teacher plan features",
     ],
-    targetUser: "schools"
+    targetUser: "schools",
   },
   {
     id: "admin",
@@ -284,10 +296,10 @@ const pricingPlans: PricingPlan[] = [
       "Advanced security",
       "Custom development",
       "SLA guarantees",
-      "All school plan features"
+      "All school plan features",
     ],
-    targetUser: "admins"
-  }
+    targetUser: "admins",
+  },
 ];
 
 // User type options
@@ -296,25 +308,30 @@ const userTypes = [
   { id: "students", name: "Students", icon: "🎓" },
   { id: "teachers", name: "Teachers", icon: "👨‍🏫" },
   { id: "schools", name: "Schools", icon: "🏫" },
-  { id: "admins", name: "School Admins", icon: "👔" }
+  { id: "admins", name: "School Admins", icon: "👔" },
 ];
 
 export default function AILearningPlatformPage() {
   const [selectedUserType, setSelectedUserType] = useState<string>("all");
 
   // Filter features based on selected user type
-  const filteredFeatures = selectedUserType === "all" 
-    ? platformFeatures 
-    : platformFeatures.filter(feature => 
-        feature.targetUsers.includes(selectedUserType)
-      );
+  const filteredFeatures =
+    selectedUserType === "all"
+      ? platformFeatures
+      : platformFeatures.filter((feature) =>
+          feature.targetUsers.includes(selectedUserType)
+        );
 
   // Filter pricing plans based on selected user type
-  const filteredPlans = selectedUserType === "all"
-    ? pricingPlans
-    : pricingPlans.filter(plan => 
-        plan.targetUser === selectedUserType || selectedUserType === "schools" || selectedUserType === "admins"
-      );
+  const filteredPlans =
+    selectedUserType === "all"
+      ? pricingPlans
+      : pricingPlans.filter(
+          (plan) =>
+            plan.targetUser === selectedUserType ||
+            selectedUserType === "schools" ||
+            selectedUserType === "admins"
+        );
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -322,12 +339,15 @@ export default function AILearningPlatformPage() {
       <section className="relative bg-gradient-to-br from-navy via-navy-dark to-navy-light text-white py-20 px-6 md:px-12 lg:px-24 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,107,53,0.1),transparent_50%)]"></div>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(255,107,53,0.08),transparent_50%)]"></div>
-        
+
         <div className="max-w-7xl mx-auto relative z-10">
-          <Link href="/products" className="inline-flex items-center text-orange hover:text-orange-light mb-6 transition-colors">
+          <Link
+            href="/products"
+            className="inline-flex items-center text-orange hover:text-orange-light mb-6 transition-colors"
+          >
             <span className="mr-2">←</span> Back to Products
           </Link>
-          
+
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <h1 className="text-5xl md:text-7xl lg:text-8xl font-bebas mb-6 tracking-wide animate-fade-in">
@@ -335,7 +355,9 @@ export default function AILearningPlatformPage() {
               </h1>
               <div className="w-24 h-1 bg-orange mb-6"></div>
               <p className="text-xl md:text-2xl font-lato text-white/95 leading-relaxed mb-8">
-                Revolutionary AI-powered learning management system with personalized education, intelligent tutoring, and comprehensive analytics for students, teachers, and schools.
+                Revolutionary AI-powered learning management system with
+                personalized education, intelligent tutoring, and comprehensive
+                analytics for students, teachers, and schools.
               </p>
               <div className="flex flex-wrap gap-4 text-sm md:text-base">
                 <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
@@ -352,12 +374,14 @@ export default function AILearningPlatformPage() {
                 </div>
               </div>
             </div>
-            
+
             <div className="relative">
               <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20">
                 <div className="text-center mb-6">
                   <div className="text-8xl mb-4">💻</div>
-                  <h3 className="text-2xl font-bebas">Powered by Advanced AI</h3>
+                  <h3 className="text-2xl font-bebas">
+                    Powered by Advanced AI
+                  </h3>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-white/5 rounded-xl p-4 text-center">
@@ -413,11 +437,17 @@ export default function AILearningPlatformPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bebas text-navy mb-4">
-              {selectedUserType === "all" ? "All Platform Features" : `Features for ${userTypes.find(t => t.id === selectedUserType)?.name}`}
+              {selectedUserType === "all"
+                ? "All Platform Features"
+                : `Features for ${
+                    userTypes.find((t) => t.id === selectedUserType)?.name
+                  }`}
             </h2>
             <div className="w-24 h-1 bg-orange mx-auto mb-6"></div>
             <p className="text-xl font-lato text-gray-600 max-w-3xl mx-auto">
-              Showing {filteredFeatures.length} feature{filteredFeatures.length !== 1 ? 's' : ''} available for your selection
+              Showing {filteredFeatures.length} feature
+              {filteredFeatures.length !== 1 ? "s" : ""} available for your
+              selection
             </p>
           </div>
 
@@ -435,20 +465,24 @@ export default function AILearningPlatformPage() {
                     {feature.name}
                   </h3>
                 </div>
-                
+
                 <div className="p-6">
                   <p className="font-lato text-gray-700 text-sm leading-relaxed mb-4">
                     {feature.description}
                   </p>
-                  
+
                   <h4 className="font-montserrat font-semibold text-navy text-sm mb-3">
                     Key Benefits:
                   </h4>
                   <ul className="space-y-2">
                     {feature.benefits.slice(0, 4).map((benefit, idx) => (
                       <li key={idx} className="flex items-start text-xs">
-                        <span className="text-orange mr-2 flex-shrink-0">✓</span>
-                        <span className="font-lato text-gray-600">{benefit}</span>
+                        <span className="text-orange mr-2 flex-shrink-0">
+                          ✓
+                        </span>
+                        <span className="font-lato text-gray-600">
+                          {benefit}
+                        </span>
                       </li>
                     ))}
                     {feature.benefits.length > 4 && (
@@ -457,12 +491,13 @@ export default function AILearningPlatformPage() {
                       </li>
                     )}
                   </ul>
-                  
+
                   <div className="mt-4 pt-4 border-t border-gray-200">
                     <p className="text-xs text-gray-500 font-montserrat">
-                      For: {feature.targetUsers.map(u => 
-                        userTypes.find(t => t.id === u)?.name
-                      ).join(", ")}
+                      For:{" "}
+                      {feature.targetUsers
+                        .map((u) => userTypes.find((t) => t.id === u)?.name)
+                        .join(", ")}
                     </p>
                   </div>
                 </div>
@@ -481,7 +516,8 @@ export default function AILearningPlatformPage() {
             </h2>
             <div className="w-24 h-1 bg-orange mx-auto mb-6"></div>
             <p className="text-xl font-lato text-gray-600 max-w-3xl mx-auto">
-              Choose the perfect plan for your needs - from individual students to entire school districts
+              Choose the perfect plan for your needs - from individual students
+              to entire school districts
             </p>
           </div>
 
@@ -490,8 +526,8 @@ export default function AILearningPlatformPage() {
               <div
                 key={plan.id}
                 className={`relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 ${
-                  plan.popular 
-                    ? "border-orange scale-105" 
+                  plan.popular
+                    ? "border-orange scale-105"
                     : "border-gray-200 hover:border-orange/50"
                 }`}
               >
@@ -500,7 +536,7 @@ export default function AILearningPlatformPage() {
                     POPULAR
                   </div>
                 )}
-                
+
                 <div className="p-8">
                   <div className="text-center mb-6">
                     <h3 className="text-2xl font-bebas text-navy mb-2">
@@ -513,16 +549,20 @@ export default function AILearningPlatformPage() {
                       {plan.price}
                     </div>
                   </div>
-                  
+
                   <ul className="space-y-3 mb-8">
                     {plan.features.map((feature, idx) => (
                       <li key={idx} className="flex items-start text-sm">
-                        <span className="text-orange mr-2 flex-shrink-0">✓</span>
-                        <span className="font-lato text-gray-700">{feature}</span>
+                        <span className="text-orange mr-2 flex-shrink-0">
+                          ✓
+                        </span>
+                        <span className="font-lato text-gray-700">
+                          {feature}
+                        </span>
                       </li>
                     ))}
                   </ul>
-                  
+
                   <Link
                     href="/contact"
                     className={`block w-full text-center font-montserrat font-semibold py-3 rounded-lg transition-all duration-300 ${
@@ -540,7 +580,8 @@ export default function AILearningPlatformPage() {
 
           <div className="mt-12 text-center">
             <p className="text-lg font-lato text-gray-600 mb-4">
-              Need a custom solution? Contact us for enterprise pricing and custom integrations.
+              Need a custom solution? Contact us for enterprise pricing and
+              custom integrations.
             </p>
             <Link
               href="/contact"
@@ -562,10 +603,11 @@ export default function AILearningPlatformPage() {
                 See It In Action
               </h2>
               <p className="text-xl font-lato text-gray-700">
-                Schedule a personalized demo and discover how our AI Learning Platform can transform your educational experience
+                Schedule a personalized demo and discover how our AI Learning
+                Platform can transform your educational experience
               </p>
             </div>
-            
+
             <div className="grid md:grid-cols-3 gap-6 mb-8">
               <div className="text-center p-6 bg-white rounded-xl">
                 <div className="text-4xl mb-3">🚀</div>
@@ -576,20 +618,24 @@ export default function AILearningPlatformPage() {
               </div>
               <div className="text-center p-6 bg-white rounded-xl">
                 <div className="text-4xl mb-3">💬</div>
-                <h4 className="font-bebas text-lg text-navy mb-2">Q&A Session</h4>
+                <h4 className="font-bebas text-lg text-navy mb-2">
+                  Q&A Session
+                </h4>
                 <p className="text-sm font-lato text-gray-600">
                   Get answers to all your questions
                 </p>
               </div>
               <div className="text-center p-6 bg-white rounded-xl">
                 <div className="text-4xl mb-3">🎁</div>
-                <h4 className="font-bebas text-lg text-navy mb-2">Free Trial</h4>
+                <h4 className="font-bebas text-lg text-navy mb-2">
+                  Free Trial
+                </h4>
                 <p className="text-sm font-lato text-gray-600">
                   30-day free trial included
                 </p>
               </div>
             </div>
-            
+
             <div className="text-center">
               <Link
                 href="/contact"
@@ -611,7 +657,8 @@ export default function AILearningPlatformPage() {
           </h2>
           <div className="w-24 h-1 bg-orange mx-auto mb-8"></div>
           <p className="text-xl md:text-2xl font-lato mb-10 text-white/95 max-w-3xl mx-auto leading-relaxed">
-            Join thousands of students, teachers, and schools already using our AI Learning Platform to achieve better educational outcomes
+            Join thousands of students, teachers, and schools already using our
+            AI Learning Platform to achieve better educational outcomes
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link

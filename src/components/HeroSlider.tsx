@@ -38,15 +38,23 @@ const heroSlides = [
 ];
 
 const HeroSlider = () => {
+  // Prevent hydration errors
+  const [mounted, setMounted] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
     }, 5000); // Auto-advance every 5 seconds
 
     return () => clearInterval(timer);
-  }, []);
+  }, [mounted]);
 
   const goToSlide = (index: number) => {
     setCurrentSlide(index);
@@ -62,8 +70,26 @@ const HeroSlider = () => {
     );
   };
 
+  // Prevent hydration errors - show loading state until mounted
+  if (!mounted) {
+    return (
+      <section
+        className="relative h-screen w-full overflow-hidden bg-navy flex items-center justify-center"
+        suppressHydrationWarning
+      >
+        <div className="text-center">
+          <div className="text-6xl mb-4">🎓</div>
+          <div className="text-orange font-bebas text-2xl">Loading...</div>
+        </div>
+      </section>
+    );
+  }
+
   return (
-    <section className="relative h-screen w-full overflow-hidden">
+    <section
+      className="relative h-screen w-full overflow-hidden"
+      suppressHydrationWarning
+    >
       <AnimatePresence mode="wait">
         <motion.div
           key={currentSlide}
