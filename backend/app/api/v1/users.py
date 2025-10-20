@@ -8,6 +8,7 @@ from app.core.deps import get_current_user
 from app.models.user import User
 from app.core.password_policy import validate_password, PasswordValidationError
 from app.core.security import hash_password
+from app.services.email_verification import create_verification_token, send_verification_email
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -25,6 +26,15 @@ async def create_user_endpoint(payload: UserCreate, db: AsyncSession = Depends(g
         raise HTTPException(status_code=400, detail="Email already registered")
     role = payload.role or "student"
     user = await create_user(db, payload.email, payload.password, payload.full_name, role)
+    
+    # Create and send verification email
+    try:
+        token = await create_verification_token(db, user)
+        await send_verification_email(user, token)
+    except Exception as e:
+        print(f"⚠️ Failed to send verification email: {str(e)}")
+        # Don't block registration if email fails
+    
     return user
 
 

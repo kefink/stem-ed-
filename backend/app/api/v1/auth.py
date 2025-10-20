@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
+from pydantic import BaseModel, EmailStr
 
 from app.core.security import create_access_token
 from app.core.config import settings
@@ -26,6 +27,27 @@ from app.services.refresh_tokens import (
     revoke_refresh_token,
 )
 from app.services.users import get_user_by_email
+from app.models.user import User
+from app.services.email_verification import verify_email_token, resend_verification_email
+from app.schemas.verification import (
+    VerifyEmailRequest,
+    VerifyEmailResponse,
+    ResendVerificationRequest,
+    ResendVerificationResponse
+)
+from app.services.password_reset import (
+    create_reset_token,
+    send_reset_email,
+    verify_reset_token,
+    reset_password as reset_user_password
+)
+from app.schemas.password_reset import (
+    ForgotPasswordRequest,
+    ForgotPasswordResponse,
+    ResetPasswordRequest,
+    ResetPasswordResponse
+)
+from app.core.password_policy import validate_password, PasswordValidationError
 
 
 router = APIRouter(prefix="/auth", tags=["auth"]) 
@@ -36,6 +58,20 @@ INVALID_CREDENTIALS = HTTPException(
     detail="Incorrect email or password",
     headers={"WWW-Authenticate": "Bearer"},
 )
+
+
+# Google OAuth models
+class GoogleLoginRequest(BaseModel):
+    email: EmailStr
+    full_name: str
+    google_id: str
+
+
+class GoogleLoginResponse(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
+    user: dict
 
 
 @router.post("/login", response_model=Token)
@@ -65,6 +101,13 @@ async def login(
     user = await authenticate_user(db, form_data.username, form_data.password)
     if not user:
         raise INVALID_CREDENTIALS
+    
+    # Check if email is verified
+    if not user.is_email_verified:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Email not verified. Please check your email for verification link."
+        )
     
     # Successful login - optionally reset rate limit
     # await rate_limiter.reset(rate_key)  # Uncomment to reset on success
@@ -123,3 +166,179 @@ async def logout(request: Request, response: Response, payload: LogoutRequest, d
         clear_refresh_cookie(response)
     
     return {"status": "ok"}
+
+
+@router.post("/google-login", response_model=GoogleLoginResponse)
+async def google_login(
+    request: Request,
+    response: Response,
+    payload: GoogleLoginRequest,
+    db: AsyncSession = Depends(get_session),
+):
+    """
+    Handle Google OAuth login/registration.
+    If user exists, return tokens. If not, create user and return tokens.
+    """
+    try:
+        # Check if user exists by email
+        result = await db.execute(
+            User.__table__.select().where(User.email == payload.email)
+        )
+        user = result.first()
+        
+        if user:
+            # User exists - just create tokens
+            user_dict = dict(user._mapping)
+            user_id = user_dict['id']
+            user_email = user_dict['email']
+            user_name = user_dict['full_name']
+            user_role = user_dict['role']
+        else:
+            # Create new user from Google data
+            new_user = User(
+                email=payload.email,
+                full_name=payload.full_name,
+                role="user",
+                hashed_password="",  # No password for Google users
+                is_email_verified=True,  # Google users are pre-verified
+            )
+            db.add(new_user)
+            await db.commit()
+            await db.refresh(new_user)
+            
+            user_id = new_user.id
+            user_email = new_user.email
+            user_name = new_user.full_name
+            user_role = new_user.role
+        
+        # Create tokens
+        access_token = create_access_token(subject=user_email)
+        refresh_raw = generate_refresh_token_value()
+        
+        # Get user object for refresh token creation
+        user_obj = await get_user_by_email(db, user_email)
+        if user_obj:
+            ua = request.headers.get("user-agent")
+            ip = request.client.host if request.client else None
+            await create_refresh_token(db, user_obj, refresh_raw, ua, ip)
+        
+        # Set cookies if enabled
+        if settings.COOKIE_SESSION_ENABLED:
+            set_session_cookie(response, access_token)
+            set_refresh_cookie(response, refresh_raw)
+            csrf = generate_csrf_token()
+            set_csrf_cookie(response, csrf)
+        
+        return GoogleLoginResponse(
+            access_token=access_token,
+            refresh_token=refresh_raw,
+            user={
+                "id": user_id,
+                "email": user_email,
+                "full_name": user_name,
+                "role": user_role,
+            }
+        )
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to process Google login: {str(e)}"
+        )
+
+
+@router.post("/verify-email", response_model=VerifyEmailResponse)
+async def verify_email(
+    payload: VerifyEmailRequest,
+    db: AsyncSession = Depends(get_session)
+):
+    """Verify user's email address with token"""
+    user = await verify_email_token(db, payload.token)
+    
+    if not user:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid or expired verification token"
+        )
+    
+    return VerifyEmailResponse(
+        message="Email verified successfully! You can now log in.",
+        email=user.email
+    )
+
+
+@router.post("/resend-verification", response_model=ResendVerificationResponse)
+async def resend_verification(
+    payload: ResendVerificationRequest,
+    db: AsyncSession = Depends(get_session)
+):
+    """Resend verification email to user"""
+    success = await resend_verification_email(db, payload.email)
+    
+    if not success:
+        raise HTTPException(
+            status_code=400,
+            detail="Email not found or already verified"
+        )
+    
+    return ResendVerificationResponse(
+        message="Verification email sent! Please check your inbox."
+    )
+
+
+@router.post("/forgot-password", response_model=ForgotPasswordResponse)
+async def forgot_password(
+    payload: ForgotPasswordRequest,
+    db: AsyncSession = Depends(get_session)
+):
+    """Request password reset email"""
+    user = await get_user_by_email(db, payload.email)
+    
+    # Always return success even if user doesn't exist (security best practice)
+    # This prevents email enumeration attacks
+    if not user:
+        return ForgotPasswordResponse(
+            message="If that email exists, a password reset link has been sent."
+        )
+    
+    try:
+        # Create reset token and send email
+        token = await create_reset_token(db, user)
+        await send_reset_email(user, token)
+    except Exception as e:
+        print(f"⚠️ Failed to send reset email: {str(e)}")
+        # Don't expose error to user
+    
+    return ForgotPasswordResponse(
+        message="If that email exists, a password reset link has been sent."
+    )
+
+
+@router.post("/reset-password", response_model=ResetPasswordResponse)
+async def reset_password(
+    payload: ResetPasswordRequest,
+    db: AsyncSession = Depends(get_session)
+):
+    """Reset password with valid token"""
+    # Verify token
+    user = await verify_reset_token(db, payload.token)
+    
+    if not user:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid or expired reset token"
+        )
+    
+    # Validate new password
+    try:
+        validate_password(payload.new_password)
+    except PasswordValidationError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+    
+    # Reset password
+    await reset_user_password(db, user, payload.new_password)
+    
+    return ResetPasswordResponse(
+        message="Password reset successfully! You can now log in with your new password.",
+        email=user.email
+    )

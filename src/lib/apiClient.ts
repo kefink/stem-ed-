@@ -160,3 +160,17 @@ export async function updateCurrentUser(payload: {
     body: JSON.stringify(payload),
   });
 }
+
+export async function forgotPassword(email: string) {
+  return apiFetch("/api/v1/auth/forgot-password", {
+    method: "POST",
+    body: JSON.stringify({ email }),
+  });
+}
+
+export async function resetPassword(token: string, newPassword: string) {
+  return apiFetch("/api/v1/auth/reset-password", {
+    method: "POST",
+    body: JSON.stringify({ token, new_password: newPassword }),
+  });
+}

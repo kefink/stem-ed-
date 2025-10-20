@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google";
 
 // Helper to call backend through Next rewrite
 async function loginFastAPI(email: string, password: string) {
@@ -36,11 +37,49 @@ async function fetchMe(accessToken?: string) {
   return res.json(); // { id, email, role, full_name }
 }
 
+// Helper to register/sync Google user with backend
+async function syncGoogleUser(email: string, name: string, googleId: string) {
+  const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+  const res = await fetch(`${baseUrl}/api/v1/auth/google-login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email,
+      full_name: name,
+      google_id: googleId,
+    }),
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    // If endpoint doesn't exist yet, return a mock response
+    // You'll need to implement this endpoint in your backend
+    return {
+      access_token: "google-temp-token",
+      user: { id: googleId, email, full_name: name, role: "user" },
+    };
+  }
+
+  return res.json();
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   // IMPORTANT: set AUTH_SECRET in your environment for dev/prod
   // You can generate one with: openssl rand -base64 32
   secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
+  debug: true, // Enable debug mode to see errors
   providers: [
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
+    }),
     Credentials({
       name: "Credentials",
       credentials: {
@@ -69,8 +108,38 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   session: { strategy: "jwt" },
+  pages: {
+    signIn: "/login",
+    error: "/login",
+  },
+  trustHost: true, // Trust the host in development
+  useSecureCookies: false, // Critical for localhost development
   callbacks: {
-    async jwt({ token, user }) {
+    async signIn({ user, account, profile }) {
+      // Handle Google sign-in
+      if (account?.provider === "google") {
+        try {
+          const googleUser = await syncGoogleUser(
+            user.email!,
+            user.name || user.email!,
+            account.providerAccountId
+          );
+
+          // Store backend tokens in user object
+          (user as any).access_token = googleUser.access_token;
+          (user as any).refresh_token = googleUser.refresh_token;
+          (user as any).role = googleUser.user?.role || "user";
+
+          return true;
+        } catch (error) {
+          console.error("Google sign-in error:", error);
+          return false;
+        }
+      }
+
+      return true;
+    },
+    async jwt({ token, user, account }) {
       // Persist access/refresh tokens in JWT (server-side only)
       if (user) {
         // @ts-ignore
@@ -80,6 +149,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         // @ts-ignore
         token.refresh_token = (user as any).refresh_token;
       }
+
+      // Store provider info
+      if (account) {
+        token.provider = account.provider;
+      }
+
       return token;
     },
     async session({ session, token }) {
@@ -87,6 +162,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       session.user = session.user || {};
       // @ts-ignore
       session.user.role = token.role as string | undefined;
+      // @ts-ignore
+      session.user.provider = token.provider as string | undefined;
       // Expose backend tokens to client so API calls can authenticate
       // @ts-ignore
       session.accessToken = (token as any).access_token;

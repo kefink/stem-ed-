@@ -1,5 +1,6 @@
-from sqlalchemy import String
+from sqlalchemy import String, Boolean, DateTime
 from sqlalchemy.orm import Mapped, mapped_column
+from datetime import datetime
 
 from app.db.session import Base
 
@@ -12,3 +13,12 @@ class User(Base):
     full_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
     hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
     role: Mapped[str] = mapped_column(String(32), nullable=False, default="student", index=True)
+    
+    # Email verification fields
+    is_email_verified: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    verification_token: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
+    verification_token_expires: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    
+    # Password reset fields
+    password_reset_token: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
+    password_reset_token_expires: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
