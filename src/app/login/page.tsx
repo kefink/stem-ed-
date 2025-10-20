@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function LoginPage() {
   const searchParams = useSearchParams();
@@ -41,48 +42,97 @@ export default function LoginPage() {
     setError(null);
 
     try {
+      const params = new URLSearchParams();
+      params.set("username", formData.email);
+      params.set("password", formData.password);
+
+      const loginResponse = await fetch("/api/v1/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        credentials: "include",
+        body: params.toString(),
+      });
+
+      const loginData = await loginResponse.json().catch(() => ({}));
+      const detail =
+        loginData?.detail || loginData?.message || "Invalid email or password";
+
+      if (!loginResponse.ok) {
+        console.log("Login failed:", detail);
+
+        if (loginResponse.status === 423 || detail.includes("lock")) {
+          const match = detail.match(/(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})/);
+          const lockedUntil = match ? match[1] : null;
+          if (lockedUntil) {
+            window.location.href = `/account-locked?until=${encodeURIComponent(
+              lockedUntil
+            )}`;
+          } else {
+            window.location.href = "/account-locked";
+          }
+        } else if (
+          loginResponse.status === 403 ||
+          detail.includes("Email not verified")
+        ) {
+          setError(`📧 ${detail}`);
+        } else if (detail.includes("attempt")) {
+          setError(`⚠️ ${detail}`);
+        } else {
+          setError(detail || "Invalid email or password");
+        }
+
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (!loginData?.access_token) {
+        setError("Unexpected response from server. Please try again.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Fetch user profile using the freshly issued access token
+      let userData: any = null;
+      try {
+        const profileResponse = await fetch("/api/v1/users/me", {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${loginData.access_token}`,
+          },
+        });
+
+        if (profileResponse.ok) {
+          userData = await profileResponse.json();
+        }
+      } catch (profileError) {
+        console.warn("Unable to fetch user profile after login", profileError);
+      }
+
+      const preAuthPayload = JSON.stringify({
+        login: loginData,
+        user: userData,
+      });
+
       const result = await signIn("credentials", {
         email: formData.email,
         password: formData.password,
         redirect: false,
+        preAuth: preAuthPayload,
       });
 
       if (result?.error) {
-        // Check if it's an account lockout error (423 status)
-        if (result.error.includes("locked") || result.error.includes("423")) {
-          // Extract locked_until timestamp from error message if present
-          const match = result.error.match(/(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})/);
-          const lockedUntil = match ? match[1] : null;
-          
-          if (lockedUntil) {
-            window.location.href = `/account-locked?until=${encodeURIComponent(lockedUntil)}`;
-          } else {
-            window.location.href = "/account-locked";
-          }
-          return;
-        }
-        
-        // Check if it's an email verification error
-        if (
-          result.error.includes("Email not verified") ||
-          result.error.includes("403")
-        ) {
-          setError(
-            "📧 Email not verified. Please check your inbox for the verification link."
-          );
-        } else if (result.error.includes("attempts remaining")) {
-          // Show warning about remaining attempts
-          setError(`⚠️ ${result.error}`);
-        } else {
-          setError("Invalid email or password");
-        }
-      } else if (result?.ok) {
-        // Check for ?next= parameter or redirect to home
-        const urlParams = new URLSearchParams(window.location.search);
-        const next = urlParams.get("next");
-        window.location.href = next || "/";
+        console.error("NextAuth sign-in failed:", result.error);
+        setError("Sign-in failed. Please try again.");
+        setIsSubmitting(false);
+        return;
       }
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const next = urlParams.get("next");
+      window.location.href = next || "/";
     } catch (err) {
+      console.error("Login request error", err);
       setError("Network error. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -239,7 +289,14 @@ export default function LoginPage() {
               disabled={isSubmitting}
               className="w-full bg-orange hover:bg-orange-dark text-white font-montserrat font-bold py-4 px-8 rounded-lg transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? "Signing in..." : "Sign In"}
+              {isSubmitting ? (
+                <LoadingSpinner
+                  label="Signing in..."
+                  className="justify-center text-white"
+                />
+              ) : (
+                "Sign In"
+              )}
             </button>
           </form>
 

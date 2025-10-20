@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { registerUser } from "@/lib/apiClient";
 import { signIn } from "next-auth/react";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -388,7 +389,14 @@ export default function RegisterPage() {
               disabled={isSubmitting}
               className="w-full bg-navy hover:bg-navy-light text-white font-montserrat font-bold py-4 px-8 rounded-lg transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? "Creating Account..." : "Create Account"}
+              {isSubmitting ? (
+                <LoadingSpinner
+                  label="Creating Account..."
+                  className="justify-center text-white"
+                />
+              ) : (
+                "Create Account"
+              )}
             </button>
           </form>
 

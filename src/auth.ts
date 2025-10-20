@@ -17,7 +17,19 @@ async function loginFastAPI(email: string, password: string) {
     // Important: include credentials so backend can set cookies if enabled
     credentials: "include",
   });
-  if (!res.ok) return null;
+
+  if (!res.ok) {
+    // Return error details for special status codes
+    const errorData = await res
+      .json()
+      .catch(() => ({ detail: "Login failed" }));
+    return {
+      error: true,
+      status: res.status,
+      detail: errorData.detail || errorData.message || "Login failed",
+    };
+  }
+
   const data = await res.json();
   return data; // { access_token, refresh_token, token_type }
 }
@@ -85,13 +97,59 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       credentials: {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
+        preAuth: { label: "PreAuth", type: "text" },
       },
       authorize: async (creds) => {
         const email = String(creds?.email || "");
         const password = String(creds?.password || "");
+        const preAuthRaw = creds?.preAuth ? String(creds.preAuth) : null;
+
         if (!email || !password) return null;
+
+        // When preAuth payload is provided, trust the caller and reuse tokens/user info
+        if (preAuthRaw) {
+          try {
+            const parsed = JSON.parse(preAuthRaw);
+            const login = parsed?.login;
+            const user = parsed?.user;
+
+            if (login && user) {
+              return {
+                id: String(user.id ?? email),
+                email: user.email ?? email,
+                role: user.role ?? "user",
+                name: user.full_name || user.email || email,
+                access_token: login.access_token,
+                refresh_token: login.refresh_token,
+              } as any;
+            }
+          } catch (error) {
+            console.error("Failed to parse preAuth payload", error);
+            throw new Error("Invalid pre-authentication data");
+          }
+        }
+
         const login = await loginFastAPI(email, password);
         if (!login) return null;
+
+        // Check if login returned an error
+        if ((login as any).error) {
+          const status = (login as any).status;
+          const detail = (login as any).detail;
+
+          // Throw error with status code so frontend can detect it
+          if (status === 423) {
+            throw new Error(`LOCKED:${detail}`);
+          } else if (status === 403) {
+            throw new Error(`NOT_VERIFIED:${detail}`);
+          } else if (status === 401) {
+            // Pass through 401 errors (includes attempt counter messages)
+            throw new Error(`INVALID_CREDS:${detail}`);
+          } else {
+            throw new Error(detail);
+          }
+        }
+
         const me = await fetchMe(login.access_token);
         // Build user object for session/jwt
         return me
