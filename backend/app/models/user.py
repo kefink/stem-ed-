@@ -1,4 +1,4 @@
-from sqlalchemy import String, Boolean, DateTime
+from sqlalchemy import String, Boolean, DateTime, Integer
 from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime
 
@@ -22,3 +22,8 @@ class User(Base):
     # Password reset fields
     password_reset_token: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
     password_reset_token_expires: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    
+    # Account lockout fields
+    is_locked: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, index=True)
+    locked_until: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    failed_login_attempts: Mapped[int] = mapped_column(Integer, nullable=False, default=0)

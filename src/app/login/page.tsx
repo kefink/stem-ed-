@@ -48,6 +48,20 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
+        // Check if it's an account lockout error (423 status)
+        if (result.error.includes("locked") || result.error.includes("423")) {
+          // Extract locked_until timestamp from error message if present
+          const match = result.error.match(/(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})/);
+          const lockedUntil = match ? match[1] : null;
+          
+          if (lockedUntil) {
+            window.location.href = `/account-locked?until=${encodeURIComponent(lockedUntil)}`;
+          } else {
+            window.location.href = "/account-locked";
+          }
+          return;
+        }
+        
         // Check if it's an email verification error
         if (
           result.error.includes("Email not verified") ||
@@ -56,6 +70,9 @@ export default function LoginPage() {
           setError(
             "📧 Email not verified. Please check your inbox for the verification link."
           );
+        } else if (result.error.includes("attempts remaining")) {
+          // Show warning about remaining attempts
+          setError(`⚠️ ${result.error}`);
         } else {
           setError("Invalid email or password");
         }

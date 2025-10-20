@@ -1,11 +1,14 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc, func
+from pydantic import BaseModel, EmailStr
 
 from app.db.session import get_session
 from app.core.deps import require_role
 from app.models.contact_message import ContactMessage
 from app.models.newsletter_subscription import NewsletterSubscription
+from app.models.user import User
+from app.services.account_lockout import unlock_account
 
 
 router = APIRouter(prefix="/admin", tags=["admin"], dependencies=[Depends(require_role("admin"))])
@@ -90,3 +93,30 @@ async def list_newsletter_subscribers(
     "limit": limit,
     "offset": offset,
   }
+
+
+class UnlockAccountRequest(BaseModel):
+    email: EmailStr
+
+
+@router.post("/unlock-account")
+async def unlock_user_account(
+    payload: UnlockAccountRequest,
+    db: AsyncSession = Depends(get_session),
+):
+    """Manually unlock a user account (admin only)"""
+    # Find user by email
+    result = await db.execute(select(User).where(User.email == payload.email))
+    user = result.scalar_one_or_none()
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Unlock the account
+    await unlock_account(db, user)
+    
+    return {
+        "message": f"Account {user.email} has been unlocked successfully",
+        "email": user.email,
+        "was_locked": True,
+    }

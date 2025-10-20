@@ -48,6 +48,11 @@ from app.schemas.password_reset import (
     ResetPasswordResponse
 )
 from app.core.password_policy import validate_password, PasswordValidationError
+from app.services.account_lockout import (
+    is_account_locked,
+    record_failed_attempt,
+    record_successful_login
+)
 
 
 router = APIRouter(prefix="/auth", tags=["auth"]) 
@@ -98,24 +103,67 @@ async def login(
             headers={"Retry-After": str(settings.RATE_LIMIT_LOGIN_WINDOW_SECONDS)}
         )
     
-    user = await authenticate_user(db, form_data.username, form_data.password)
+    # First, check if user exists (we need the user object for lockout check)
+    user = await get_user_by_email(db, form_data.username)
+    
+    # If user doesn't exist, return generic error (prevent email enumeration)
     if not user:
         raise INVALID_CREDENTIALS
     
+    # Check if account is locked
+    is_locked, locked_until = await is_account_locked(db, user)
+    if is_locked:
+        if locked_until:
+            raise HTTPException(
+                status_code=status.HTTP_423_LOCKED,
+                detail=f"Account is locked due to multiple failed login attempts. Try again after {locked_until.strftime('%Y-%m-%d %H:%M:%S UTC')}",
+            )
+        else:
+            # Permanently locked by admin
+            raise HTTPException(
+                status_code=status.HTTP_423_LOCKED,
+                detail="Account is locked. Please contact support.",
+            )
+    
+    # Authenticate user (check password)
+    authenticated_user = await authenticate_user(db, form_data.username, form_data.password)
+    
+    if not authenticated_user:
+        # Record failed attempt
+        ua = request.headers.get("user-agent")
+        was_locked = await record_failed_attempt(db, user, ip_address=ip, user_agent=ua)
+        
+        if was_locked:
+            raise HTTPException(
+                status_code=status.HTTP_423_LOCKED,
+                detail=f"Account is now locked due to {user.failed_login_attempts} failed login attempts. Try again in 15 minutes.",
+            )
+        
+        # Show remaining attempts
+        remaining_attempts = 5 - user.failed_login_attempts
+        if remaining_attempts > 0:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=f"Incorrect email or password. {remaining_attempts} attempts remaining before account lockout.",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        else:
+            raise INVALID_CREDENTIALS
+    
     # Check if email is verified
-    if not user.is_email_verified:
+    if not authenticated_user.is_email_verified:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Email not verified. Please check your email for verification link."
         )
     
-    # Successful login - optionally reset rate limit
-    # await rate_limiter.reset(rate_key)  # Uncomment to reset on success
-    
-    access_token = create_access_token(subject=user.email)
-    refresh_raw = generate_refresh_token_value()
+    # Successful login - record it and clear failed attempts
     ua = request.headers.get("user-agent")
-    await create_refresh_token(db, user, refresh_raw, ua, ip)
+    await record_successful_login(db, authenticated_user, ip_address=ip, user_agent=ua)
+    
+    access_token = create_access_token(subject=authenticated_user.email)
+    refresh_raw = generate_refresh_token_value()
+    await create_refresh_token(db, authenticated_user, refresh_raw, ua, ip)
     
     # Optional: Set cookies if cookie session mode is enabled
     if settings.COOKIE_SESSION_ENABLED:
