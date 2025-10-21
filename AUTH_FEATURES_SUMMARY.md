@@ -13,6 +13,7 @@
 **Time to Implement:** 30 minutes (as estimated)
 
 **Features:**
+
 - ✅ Secure token generation (32-byte URL-safe, 24-hour expiry)
 - ✅ Verification email sending via SMTP
 - ✅ Block login for unverified users (403 Forbidden)
@@ -21,6 +22,7 @@
 - ✅ One-time use tokens with automatic cleanup
 
 **Files Added:**
+
 - `backend/alembic/versions/0005_add_email_verification.py` - Database migration
 - `backend/app/services/email_verification.py` - Core verification logic
 - `backend/app/schemas/verification.py` - Request/response schemas
@@ -31,12 +33,14 @@
 - `EMAIL_VERIFICATION_SUMMARY.md` - Quick reference
 
 **API Endpoints:**
+
 ```
 POST /api/v1/auth/verify-email        # Verify email with token
 POST /api/v1/auth/resend-verification # Resend verification email
 ```
 
 **Testing Results:** ✅ Working perfectly
+
 - Email sent successfully to `petebam896@datoinf.com`
 - Token validated correctly
 - User able to login after verification
@@ -48,6 +52,7 @@ POST /api/v1/auth/resend-verification # Resend verification email
 **Time to Implement:** 45 minutes (as estimated)
 
 **Features:**
+
 - ✅ Secure token generation (32-byte URL-safe, 15-minute expiry)
 - ✅ Password reset email sending
 - ✅ Token validation and expiry checking
@@ -57,6 +62,7 @@ POST /api/v1/auth/resend-verification # Resend verification email
 - ✅ Auto-redirect to login after success
 
 **Files Added:**
+
 - `backend/alembic/versions/0006_add_password_reset.py` - Database migration
 - `backend/app/services/password_reset.py` - Core reset logic
 - `backend/app/schemas/password_reset.py` - Request/response schemas
@@ -65,12 +71,14 @@ POST /api/v1/auth/resend-verification # Resend verification email
 - `PASSWORD_RESET_FEATURE.md` - Complete documentation
 
 **API Endpoints:**
+
 ```
 POST /api/v1/auth/forgot-password  # Request password reset
 POST /api/v1/auth/reset-password   # Reset password with token
 ```
 
 **Testing Results:** ✅ Working perfectly
+
 - Password reset emails sent to `petebam896@datoinf.com` and `kevinmugo359@gmail.com`
 - Tokens validated correctly (15-minute expiry)
 - Users able to login with new passwords
@@ -81,6 +89,7 @@ POST /api/v1/auth/reset-password   # Reset password with token
 ## 🔧 Infrastructure Improvements
 
 ### **Database Migrations:**
+
 ```sql
 -- Email Verification
 ALTER TABLE users ADD COLUMN is_email_verified BOOLEAN DEFAULT FALSE;
@@ -93,12 +102,15 @@ ALTER TABLE users ADD COLUMN password_reset_token_expires DATETIME;
 ```
 
 ### **CORS Configuration:**
+
 Updated `backend/.env` to allow network access:
+
 ```env
 CORS_ORIGINS=http://localhost:3000,http://192.168.88.7:3000,http://192.168.55.154:3000
 ```
 
 ### **Updated Components:**
+
 - ✅ `backend/app/models/user.py` - Added verification & reset fields
 - ✅ `backend/app/api/v1/auth.py` - Added new endpoints
 - ✅ `backend/app/api/v1/users.py` - Send verification on registration
@@ -112,16 +124,18 @@ CORS_ORIGINS=http://localhost:3000,http://192.168.88.7:3000,http://192.168.55.15
 ## 🔒 Security Features Implemented
 
 ### **Token Security:**
-| Feature | Email Verification | Password Reset |
-|---------|-------------------|----------------|
-| **Algorithm** | `secrets.token_urlsafe(32)` | `secrets.token_urlsafe(32)` |
-| **Length** | 43 characters | 43 characters |
-| **Entropy** | 256 bits | 256 bits |
-| **Expiry** | 24 hours | 15 minutes |
-| **One-time use** | ✅ Yes | ✅ Yes |
-| **Auto-cleanup** | ✅ Yes | ✅ Yes |
+
+| Feature          | Email Verification          | Password Reset              |
+| ---------------- | --------------------------- | --------------------------- |
+| **Algorithm**    | `secrets.token_urlsafe(32)` | `secrets.token_urlsafe(32)` |
+| **Length**       | 43 characters               | 43 characters               |
+| **Entropy**      | 256 bits                    | 256 bits                    |
+| **Expiry**       | 24 hours                    | 15 minutes                  |
+| **One-time use** | ✅ Yes                      | ✅ Yes                      |
+| **Auto-cleanup** | ✅ Yes                      | ✅ Yes                      |
 
 ### **Attack Prevention:**
+
 - ✅ **Brute Force:** 43-char random tokens = 2^256 possibilities
 - ✅ **Token Theft:** Automatic expiry
 - ✅ **Replay Attacks:** Tokens deleted after use
@@ -133,6 +147,7 @@ CORS_ORIGINS=http://localhost:3000,http://192.168.88.7:3000,http://192.168.55.15
 ## 📧 Email Integration
 
 **Current Configuration:** Gmail SMTP
+
 ```env
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
@@ -143,6 +158,7 @@ SMTP_TLS=True
 ```
 
 **Emails Sent:**
+
 - ✅ Registration verification emails
 - ✅ Password reset emails
 - ✅ Fallback to console links if SMTP not configured
@@ -154,6 +170,7 @@ SMTP_TLS=True
 **Commit Hash:** `b821140`
 
 **Files Changed:** 26 files
+
 - **Insertions:** 3,561 lines
 - **Deletions:** 11 lines
 
@@ -165,6 +182,7 @@ SMTP_TLS=True
 ## 🎯 Next Feature: Rate Limiting Enhancement
 
 ### **Planned Implementation:**
+
 ```
 ⬜ Rate Limiting (30 min to implement)
    - Block login after 5 failed attempts
@@ -175,11 +193,13 @@ SMTP_TLS=True
 ```
 
 **Already Implemented:**
+
 - ✅ Basic rate limiting via Redis
 - ✅ Rate limiter initialized on startup
 - ✅ Login endpoint protected
 
 **To Add:**
+
 - ⬜ Email notification on lockout
 - ⬜ Lockout tracking in database
 - ⬜ Admin bypass mechanism
@@ -190,6 +210,7 @@ SMTP_TLS=True
 ## 🧪 Testing Checklist
 
 ### **Email Verification:**
+
 - [x] Register new user
 - [x] Receive verification email
 - [x] Click verification link
@@ -200,6 +221,7 @@ SMTP_TLS=True
 - [x] Google OAuth auto-verification
 
 ### **Password Reset:**
+
 - [x] Click "Forgot password?"
 - [x] Enter email address
 - [x] Receive reset email
@@ -215,26 +237,28 @@ SMTP_TLS=True
 
 ## 📚 Documentation Files
 
-| File | Purpose |
-|------|---------|
-| `EMAIL_VERIFICATION_COMPLETE.md` | Complete implementation guide |
-| `EMAIL_VERIFICATION_FEATURE.md` | Detailed feature documentation |
-| `EMAIL_VERIFICATION_SUMMARY.md` | Quick reference guide |
-| `PASSWORD_RESET_FEATURE.md` | Complete password reset guide |
-| `setup-email-verification.bat` | Windows setup script |
-| `setup-email-verification.sh` | Unix setup script |
+| File                             | Purpose                        |
+| -------------------------------- | ------------------------------ |
+| `EMAIL_VERIFICATION_COMPLETE.md` | Complete implementation guide  |
+| `EMAIL_VERIFICATION_FEATURE.md`  | Detailed feature documentation |
+| `EMAIL_VERIFICATION_SUMMARY.md`  | Quick reference guide          |
+| `PASSWORD_RESET_FEATURE.md`      | Complete password reset guide  |
+| `setup-email-verification.bat`   | Windows setup script           |
+| `setup-email-verification.sh`    | Unix setup script              |
 
 ---
 
 ## 🚀 Deployment Notes
 
 ### **Database Migrations:**
+
 ```bash
 cd backend
 python -m alembic upgrade head
 ```
 
 ### **Environment Variables Required:**
+
 ```env
 # SMTP Configuration (optional but recommended)
 SMTP_HOST=smtp.gmail.com
@@ -249,6 +273,7 @@ CORS_ORIGINS=http://localhost:3000,https://yourdomain.com
 ```
 
 ### **Testing Without SMTP:**
+
 - ✅ Verification links printed to console
 - ✅ Reset links printed to console
 - ✅ Full functionality available for testing
@@ -258,12 +283,14 @@ CORS_ORIGINS=http://localhost:3000,https://yourdomain.com
 ## ✅ Success Metrics
 
 ### **Code Quality:**
+
 - ✅ TypeScript strict mode compliance
 - ✅ Python type hints throughout
 - ✅ Comprehensive error handling
 - ✅ Security best practices followed
 
 ### **User Experience:**
+
 - ✅ Clear success/error messages
 - ✅ Auto-redirects after actions
 - ✅ Password visibility toggles
@@ -271,6 +298,7 @@ CORS_ORIGINS=http://localhost:3000,https://yourdomain.com
 - ✅ Helpful links (back to login, resend, etc.)
 
 ### **Security:**
+
 - ✅ Secure token generation
 - ✅ Token expiry enforcement
 - ✅ One-time use tokens
@@ -293,6 +321,7 @@ CORS_ORIGINS=http://localhost:3000,https://yourdomain.com
 ---
 
 **Next Steps:**
+
 1. ✅ Commit pushed to GitHub
 2. ⬜ Implement Rate Limiting Enhancement
 3. ⬜ Add email notifications for security events

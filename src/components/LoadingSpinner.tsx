@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React from "react";
 
@@ -11,7 +11,10 @@ function classNames(...values: Array<string | undefined | false>) {
   return values.filter(Boolean).join(" ");
 }
 
-const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ label, className }) => {
+const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
+  label,
+  className,
+}) => {
   return (
     <span className={classNames("flex items-center gap-3", className)}>
       <span className="relative flex h-6 w-6">

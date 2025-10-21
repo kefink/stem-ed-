@@ -150,6 +150,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           }
         }
 
+        if ((login as any).requires_two_factor) {
+          throw new Error("TWO_FACTOR_REQUIRED");
+        }
+
         const me = await fetchMe(login.access_token);
         // Build user object for session/jwt
         return me

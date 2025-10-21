@@ -174,3 +174,41 @@ export async function resetPassword(token: string, newPassword: string) {
     body: JSON.stringify({ token, new_password: newPassword }),
   });
 }
+
+// Two-factor authentication helpers
+export async function getTwoFactorStatus() {
+  return apiFetch("/api/v1/auth/2fa/status", { method: "GET" });
+}
+
+export async function startTwoFactorSetup() {
+  return apiFetch("/api/v1/auth/2fa/setup", { method: "POST" });
+}
+
+export async function enableTwoFactor(code: string) {
+  return apiFetch("/api/v1/auth/2fa/enable", {
+    method: "POST",
+    body: JSON.stringify({ code }),
+  });
+}
+
+export async function disableTwoFactor(payload: {
+  password: string;
+  code: string;
+  method?: "totp" | "backup_code";
+}) {
+  return apiFetch("/api/v1/auth/2fa/disable", {
+    method: "POST",
+    body: JSON.stringify({
+      password: payload.password,
+      code: payload.code,
+      method: payload.method ?? "totp",
+    }),
+  });
+}
+
+export async function regenerateTwoFactorBackupCodes(code: string) {
+  return apiFetch("/api/v1/auth/2fa/backup-codes/regenerate", {
+    method: "POST",
+    body: JSON.stringify({ code }),
+  });
+}

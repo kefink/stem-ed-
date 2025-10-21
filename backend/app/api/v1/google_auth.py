@@ -66,7 +66,10 @@ async def google_login(
             logger.info(f"New user created via Google: {user.email}")
         
         # Create tokens
-        access_token = create_access_token(subject=str(user.id))
+        access_token = create_access_token(
+            subject=str(user.id),
+            additional_claims={"scope": "access"},
+        )
         refresh_token_str = create_refresh_token(subject=str(user.id))
         
         # Store refresh token in database

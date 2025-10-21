@@ -3,7 +3,15 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { getCurrentUser, updateCurrentUser } from "@/lib/apiClient";
+import {
+  getCurrentUser,
+  updateCurrentUser,
+  getTwoFactorStatus,
+  startTwoFactorSetup,
+  enableTwoFactor,
+  disableTwoFactor,
+  regenerateTwoFactorBackupCodes,
+} from "@/lib/apiClient";
 
 interface UserData {
   id: number;
@@ -31,6 +39,41 @@ export default function ProfilePage() {
 
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [twoFactorStatus, setTwoFactorStatus] = useState<{
+    enabled: boolean;
+    backup_codes_remaining: number;
+    confirmed_at?: string | null;
+    last_verified_at?: string | null;
+  } | null>(null);
+  const [twoFactorSetupData, setTwoFactorSetupData] = useState<{
+    secret: string;
+    otpauth_uri: string;
+    backup_codes: string[];
+  } | null>(null);
+  const [twoFactorCodeInput, setTwoFactorCodeInput] = useState("");
+  const [twoFactorDisableInput, setTwoFactorDisableInput] = useState({
+    password: "",
+    code: "",
+    method: "totp" as "totp" | "backup_code",
+  });
+  const [regenerateCode, setRegenerateCode] = useState("");
+  const [twoFactorError, setTwoFactorError] = useState<string | null>(null);
+  const [twoFactorSuccess, setTwoFactorSuccess] = useState<string | null>(null);
+  const [isTwoFactorBusy, setIsTwoFactorBusy] = useState(false);
+  const [showDisableForm, setShowDisableForm] = useState(false);
+  const [showRegenerateForm, setShowRegenerateForm] = useState(false);
+  const [latestBackupCodes, setLatestBackupCodes] = useState<string[] | null>(
+    null
+  );
+
+  const fetchTwoFactorStatus = async () => {
+    try {
+      const status = await getTwoFactorStatus();
+      setTwoFactorStatus(status);
+    } catch (err) {
+      console.warn("Failed to load two-factor status", err);
+    }
+  };
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -50,6 +93,7 @@ export default function ProfilePage() {
         password: "",
         confirmPassword: "",
       });
+      await fetchTwoFactorStatus();
     } catch (err: any) {
       setError(err?.message || "Failed to load user data");
     } finally {
@@ -116,6 +160,103 @@ export default function ProfilePage() {
     setSuccess(null);
   };
 
+  const handleStartTwoFactor = async () => {
+    setTwoFactorError(null);
+    setTwoFactorSuccess(null);
+    setLatestBackupCodes(null);
+    setIsTwoFactorBusy(true);
+    try {
+      const setup = await startTwoFactorSetup();
+      setTwoFactorSetupData(setup);
+      setTwoFactorCodeInput("");
+      setTwoFactorSuccess(
+        "Two-factor setup started. Scan the QR code or enter the secret below, then confirm with a code."
+      );
+      await fetchTwoFactorStatus();
+    } catch (err: any) {
+      setTwoFactorError(err?.message || "Failed to start two-factor setup.");
+    } finally {
+      setIsTwoFactorBusy(false);
+    }
+  };
+
+  const handleConfirmTwoFactor = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!twoFactorSetupData) return;
+    setTwoFactorError(null);
+    setTwoFactorSuccess(null);
+    setIsTwoFactorBusy(true);
+    try {
+      await enableTwoFactor(twoFactorCodeInput.trim());
+      setTwoFactorSuccess("Two-factor authentication enabled successfully!");
+      setTwoFactorSetupData(null);
+      setTwoFactorCodeInput("");
+      setLatestBackupCodes(null);
+      await fetchTwoFactorStatus();
+    } catch (err: any) {
+      setTwoFactorError(
+        err?.message || "Failed to enable two-factor authentication."
+      );
+    } finally {
+      setIsTwoFactorBusy(false);
+    }
+  };
+
+  const handleDisableTwoFactor = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setTwoFactorError(null);
+    setTwoFactorSuccess(null);
+    setIsTwoFactorBusy(true);
+    try {
+      await disableTwoFactor({
+        password: twoFactorDisableInput.password,
+        code: twoFactorDisableInput.code,
+        method: twoFactorDisableInput.method,
+      });
+      setTwoFactorSuccess("Two-factor authentication disabled.");
+      setTwoFactorDisableInput({ password: "", code: "", method: "totp" });
+      setShowDisableForm(false);
+      setLatestBackupCodes(null);
+      await fetchTwoFactorStatus();
+    } catch (err: any) {
+      setTwoFactorError(
+        err?.message || "Failed to disable two-factor authentication."
+      );
+    } finally {
+      setIsTwoFactorBusy(false);
+    }
+  };
+
+  const handleRegenerateBackupCodes = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setTwoFactorError(null);
+    setTwoFactorSuccess(null);
+    setIsTwoFactorBusy(true);
+    try {
+      const result = await regenerateTwoFactorBackupCodes(
+        regenerateCode.trim()
+      );
+      setTwoFactorSuccess(
+        "New backup codes generated. Store them securely now."
+      );
+      setLatestBackupCodes(result.backup_codes || []);
+      setRegenerateCode("");
+      setShowRegenerateForm(false);
+      await fetchTwoFactorStatus();
+    } catch (err: any) {
+      setTwoFactorError(err?.message || "Failed to regenerate backup codes.");
+    } finally {
+      setIsTwoFactorBusy(false);
+    }
+  };
+
+  const formatDateTime = (value?: string | null) => {
+    if (!value) return "—";
+    const dt = new Date(value);
+    if (Number.isNaN(dt.getTime())) return value;
+    return dt.toLocaleString();
+  };
+
   if (loading || status === "loading") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-navy via-navy-light to-navy flex items-center justify-center">
@@ -168,6 +309,343 @@ export default function ProfilePage() {
             <div>
               <label className="block font-montserrat font-semibold text-navy mb-2">
                 Full Name
+                <div className="mt-10 border-t border-gray-200 pt-6">
+                  <h3 className="text-3xl font-bebas text-navy mb-2">
+                    Two-Factor Authentication
+                  </h3>
+                  <p className="text-gray-600 font-lato mb-4">
+                    Add a verification code requirement to keep your account
+                    secure even if your password is compromised.
+                  </p>
+
+                  {twoFactorError && (
+                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
+                      {twoFactorError}
+                    </div>
+                  )}
+
+                  {twoFactorSuccess && (
+                    <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-4">
+                      {twoFactorSuccess}
+                    </div>
+                  )}
+
+                  {twoFactorStatus?.enabled ? (
+                    <div className="space-y-6">
+                      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-gray-700 font-lato">
+                        <p className="font-semibold text-navy">
+                          Status: Enabled ✅
+                        </p>
+                        <p className="mt-2 text-sm">
+                          Confirmed:{" "}
+                          {formatDateTime(twoFactorStatus.confirmed_at)}
+                        </p>
+                        <p className="mt-1 text-sm">
+                          Last verified:{" "}
+                          {formatDateTime(twoFactorStatus.last_verified_at)}
+                        </p>
+                        <p className="mt-1 text-sm">
+                          Backup codes remaining:{" "}
+                          {twoFactorStatus.backup_codes_remaining}
+                        </p>
+                      </div>
+
+                      {latestBackupCodes && latestBackupCodes.length > 0 && (
+                        <div className="bg-white border border-gray-200 rounded-lg p-4">
+                          <p className="font-semibold text-navy mb-2">
+                            Your new backup codes
+                          </p>
+                          <p className="text-sm text-gray-600 mb-3">
+                            Save these codes somewhere safe. Each code can only
+                            be used once.
+                          </p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 font-mono text-sm">
+                            {latestBackupCodes.map((code) => (
+                              <span
+                                key={code}
+                                className="px-3 py-2 bg-gray-100 rounded"
+                              >
+                                {code}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowRegenerateForm((prev) => !prev);
+                            setShowDisableForm(false);
+                            setTwoFactorError(null);
+                            setTwoFactorSuccess(null);
+                            setLatestBackupCodes(null);
+                          }}
+                          className="flex-1 bg-orange text-white font-montserrat font-bold py-3 px-6 rounded-lg hover:bg-orange-dark transition-all disabled:opacity-50"
+                          disabled={isTwoFactorBusy}
+                        >
+                          Regenerate Backup Codes
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowDisableForm((prev) => !prev);
+                            setShowRegenerateForm(false);
+                            setTwoFactorError(null);
+                            setTwoFactorSuccess(null);
+                          }}
+                          className="flex-1 bg-gray-200 text-gray-700 font-montserrat font-bold py-3 px-6 rounded-lg hover:bg-gray-300 transition-all disabled:opacity-50"
+                          disabled={isTwoFactorBusy}
+                        >
+                          Disable Two-Factor
+                        </button>
+                      </div>
+
+                      {showRegenerateForm && (
+                        <form
+                          onSubmit={handleRegenerateBackupCodes}
+                          className="bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-4"
+                        >
+                          <div>
+                            <label className="block font-montserrat font-semibold text-navy mb-2">
+                              Authenticator Code
+                            </label>
+                            <input
+                              type="text"
+                              value={regenerateCode}
+                              onChange={(event) =>
+                                setRegenerateCode(event.target.value)
+                              }
+                              required
+                              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange"
+                              placeholder="123456"
+                            />
+                          </div>
+                          <div className="flex gap-3">
+                            <button
+                              type="submit"
+                              disabled={
+                                isTwoFactorBusy || !regenerateCode.trim()
+                              }
+                              className="flex-1 bg-navy text-white font-montserrat font-bold py-3 px-6 rounded-lg hover:bg-navy-light transition-all disabled:opacity-50"
+                            >
+                              {isTwoFactorBusy
+                                ? "Regenerating..."
+                                : "Generate Codes"}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setShowRegenerateForm(false)}
+                              disabled={isTwoFactorBusy}
+                              className="flex-1 bg-gray-300 text-gray-700 font-montserrat font-bold py-3 px-6 rounded-lg hover:bg-gray-400 transition-all disabled:opacity-50"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </form>
+                      )}
+
+                      {showDisableForm && (
+                        <form
+                          onSubmit={handleDisableTwoFactor}
+                          className="bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-4"
+                        >
+                          <div className="grid sm:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block font-montserrat font-semibold text-navy mb-2">
+                                Account Password
+                              </label>
+                              <input
+                                type="password"
+                                value={twoFactorDisableInput.password}
+                                onChange={(event) =>
+                                  setTwoFactorDisableInput((prev) => ({
+                                    ...prev,
+                                    password: event.target.value,
+                                  }))
+                                }
+                                required
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange"
+                              />
+                            </div>
+                            <div>
+                              <label className="block font-montserrat font-semibold text-navy mb-2">
+                                {twoFactorDisableInput.method === "backup_code"
+                                  ? "Backup Code"
+                                  : "Authenticator Code"}
+                              </label>
+                              <input
+                                type="text"
+                                value={twoFactorDisableInput.code}
+                                onChange={(event) =>
+                                  setTwoFactorDisableInput((prev) => ({
+                                    ...prev,
+                                    code: event.target.value,
+                                  }))
+                                }
+                                required
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange"
+                                placeholder={
+                                  twoFactorDisableInput.method === "backup_code"
+                                    ? "1234-5678"
+                                    : "123456"
+                                }
+                              />
+                            </div>
+                          </div>
+
+                          <div className="flex justify-between text-sm">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setTwoFactorDisableInput((prev) => ({
+                                  ...prev,
+                                  method:
+                                    prev.method === "totp"
+                                      ? "backup_code"
+                                      : "totp",
+                                  code: "",
+                                }))
+                              }
+                              className="text-orange hover:text-orange-dark font-semibold"
+                            >
+                              {twoFactorDisableInput.method === "backup_code"
+                                ? "Use authenticator code"
+                                : "Use a backup code"}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setShowDisableForm(false);
+                                setTwoFactorDisableInput({
+                                  password: "",
+                                  code: "",
+                                  method: "totp",
+                                });
+                              }}
+                              className="text-gray-600 hover:text-gray-800"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+
+                          <button
+                            type="submit"
+                            disabled={
+                              isTwoFactorBusy ||
+                              !twoFactorDisableInput.password.trim() ||
+                              !twoFactorDisableInput.code.trim()
+                            }
+                            className="w-full bg-red-500 hover:bg-red-600 text-white font-montserrat font-bold py-3 px-6 rounded-lg transition-all disabled:opacity-50"
+                          >
+                            {isTwoFactorBusy
+                              ? "Disabling..."
+                              : "Disable Two-Factor"}
+                          </button>
+                        </form>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      {twoFactorSetupData ? (
+                        <>
+                          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                            <p className="font-semibold text-navy mb-2">
+                              Scan or enter this secret in your authenticator
+                              app
+                            </p>
+                            <div className="font-mono text-sm bg-white border border-gray-300 rounded px-3 py-2 inline-block">
+                              {twoFactorSetupData.secret}
+                            </div>
+                            <p className="text-sm text-gray-600 mt-3">
+                              Or tap
+                              <a
+                                href={twoFactorSetupData.otpauth_uri}
+                                className="text-orange hover:text-orange-dark ml-1"
+                              >
+                                this link
+                              </a>
+                              on a device with an authenticator installed.
+                            </p>
+                          </div>
+
+                          <div className="bg-white border border-gray-200 rounded-lg p-4">
+                            <p className="font-semibold text-navy mb-2">
+                              Backup Codes (store these safely)
+                            </p>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 font-mono text-sm">
+                              {twoFactorSetupData.backup_codes.map((code) => (
+                                <span
+                                  key={code}
+                                  className="px-3 py-2 bg-gray-100 rounded"
+                                >
+                                  {code}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+
+                          <form
+                            onSubmit={handleConfirmTwoFactor}
+                            className="space-y-4"
+                          >
+                            <div>
+                              <label className="block font-montserrat font-semibold text-navy mb-2">
+                                Enter the 6-digit code to confirm
+                              </label>
+                              <input
+                                type="text"
+                                value={twoFactorCodeInput}
+                                onChange={(event) =>
+                                  setTwoFactorCodeInput(event.target.value)
+                                }
+                                required
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange"
+                                placeholder="123456"
+                              />
+                            </div>
+                            <div className="flex gap-3">
+                              <button
+                                type="submit"
+                                disabled={
+                                  isTwoFactorBusy || !twoFactorCodeInput.trim()
+                                }
+                                className="flex-1 bg-navy text-white font-montserrat font-bold py-3 px-6 rounded-lg hover:bg-navy-light transition-all disabled:opacity-50"
+                              >
+                                {isTwoFactorBusy
+                                  ? "Enabling..."
+                                  : "Enable Two-Factor"}
+                              </button>
+                              <button
+                                type="button"
+                                disabled={isTwoFactorBusy}
+                                onClick={() => {
+                                  setTwoFactorSetupData(null);
+                                  setTwoFactorCodeInput("");
+                                }}
+                                className="flex-1 bg-gray-300 text-gray-700 font-montserrat font-bold py-3 px-6 rounded-lg hover:bg-gray-400 transition-all disabled:opacity-50"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </form>
+                        </>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={handleStartTwoFactor}
+                          disabled={isTwoFactorBusy}
+                          className="bg-orange hover:bg-orange-dark text-white font-montserrat font-bold py-3 px-6 rounded-lg transition-all disabled:opacity-50"
+                        >
+                          {isTwoFactorBusy
+                            ? "Preparing..."
+                            : "Start Two-Factor Setup"}
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
               </label>
               <input
                 type="text"

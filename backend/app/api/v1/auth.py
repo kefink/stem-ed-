@@ -1,9 +1,12 @@
+from uuid import uuid4
+
 from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel, EmailStr
+from jose import JWTError
 
-from app.core.security import create_access_token
+from app.core.security import create_access_token, decode_token
 from app.core.config import settings
 from app.core.rate_limit import rate_limiter
 from app.core.cookie_session import (
@@ -18,6 +21,7 @@ from app.core.cookie_session import (
 from app.db.session import get_session
 from app.services.users import authenticate_user
 from app.schemas.token import Token, RefreshRequest, LogoutRequest
+from app.schemas.two_factor import TwoFactorChallengeResponse, TwoFactorVerifyRequest
 from app.services.refresh_tokens import (
     generate_refresh_token_value,
     create_refresh_token,
@@ -53,6 +57,13 @@ from app.services.account_lockout import (
     record_failed_attempt,
     record_successful_login
 )
+from app.services.two_factor import (
+    get_backup_codes_remaining,
+    verify_totp_code,
+    verify_and_consume_backup_code,
+    update_backup_code_hashes,
+    mark_two_factor_verified,
+)
 
 
 router = APIRouter(prefix="/auth", tags=["auth"]) 
@@ -79,7 +90,7 @@ class GoogleLoginResponse(BaseModel):
     user: dict
 
 
-@router.post("/login", response_model=Token)
+@router.post("/login", response_model=Token | TwoFactorChallengeResponse)
 async def login(
     request: Request,
     response: Response,
@@ -156,12 +167,37 @@ async def login(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Email not verified. Please check your email for verification link."
         )
-    
-    # Successful login - record it and clear failed attempts
+
     ua = request.headers.get("user-agent")
+
+    if authenticated_user.two_factor_enabled:
+        claims = {
+            "scope": "two_factor_challenge",
+            "challenge_id": str(uuid4()),
+            "ip": ip,
+            "ua": ua or "",
+        }
+        challenge_token = create_access_token(
+            subject=authenticated_user.email,
+            expires_minutes=5,
+            additional_claims=claims,
+        )
+        response.status_code = status.HTTP_202_ACCEPTED
+        return TwoFactorChallengeResponse(
+            challenge_token=challenge_token,
+            backup_codes_remaining=get_backup_codes_remaining(authenticated_user),
+            message="Two-factor authentication required to complete login.",
+            expires_in_seconds=300,
+        )
+
+    # Successful login - record it and clear failed attempts
     await record_successful_login(db, authenticated_user, ip_address=ip, user_agent=ua)
-    
-    access_token = create_access_token(subject=authenticated_user.email)
+    await rate_limiter.reset(rate_key)
+
+    access_token = create_access_token(
+        subject=authenticated_user.email,
+        additional_claims={"scope": "access"},
+    )
     refresh_raw = generate_refresh_token_value()
     await create_refresh_token(db, authenticated_user, refresh_raw, ua, ip)
     
@@ -173,6 +209,85 @@ async def login(
         csrf = generate_csrf_token()
         set_csrf_cookie(response, csrf)
     
+    return Token(access_token=access_token, refresh_token=refresh_raw)
+
+
+@router.post("/login/two-factor", response_model=Token)
+async def verify_two_factor_login(
+    request: Request,
+    response: Response,
+    payload: TwoFactorVerifyRequest,
+    db: AsyncSession = Depends(get_session),
+):
+    ip = request.client.host if request.client else "unknown"
+    tf_rate_key = f"twofactor:{ip}"
+
+    is_limited, _ = await rate_limiter.is_rate_limited(
+        tf_rate_key,
+        settings.RATE_LIMIT_LOGIN_MAX_ATTEMPTS,
+        settings.RATE_LIMIT_LOGIN_WINDOW_SECONDS,
+    )
+    if is_limited:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many verification attempts. Please try again later.",
+        )
+
+    try:
+        decoded = decode_token(payload.challenge_token)
+    except JWTError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired challenge token")
+
+    if decoded.get("scope") != "two_factor_challenge":
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid challenge token")
+
+    email = decoded.get("sub")
+    if not email:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid challenge token")
+
+    challenge_ip = decoded.get("ip")
+    if challenge_ip and challenge_ip != ip:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Challenge token does not match this device")
+
+    user = await get_user_by_email(db, email)
+    if not user or not user.two_factor_enabled:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Two-factor authentication is not enabled for this account")
+
+    method = payload.method
+    verified = False
+
+    if method == "backup_code":
+        consumed, remaining_hashes = verify_and_consume_backup_code(user, payload.code)
+        if consumed:
+            await update_backup_code_hashes(db, user, remaining_hashes)
+            verified = True
+    else:
+        verified = verify_totp_code(user, payload.code)
+
+    if not verified:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid authentication code")
+
+    ua_claim = decoded.get("ua") or request.headers.get("user-agent")
+    final_ip = challenge_ip or ip
+
+    await record_successful_login(db, user, ip_address=final_ip, user_agent=ua_claim)
+    await mark_two_factor_verified(db, user)
+    await rate_limiter.reset(tf_rate_key)
+    await rate_limiter.reset(f"login:{final_ip}")
+
+    access_token = create_access_token(
+        subject=user.email,
+        additional_claims={"scope": "access"},
+    )
+    refresh_raw = generate_refresh_token_value()
+    await create_refresh_token(db, user, refresh_raw, ua_claim, final_ip)
+
+    if settings.COOKIE_SESSION_ENABLED:
+        set_session_cookie(response, access_token)
+        set_refresh_cookie(response, refresh_raw)
+        csrf = generate_csrf_token()
+        set_csrf_cookie(response, csrf)
+
     return Token(access_token=access_token, refresh_token=refresh_raw)
 
 
@@ -189,7 +304,10 @@ async def refresh(request: Request, payload: RefreshRequest, db: AsyncSession = 
     user = await get_user_by_email(db, stored.user.email)  # type: ignore
     if not user:
         raise HTTPException(status_code=401, detail="User no longer exists")
-    new_access = create_access_token(subject=user.email)
+    new_access = create_access_token(
+        subject=user.email,
+        additional_claims={"scope": "access"},
+    )
     new_refresh_raw, _ = await rotate_refresh_token(
         db,
         token,
@@ -260,7 +378,10 @@ async def google_login(
             user_role = new_user.role
         
         # Create tokens
-        access_token = create_access_token(subject=user_email)
+        access_token = create_access_token(
+            subject=user_email,
+            additional_claims={"scope": "access"},
+        )
         refresh_raw = generate_refresh_token_value()
         
         # Get user object for refresh token creation

@@ -14,16 +14,17 @@ Enhanced rate limiting with account lockout protection has been implemented. Aft
 
 ### ✅ **Backend Components**
 
-| Component | File | Status |
-|-----------|------|--------|
-| **Database Migration** | `backend/alembic/versions/0007_add_login_attempts.py` | ✅ Complete |
-| **LoginAttempt Model** | `backend/app/models/login_attempt.py` | ✅ Complete |
-| **User Model Updates** | `backend/app/models/user.py` | ✅ Updated |
-| **Account Lockout Service** | `backend/app/services/account_lockout.py` | ✅ Complete |
-| **Login Endpoint** | `backend/app/api/v1/auth.py` | ✅ Updated |
-| **Admin Unlock Endpoint** | `backend/app/api/v1/admin.py` | ✅ Complete |
+| Component                   | File                                                  | Status      |
+| --------------------------- | ----------------------------------------------------- | ----------- |
+| **Database Migration**      | `backend/alembic/versions/0007_add_login_attempts.py` | ✅ Complete |
+| **LoginAttempt Model**      | `backend/app/models/login_attempt.py`                 | ✅ Complete |
+| **User Model Updates**      | `backend/app/models/user.py`                          | ✅ Updated  |
+| **Account Lockout Service** | `backend/app/services/account_lockout.py`             | ✅ Complete |
+| **Login Endpoint**          | `backend/app/api/v1/auth.py`                          | ✅ Updated  |
+| **Admin Unlock Endpoint**   | `backend/app/api/v1/admin.py`                         | ✅ Complete |
 
 **New Database Tables:**
+
 ```sql
 CREATE TABLE login_attempts (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -37,6 +38,7 @@ CREATE TABLE login_attempts (
 ```
 
 **User Table Updates:**
+
 ```sql
 ALTER TABLE users ADD COLUMN is_locked BOOLEAN DEFAULT FALSE;
 ALTER TABLE users ADD COLUMN locked_until DATETIME;
@@ -44,16 +46,17 @@ ALTER TABLE users ADD COLUMN failed_login_attempts INT DEFAULT 0;
 ```
 
 **New API Endpoints:**
+
 ```
 POST /api/v1/admin/unlock-account  # Admin: Manually unlock account
 ```
 
 ### ✅ **Frontend Components**
 
-| Component | File | Status |
-|-----------|------|--------|
+| Component               | File                              | Status      |
+| ----------------------- | --------------------------------- | ----------- |
 | **Account Locked Page** | `src/app/account-locked/page.tsx` | ✅ Complete |
-| **Login Page Updates** | `src/app/login/page.tsx` | ✅ Updated |
+| **Login Page Updates**  | `src/app/login/page.tsx`          | ✅ Updated  |
 
 ---
 
@@ -66,11 +69,11 @@ POST /api/v1/admin/unlock-account  # Admin: Manually unlock account
    ↓
 2. System checks if account is already locked
    ↓ If locked → Redirect to /account-locked page
-   
+
 3. System validates email/password
    ↓ If valid → Login successful ✅
    ↓ If invalid → Continue below
-   
+
 4. Record failed login attempt
    - Save to login_attempts table
    - Increment failed_login_attempts counter
@@ -79,7 +82,7 @@ POST /api/v1/admin/unlock-account  # Admin: Manually unlock account
 5. Check if threshold reached (5 attempts)
    ↓ If < 5 → Show error with remaining attempts
    ↓ If = 5 → Continue below
-   
+
 6. Lock account
    - Set is_locked = TRUE
    - Set locked_until = now() + 15 minutes
@@ -127,12 +130,14 @@ POST /api/v1/admin/unlock-account  # Admin: Manually unlock account
 ## 🔒 Security Features
 
 ### **Lockout Configuration:**
+
 ```python
 MAX_FAILED_ATTEMPTS = 5
 LOCKOUT_DURATION_MINUTES = 15
 ```
 
 ### **Security Measures:**
+
 ✅ **Failed Attempt Tracking** - Every login attempt logged with IP and user agent
 ✅ **Automatic Lockout** - Account locked after 5 failed attempts
 ✅ **Time-based Unlock** - Automatic unlock after 15 minutes
@@ -143,19 +148,21 @@ LOCKOUT_DURATION_MINUTES = 15
 ✅ **User Agent Tracking** - Identify devices used
 
 ### **Attack Prevention:**
-| Attack Type | Protection |
-|-------------|-----------|
-| **Brute Force** | 5 attempts max, then 15-min lockout |
-| **Credential Stuffing** | Failed attempts logged per account |
-| **Account Enumeration** | Generic error messages |
-| **Distributed Attacks** | Per-account lockout (not just IP) |
-| **Replay Attacks** | Each attempt logged with timestamp |
+
+| Attack Type             | Protection                          |
+| ----------------------- | ----------------------------------- |
+| **Brute Force**         | 5 attempts max, then 15-min lockout |
+| **Credential Stuffing** | Failed attempts logged per account  |
+| **Account Enumeration** | Generic error messages              |
+| **Distributed Attacks** | Per-account lockout (not just IP)   |
+| **Replay Attacks**      | Each attempt logged with timestamp  |
 
 ---
 
 ## 📧 Email Notification
 
 **Lockout Email Template:**
+
 ```
 Subject: Security Alert: Account Locked - STEM-ED-ARCHITECTS
 
@@ -189,18 +196,22 @@ STEM-ED-ARCHITECTS Security Team
 ### **Test 1: Account Lockout (5 Failed Attempts)**
 
 1. **Go to login page:**
+
    ```
    http://localhost:3000/login
    ```
 
 2. **Try to login with wrong password 5 times:**
+
    - Email: `petebam896@datoinf.com` (or any registered user)
    - Password: `wrongpassword`
 
 3. **After attempt 1-4:**
+
    - ✅ See error: "Incorrect email or password. X attempts remaining before account lockout."
 
 4. **After attempt 5:**
+
    - ✅ See error: "Account is now locked due to 5 failed login attempts."
    - ✅ Redirected to `/account-locked` page
    - ✅ See countdown timer (15 minutes)
@@ -252,7 +263,9 @@ STEM-ED-ARCHITECTS Security Team
 ## 🎨 Frontend Pages
 
 ### **/account-locked**
+
 - **Features:**
+
   - Real-time countdown timer
   - Shows exact unlock time
   - Links to password reset
@@ -270,6 +283,7 @@ STEM-ED-ARCHITECTS Security Team
 ## 📊 Database Schema
 
 ### **login_attempts Table:**
+
 ```sql
 CREATE TABLE login_attempts (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -278,16 +292,17 @@ CREATE TABLE login_attempts (
     attempt_time DATETIME NOT NULL,
     success BOOLEAN NOT NULL DEFAULT FALSE,
     user_agent VARCHAR(255),
-    
+
     INDEX ix_login_attempts_user_id (user_id),
     INDEX ix_login_attempts_attempt_time (attempt_time),
     INDEX ix_login_attempts_user_id_time (user_id, attempt_time),
-    
+
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 ```
 
 ### **users Table Updates:**
+
 ```sql
 ALTER TABLE users ADD COLUMN is_locked BOOLEAN DEFAULT FALSE;
 ALTER TABLE users ADD COLUMN locked_until DATETIME;
@@ -297,9 +312,10 @@ CREATE INDEX ix_users_is_locked ON users(is_locked);
 ```
 
 **Example Data:**
+
 ```sql
 -- Locked account
-UPDATE users SET 
+UPDATE users SET
     is_locked = TRUE,
     locked_until = '2025-10-20 14:30:00',
     failed_login_attempts = 5
@@ -315,6 +331,7 @@ VALUES (1, '192.168.1.100', '2025-10-20 14:15:00', FALSE, 'Mozilla/5.0...');
 ## 🔄 Integration with Existing Features
 
 ### **Works With:**
+
 - ✅ Email Verification - Checks verification before lockout
 - ✅ Password Reset - Locked users can reset password
 - ✅ Rate Limiting - Works alongside IP-based rate limiting
@@ -322,6 +339,7 @@ VALUES (1, '192.168.1.100', '2025-10-20 14:15:00', FALSE, 'Mozilla/5.0...');
 - ✅ Google OAuth - OAuth logins not affected by lockout
 
 ### **Login Check Order:**
+
 ```
 1. Check IP-based rate limiting (Redis)
 2. Check if user exists
@@ -341,12 +359,14 @@ VALUES (1, '192.168.1.100', '2025-10-20 14:15:00', FALSE, 'Mozilla/5.0...');
 **Endpoint:** `POST /api/v1/admin/unlock-account`
 
 **Headers:**
+
 ```
 Authorization: Bearer {admin_access_token}
 Content-Type: application/json
 ```
 
 **Request:**
+
 ```json
 {
   "email": "user@example.com"
@@ -354,6 +374,7 @@ Content-Type: application/json
 ```
 
 **Success Response (200):**
+
 ```json
 {
   "message": "Account user@example.com has been unlocked successfully",
@@ -363,6 +384,7 @@ Content-Type: application/json
 ```
 
 **Error Response (404):**
+
 ```json
 {
   "detail": "User not found"
@@ -370,6 +392,7 @@ Content-Type: application/json
 ```
 
 **Error Response (401):**
+
 ```json
 {
   "detail": "Not authenticated"
@@ -377,6 +400,7 @@ Content-Type: application/json
 ```
 
 **Error Response (403):**
+
 ```json
 {
   "detail": "Not enough permissions"
@@ -390,10 +414,12 @@ Content-Type: application/json
 ### **Issue: "Account locked immediately"**
 
 **Check:**
+
 - Database: `SELECT failed_login_attempts FROM users WHERE email='...'`
 - Should be 0 initially
 
 **Solution:**
+
 ```sql
 UPDATE users SET failed_login_attempts = 0, is_locked = FALSE WHERE email='user@example.com';
 ```
@@ -401,30 +427,35 @@ UPDATE users SET failed_login_attempts = 0, is_locked = FALSE WHERE email='user@
 ### **Issue: "Lockout not clearing after 15 minutes"**
 
 **Check:**
+
 - Server time correct?
 - `locked_until` in future?
 
 **Debug:**
+
 ```sql
-SELECT email, is_locked, locked_until, NOW() 
-FROM users 
+SELECT email, is_locked, locked_until, NOW()
+FROM users
 WHERE is_locked = TRUE;
 ```
 
 **Manual fix:**
+
 ```sql
-UPDATE users 
-SET is_locked = FALSE, locked_until = NULL 
+UPDATE users
+SET is_locked = FALSE, locked_until = NULL
 WHERE locked_until < NOW();
 ```
 
 ### **Issue: "Email notification not sent"**
 
 **Check:**
+
 - SMTP configured in `backend/.env`?
 - Check terminal for error messages
 
 **Solution:**
+
 - For testing: Check terminal for printed lockout message
 - For production: Verify SMTP credentials
 
@@ -449,18 +480,21 @@ WHERE locked_until < NOW();
 ## 🎯 Configuration Options
 
 ### **Adjust Lockout Threshold:**
+
 ```python
 # backend/app/services/account_lockout.py
 MAX_FAILED_ATTEMPTS = 5  # Change to 3, 10, etc.
 ```
 
 ### **Adjust Lockout Duration:**
+
 ```python
 # backend/app/services/account_lockout.py
 LOCKOUT_DURATION_MINUTES = 15  # Change to 30, 60, etc.
 ```
 
 ### **Disable Lockout Email:**
+
 ```python
 # In account_lockout.py, comment out:
 # await send_lockout_email(user)
@@ -471,6 +505,7 @@ LOCKOUT_DURATION_MINUTES = 15  # Change to 30, 60, etc.
 ## 📝 Files Modified/Created
 
 ### Backend:
+
 - ✅ `backend/alembic/versions/0007_add_login_attempts.py` (NEW)
 - ✅ `backend/app/models/login_attempt.py` (NEW)
 - ✅ `backend/app/models/user.py` (UPDATED)
@@ -479,10 +514,12 @@ LOCKOUT_DURATION_MINUTES = 15  # Change to 30, 60, etc.
 - ✅ `backend/app/api/v1/admin.py` (UPDATED)
 
 ### Frontend:
+
 - ✅ `src/app/account-locked/page.tsx` (NEW)
 - ✅ `src/app/login/page.tsx` (UPDATED)
 
 ### Documentation:
+
 - ✅ `RATE_LIMITING_FEATURE.md` (THIS FILE)
 
 ---
@@ -514,16 +551,16 @@ LOCKOUT_DURATION_MINUTES = 15  # Change to 30, 60, etc.
 
 ## 📊 Security Metrics
 
-| Metric | Value |
-|--------|-------|
-| **Max Failed Attempts** | 5 |
-| **Lockout Duration** | 15 minutes |
-| **Email Notification** | ✅ Yes |
-| **Admin Override** | ✅ Yes |
-| **Automatic Unlock** | ✅ Yes |
-| **Attempt Logging** | ✅ Yes |
-| **IP Tracking** | ✅ Yes |
-| **Device Tracking** | ✅ Yes (user agent) |
+| Metric                  | Value               |
+| ----------------------- | ------------------- |
+| **Max Failed Attempts** | 5                   |
+| **Lockout Duration**    | 15 minutes          |
+| **Email Notification**  | ✅ Yes              |
+| **Admin Override**      | ✅ Yes              |
+| **Automatic Unlock**    | ✅ Yes              |
+| **Attempt Logging**     | ✅ Yes              |
+| **IP Tracking**         | ✅ Yes              |
+| **Device Tracking**     | ✅ Yes (user agent) |
 
 ---
 

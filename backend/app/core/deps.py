@@ -23,6 +23,9 @@ async def get_current_user(
             if cookie_token:
                 token = cookie_token
         payload = decode_token(token)
+        scope = payload.get("scope")
+        if scope and scope != "access":
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token scope")
         email: str | None = payload.get("sub")
         if email is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
