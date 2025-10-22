@@ -25,14 +25,16 @@ const heroSlides = [
     id: 3,
     image: "/hero/h3.webp",
     title: "Certified Teacher Training Programs",
-    subtitle: "Building sustainable STEM capacity with internationally recognized certification pathways.",
+    subtitle:
+      "Building sustainable STEM capacity with internationally recognized certification pathways.",
     cta: "Learn More",
   },
   {
     id: 4,
     image: "/hero/h4.jpg",
     title: "Student Innovation & Competition Readiness",
-    subtitle: "From classroom learning to global competitions — WRO, FLL, and beyond.",
+    subtitle:
+      "From classroom learning to global competitions — WRO, FLL, and beyond.",
     cta: "View Portfolio",
   },
 ];

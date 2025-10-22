@@ -169,7 +169,8 @@ export default function Home() {
           <div className="text-center mb-16">
             <h2 className="section-title">Our Featured Solutions</h2>
             <p className="section-subtitle max-w-3xl mx-auto">
-              Comprehensive STEM education products designed for real-world impact
+              Comprehensive STEM education products designed for real-world
+              impact
             </p>
           </div>
 
@@ -185,12 +186,23 @@ export default function Home() {
                     Robotics Kits
                   </h3>
                   <p className="font-lato text-navy/70 mb-4">
-                    Complete robotics kits with AI integration for hands-on learning
+                    Complete robotics kits with AI integration for hands-on
+                    learning
                   </p>
                   <span className="text-orange font-montserrat font-semibold inline-flex items-center">
                     Learn More
-                    <svg className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    <svg
+                      className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
                     </svg>
                   </span>
                 </div>
@@ -212,8 +224,18 @@ export default function Home() {
                   </p>
                   <span className="text-orange font-montserrat font-semibold inline-flex items-center">
                     Learn More
-                    <svg className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    <svg
+                      className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
                     </svg>
                   </span>
                 </div>
@@ -231,12 +253,23 @@ export default function Home() {
                     AI Learning Platform
                   </h3>
                   <p className="font-lato text-navy/70 mb-4">
-                    Intelligent platform for personalized STEM education experiences
+                    Intelligent platform for personalized STEM education
+                    experiences
                   </p>
                   <span className="text-orange font-montserrat font-semibold inline-flex items-center">
                     Learn More
-                    <svg className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    <svg
+                      className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
                     </svg>
                   </span>
                 </div>
@@ -245,7 +278,10 @@ export default function Home() {
           </div>
 
           <div className="text-center mt-12">
-            <Link href="/products" className="btn-primary text-lg px-8 py-4 inline-block">
+            <Link
+              href="/products"
+              className="btn-primary text-lg px-8 py-4 inline-block"
+            >
               View All Products
             </Link>
           </div>
@@ -270,13 +306,19 @@ export default function Home() {
                   SM
                 </div>
                 <div>
-                  <h4 className="font-montserrat font-semibold text-navy">Sarah Mwangi</h4>
-                  <p className="font-lato text-sm text-navy/70">Principal, Greenfield Academy</p>
+                  <h4 className="font-montserrat font-semibold text-navy">
+                    Sarah Mwangi
+                  </h4>
+                  <p className="font-lato text-sm text-navy/70">
+                    Principal, Greenfield Academy
+                  </p>
                 </div>
               </div>
               <div className="text-orange mb-3">⭐⭐⭐⭐⭐</div>
               <p className="font-lato text-navy/80 italic">
-                "STEM-ED-ARCHITECTS transformed our school's approach to STEM education. The comprehensive curriculum and teacher training have been exceptional."
+                "STEM-ED-ARCHITECTS transformed our school's approach to STEM
+                education. The comprehensive curriculum and teacher training
+                have been exceptional."
               </p>
             </div>
 
@@ -287,13 +329,19 @@ export default function Home() {
                   JK
                 </div>
                 <div>
-                  <h4 className="font-montserrat font-semibold text-navy">John Kamau</h4>
-                  <p className="font-lato text-sm text-navy/70">ICT Teacher, Vista International</p>
+                  <h4 className="font-montserrat font-semibold text-navy">
+                    John Kamau
+                  </h4>
+                  <p className="font-lato text-sm text-navy/70">
+                    ICT Teacher, Vista International
+                  </p>
                 </div>
               </div>
               <div className="text-orange mb-3">⭐⭐⭐⭐⭐</div>
               <p className="font-lato text-navy/80 italic">
-                "The robotics certification program equipped me with skills I never thought possible. My students are now competing at national levels!"
+                "The robotics certification program equipped me with skills I
+                never thought possible. My students are now competing at
+                national levels!"
               </p>
             </div>
 
@@ -304,13 +352,18 @@ export default function Home() {
                   AO
                 </div>
                 <div>
-                  <h4 className="font-montserrat font-semibold text-navy">Amina Omondi</h4>
-                  <p className="font-lato text-sm text-navy/70">Student, St. Mary's School</p>
+                  <h4 className="font-montserrat font-semibold text-navy">
+                    Amina Omondi
+                  </h4>
+                  <p className="font-lato text-sm text-navy/70">
+                    Student, St. Mary's School
+                  </p>
                 </div>
               </div>
               <div className="text-orange mb-3">⭐⭐⭐⭐⭐</div>
               <p className="font-lato text-navy/80 italic">
-                "Learning robotics opened my eyes to engineering. I'm now pursuing Computer Science thanks to this program!"
+                "Learning robotics opened my eyes to engineering. I'm now
+                pursuing Computer Science thanks to this program!"
               </p>
             </div>
           </div>
@@ -332,25 +385,33 @@ export default function Home() {
             <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 flex items-center justify-center h-32">
               <div className="text-center">
                 <div className="text-4xl mb-2">🏫</div>
-                <p className="font-montserrat text-sm text-navy/70">School Partner 1</p>
+                <p className="font-montserrat text-sm text-navy/70">
+                  School Partner 1
+                </p>
               </div>
             </div>
             <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 flex items-center justify-center h-32">
               <div className="text-center">
                 <div className="text-4xl mb-2">🏫</div>
-                <p className="font-montserrat text-sm text-navy/70">School Partner 2</p>
+                <p className="font-montserrat text-sm text-navy/70">
+                  School Partner 2
+                </p>
               </div>
             </div>
             <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 flex items-center justify-center h-32">
               <div className="text-center">
                 <div className="text-4xl mb-2">🏫</div>
-                <p className="font-montserrat text-sm text-navy/70">School Partner 3</p>
+                <p className="font-montserrat text-sm text-navy/70">
+                  School Partner 3
+                </p>
               </div>
             </div>
             <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 flex items-center justify-center h-32">
               <div className="text-center">
                 <div className="text-4xl mb-2">🏫</div>
-                <p className="font-montserrat text-sm text-navy/70">School Partner 4</p>
+                <p className="font-montserrat text-sm text-navy/70">
+                  School Partner 4
+                </p>
               </div>
             </div>
           </div>
@@ -402,10 +463,14 @@ export default function Home() {
             Stay Updated with STEM Insights
           </h2>
           <p className="text-xl font-lato mb-8 text-white/90">
-            Get the latest news, resources, and exclusive offers delivered to your inbox
+            Get the latest news, resources, and exclusive offers delivered to
+            your inbox
           </p>
 
-          <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto">
+          <form
+            onSubmit={handleNewsletterSubmit}
+            className="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto"
+          >
             <input
               type="email"
               value={email}
@@ -451,18 +516,25 @@ export default function Home() {
                     <span className="text-xs font-montserrat font-semibold bg-orange/10 text-orange px-3 py-1 rounded-full">
                       Education
                     </span>
-                    <span className="text-xs font-lato text-gray-500">5 min read</span>
+                    <span className="text-xs font-lato text-gray-500">
+                      5 min read
+                    </span>
                   </div>
                   <h3 className="text-2xl font-bebas text-navy mb-3 group-hover:text-orange transition-colors">
                     The Future of STEM Education in Africa
                   </h3>
                   <p className="font-lato text-gray-600 mb-4 line-clamp-3">
-                    Exploring how AI and robotics are transforming education across the continent...
+                    Exploring how AI and robotics are transforming education
+                    across the continent...
                   </p>
                   <div className="flex items-center justify-between pt-4 border-t">
                     <div>
-                      <p className="font-montserrat font-semibold text-sm text-navy">Dr. James Mwangi</p>
-                      <p className="font-lato text-xs text-gray-500">October 10, 2025</p>
+                      <p className="font-montserrat font-semibold text-sm text-navy">
+                        Dr. James Mwangi
+                      </p>
+                      <p className="font-lato text-xs text-gray-500">
+                        October 10, 2025
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -480,18 +552,25 @@ export default function Home() {
                     <span className="text-xs font-montserrat font-semibold bg-orange/10 text-orange px-3 py-1 rounded-full">
                       Robotics
                     </span>
-                    <span className="text-xs font-lato text-gray-500">7 min read</span>
+                    <span className="text-xs font-lato text-gray-500">
+                      7 min read
+                    </span>
                   </div>
                   <h3 className="text-2xl font-bebas text-navy mb-3 group-hover:text-orange transition-colors">
                     Building a Successful Robotics Program
                   </h3>
                   <p className="font-lato text-gray-600 mb-4 line-clamp-3">
-                    A step-by-step guide for schools starting their first robotics program...
+                    A step-by-step guide for schools starting their first
+                    robotics program...
                   </p>
                   <div className="flex items-center justify-between pt-4 border-t">
                     <div>
-                      <p className="font-montserrat font-semibold text-sm text-navy">Sarah Kimani</p>
-                      <p className="font-lato text-xs text-gray-500">October 8, 2025</p>
+                      <p className="font-montserrat font-semibold text-sm text-navy">
+                        Sarah Kimani
+                      </p>
+                      <p className="font-lato text-xs text-gray-500">
+                        October 8, 2025
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -509,18 +588,25 @@ export default function Home() {
                     <span className="text-xs font-montserrat font-semibold bg-orange/10 text-orange px-3 py-1 rounded-full">
                       Technology
                     </span>
-                    <span className="text-xs font-lato text-gray-500">6 min read</span>
+                    <span className="text-xs font-lato text-gray-500">
+                      6 min read
+                    </span>
                   </div>
                   <h3 className="text-2xl font-bebas text-navy mb-3 group-hover:text-orange transition-colors">
                     AI Integration in the Classroom
                   </h3>
                   <p className="font-lato text-gray-600 mb-4 line-clamp-3">
-                    Practical strategies for incorporating AI tools into daily teaching...
+                    Practical strategies for incorporating AI tools into daily
+                    teaching...
                   </p>
                   <div className="flex items-center justify-between pt-4 border-t">
                     <div>
-                      <p className="font-montserrat font-semibold text-sm text-navy">Prof. Alice Omondi</p>
-                      <p className="font-lato text-xs text-gray-500">October 5, 2025</p>
+                      <p className="font-montserrat font-semibold text-sm text-navy">
+                        Prof. Alice Omondi
+                      </p>
+                      <p className="font-lato text-xs text-gray-500">
+                        October 5, 2025
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -529,7 +615,10 @@ export default function Home() {
           </div>
 
           <div className="text-center mt-12">
-            <Link href="/blog" className="btn-primary text-lg px-8 py-4 inline-block">
+            <Link
+              href="/blog"
+              className="btn-primary text-lg px-8 py-4 inline-block"
+            >
               View All Articles
             </Link>
           </div>

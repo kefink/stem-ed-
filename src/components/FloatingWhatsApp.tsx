@@ -5,8 +5,11 @@ import { useState } from "react";
 const FloatingWhatsApp = () => {
   const [isHovered, setIsHovered] = useState(false);
   const phoneNumber = "254705204870"; // WhatsApp format without + or spaces
-  const message = "Hello! I'm interested in learning more about STEM-ED-ARCHITECTS services.";
-  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+  const message =
+    "Hello! I'm interested in learning more about STEM-ED-ARCHITECTS services.";
+  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+    message
+  )}`;
 
   return (
     <>
