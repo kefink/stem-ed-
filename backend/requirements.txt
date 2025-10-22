@@ -17,3 +17,5 @@ pyotp==2.9.0
 boto3==1.28.62
 email-validator==2.1.0.post1
 gspread==6.2.1
+Pillow==10.1.0
+python-magic==0.4.27
