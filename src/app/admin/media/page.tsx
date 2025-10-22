@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { fetchWithAuth } from "@/lib/fetchWithAuth";
 import Image from "next/image";
+import ImageEditor from "@/components/ImageEditor";
 
 type MediaFile = {
   id: number;
@@ -49,6 +50,8 @@ export default function MediaLibraryPage() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [isDragging, setIsDragging] = useState(false);
+  const [editingImage, setEditingImage] = useState<MediaFile | null>(null);
 
   useEffect(() => {
     if (status === "loading") return;
@@ -94,13 +97,12 @@ export default function MediaLibraryPage() {
     }
   };
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const uploadedFiles = event.target.files;
-    if (!uploadedFiles || uploadedFiles.length === 0) return;
+  const uploadFiles = async (filesToUpload: FileList | File[]) => {
+    if (!filesToUpload || filesToUpload.length === 0) return;
 
     setUploading(true);
     try {
-      for (const file of Array.from(uploadedFiles)) {
+      for (const file of Array.from(filesToUpload)) {
         const formData = new FormData();
         formData.append("file", file);
         if (currentFolderId) {
@@ -125,6 +127,36 @@ export default function MediaLibraryPage() {
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
+    }
+  };
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const uploadedFiles = event.target.files;
+    if (uploadedFiles) {
+      await uploadFiles(uploadedFiles);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const droppedFiles = e.dataTransfer.files;
+    if (droppedFiles) {
+      await uploadFiles(droppedFiles);
     }
   };
 
@@ -171,6 +203,32 @@ export default function MediaLibraryPage() {
     const fullUrl = `${window.location.origin}${url}`;
     navigator.clipboard.writeText(fullUrl);
     alert("URL copied to clipboard!");
+  };
+
+  const handleSaveEditedImage = async (blob: Blob, filename: string) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", blob, filename);
+      if (currentFolderId) {
+        formData.append("folder_id", String(currentFolderId));
+      }
+
+      const response = await fetchWithAuth("/api/v1/admin/media/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        setEditingImage(null);
+        loadData();
+        alert("Edited image saved successfully!");
+      } else {
+        const error = await response.json();
+        alert(`Failed to save: ${error.detail}`);
+      }
+    } catch (error: any) {
+      alert(`Save failed: ${error.message}`);
+    }
   };
 
   const formatFileSize = (bytes: number) => {
@@ -301,7 +359,21 @@ export default function MediaLibraryPage() {
         )}
 
         {/* Files Grid/List */}
-        <div className="mb-6">
+        <div 
+          className="mb-6 relative"
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+        >
+          {isDragging && (
+            <div className="absolute inset-0 bg-orange/20 border-4 border-dashed border-orange rounded-xl z-10 flex items-center justify-center">
+              <div className="text-center">
+                <div className="text-6xl mb-4">📤</div>
+                <p className="text-2xl font-bebas text-navy">Drop files here to upload</p>
+              </div>
+            </div>
+          )}
+          
           <h2 className="text-xl font-bebas text-navy mb-3">
             Files ({files.length})
           </h2>
@@ -521,6 +593,17 @@ export default function MediaLibraryPage() {
               </div>
 
               <div className="flex gap-2 mt-6">
+                {selectedFile.file_type === "image" && (
+                  <button
+                    onClick={() => {
+                      setEditingImage(selectedFile);
+                      setSelectedFile(null);
+                    }}
+                    className="px-4 py-2 bg-orange text-white rounded-lg hover:bg-orange/90 font-montserrat font-semibold"
+                  >
+                    ✂️ Edit
+                  </button>
+                )}
                 <button
                   onClick={() => deleteFile(selectedFile.id)}
                   className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 font-montserrat font-semibold"
@@ -536,6 +619,15 @@ export default function MediaLibraryPage() {
               </div>
             </div>
           </div>
+        )}
+
+        {/* Image Editor */}
+        {editingImage && (
+          <ImageEditor
+            imageUrl={`http://localhost:8000${editingImage.file_url}`}
+            onSave={handleSaveEditedImage}
+            onCancel={() => setEditingImage(null)}
+          />
         )}
       </div>
     </div>

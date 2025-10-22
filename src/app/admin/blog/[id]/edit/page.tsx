@@ -16,6 +16,11 @@ const RichTextEditor = dynamic(() => import("@/components/RichTextEditor"), {
   ),
 });
 
+// Import MediaPicker dynamically
+const MediaPicker = dynamic(() => import("@/components/MediaPicker"), {
+  ssr: false,
+});
+
 type BlogPost = {
   id: number;
   title: string;
@@ -49,6 +54,7 @@ export default function EditBlogPostPage() {
   const [category, setCategory] = useState("");
   const [featuredImage, setFeaturedImage] = useState("");
   const [published, setPublished] = useState(false);
+  const [showMediaPicker, setShowMediaPicker] = useState(false);
   const [seoTitle, setSeoTitle] = useState("");
   const [seoDescription, setSeoDescription] = useState("");
 
@@ -262,15 +268,33 @@ export default function EditBlogPostPage() {
 
                 <div>
                   <label className="block text-sm font-montserrat font-semibold text-navy mb-2">
-                    Featured Image URL
+                    Featured Image
                   </label>
-                  <input
-                    type="url"
-                    value={featuredImage}
-                    onChange={(e) => setFeaturedImage(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange font-lato"
-                    placeholder="https://example.com/image.jpg"
-                  />
+                  <div className="flex gap-2">
+                    <input
+                      type="url"
+                      value={featuredImage}
+                      onChange={(e) => setFeaturedImage(e.target.value)}
+                      className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange font-lato"
+                      placeholder="https://example.com/image.jpg"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowMediaPicker(true)}
+                      className="px-4 py-3 bg-navy text-white rounded-lg hover:bg-navy/90 font-montserrat font-semibold whitespace-nowrap"
+                    >
+                      📁 Browse
+                    </button>
+                  </div>
+                  {featuredImage && (
+                    <div className="mt-2 relative w-full h-40 bg-gray-100 rounded-lg overflow-hidden">
+                      <img
+                        src={featuredImage}
+                        alt="Featured preview"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -366,6 +390,18 @@ export default function EditBlogPostPage() {
             </button>
           </div>
         </form>
+
+        {/* Media Picker */}
+        {showMediaPicker && (
+          <MediaPicker
+            fileType="image"
+            onSelect={(file) => {
+              setFeaturedImage(`http://localhost:8000${file.file_url}`);
+              setShowMediaPicker(false);
+            }}
+            onCancel={() => setShowMediaPicker(false)}
+          />
+        )}
       </div>
     </div>
   );
