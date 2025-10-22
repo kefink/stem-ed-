@@ -8,9 +8,9 @@ const heroSlides = [
   {
     id: 1,
     image: "/hero/h1.webp",
-    title: "Engineering Learning Solutions",
+    title: "Transform STEM Education Across Africa",
     subtitle:
-      "Not just training delivery. We architect sustainable STEM ecosystems.",
+      "Complete AI-integrated robotics curricula | Teacher certification | Student innovation programs",
     cta: "Discover How",
   },
   {
@@ -18,21 +18,21 @@ const heroSlides = [
     image: "/hero/h2.jpg",
     title: "AI-Integrated Robotics Curricula",
     subtitle:
-      "CBC/Cambridge/IB-aligned programs from strategy to student capstone.",
+      "CBC/Cambridge/IB-aligned programs from institutional strategy to student capstone projects.",
     cta: "Explore Services",
   },
   {
     id: 3,
     image: "/hero/h3.webp",
-    title: "Teacher Certification Programs",
-    subtitle: "Building capacity for sustainable STEM education across Africa.",
+    title: "Certified Teacher Training Programs",
+    subtitle: "Building sustainable STEM capacity with internationally recognized certification pathways.",
     cta: "Learn More",
   },
   {
     id: 4,
     image: "/hero/h4.jpg",
-    title: "Student Innovation Pathways",
-    subtitle: "From classroom to competition — WRO, FLL, and beyond.",
+    title: "Student Innovation & Competition Readiness",
+    subtitle: "From classroom learning to global competitions — WRO, FLL, and beyond.",
     cta: "View Portfolio",
   },
 ];

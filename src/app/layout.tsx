@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Providers from "@/components/Providers";
+import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 
 const bebasNeue = Bebas_Neue({
   weight: "400",
@@ -65,6 +66,7 @@ export default function RootLayout({
           <Navbar />
           <main>{children}</main>
           <Footer />
+          <FloatingWhatsApp />
         </Providers>
       </body>
     </html>
