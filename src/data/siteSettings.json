@@ -1,0 +1,31 @@
+{
+  "contact": {
+    "phone": "0705204870",
+    "email": "info@stem-ed-architects.com",
+    "location": "Nairobi, Kenya",
+    "address": "Nairobi, Kenya - Serving East Africa & Beyond"
+  },
+  "socialMedia": {
+    "youtube": "",
+    "facebook": "",
+    "tiktok": "",
+    "instagram": "",
+    "linkedin": "",
+    "twitter": ""
+  },
+  "businessHours": {
+    "weekdays": "Monday - Friday: 8:00 AM - 6:00 PM (EAT)",
+    "saturday": "Saturday: 9:00 AM - 1:00 PM",
+    "sunday": "Sunday: Closed"
+  },
+  "seo": {
+    "siteTitle": "STEM-ED-ARCHITECTS | Engineering Learning Solutions",
+    "siteDescription": "The definitive leader in African STEM transformation - engineering complete, AI-integrated, CBC/Cambridge/IB-aligned robotics curricula from strategy to student capstone.",
+    "keywords": "STEM Education, Robotics, AI Integration, Teacher Training, EdTech, Africa, Kenya"
+  },
+  "company": {
+    "name": "STEM-ED-ARCHITECTS",
+    "tagline": "Engineering Learning Solutions for Africa's Future",
+    "foundedYear": "2014"
+  }
+}
