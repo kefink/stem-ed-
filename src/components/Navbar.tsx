@@ -111,10 +111,10 @@ const Navbar = () => {
   const isActive = (href: string) => pathname === href;
 
   return (
-    <nav className="sticky top-0 z-50 bg-transparent">
-      <div className="max-w-[1400px] mx-auto px-4 md:px-6 py-3">
-        <div className="relative rounded-2xl px-3 md:px-5 py-3 text-white backdrop-blur-2xl bg-gradient-to-br from-navy/95 via-navy/90 to-navy/95 border border-cyan-500/30 shadow-[0_8px_32px_0_rgba(0,119,182,0.37)] before:content-[''] before:absolute before:inset-0 before:rounded-2xl before:ring-1 before:ring-cyan-400/30 before:shadow-[0_0_22px_rgba(0,200,255,0.25)] before:pointer-events-none">
-          <div className="flex items-center gap-3 md:gap-4">
+    <nav className="sticky top-0 z-50 w-full backdrop-blur-md bg-navy/80 border-b border-cyan-500/20 shadow-lg">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-6">
+        <div className="relative text-white">
+          <div className="flex items-center gap-3 md:gap-4 py-3">
             {/* Logo */}
             <Link
               href="/"
@@ -198,7 +198,7 @@ const Navbar = () => {
 
                 {/* Dropdown Menu */}
                 {isCoursesOpen && (
-                  <div className="absolute z-50 top-full left-0 mt-2 w-64 backdrop-blur-2xl bg-gradient-to-br from-navy/95 via-navy/90 to-navy/95 border border-cyan-500/30 rounded-xl shadow-[0_8px_32px_0_rgba(0,119,182,0.37)] overflow-hidden before:content-[''] before:absolute before:inset-0 before:rounded-xl before:ring-1 before:ring-cyan-400/30 before:shadow-[0_0_18px_rgba(0,200,255,0.22)] before:pointer-events-none">
+                  <div className="absolute z-50 top-full left-0 mt-2 w-64 bg-navy/95 backdrop-blur-md border border-cyan-500/30 rounded-xl shadow-xl overflow-hidden">
                     {/* For Students */}
                     <Link
                       href={coursesMenu.students.href}
@@ -253,7 +253,7 @@ const Navbar = () => {
 
                       {/* Teachers Submenu */}
                       {activeSubmenu === "teachers" && (
-                        <div className="absolute z-50 left-full top-0 ml-2 w-56 backdrop-blur-2xl bg-gradient-to-br from-navy/95 via-navy/90 to-navy/95 border border-cyan-500/30 rounded-xl shadow-[0_8px_32px_0_rgba(0,119,182,0.37)] overflow-hidden before:content-[''] before:absolute before:inset-0 before:rounded-xl before:ring-1 before:ring-cyan-400/30 before:shadow-[0_0_18px_rgba(0,200,255,0.22)] before:pointer-events-none">
+                        <div className="absolute z-50 left-full top-0 ml-2 w-56 bg-navy/95 backdrop-blur-md border border-cyan-500/30 rounded-xl shadow-xl overflow-hidden">
                           {coursesMenu.teachers.levels.map((level) => (
                             <Link
                               key={level.name}
@@ -427,7 +427,7 @@ const Navbar = () => {
 
           {/* Mobile Menu */}
           {isMenuOpen && (
-            <div className="lg:hidden mt-4 pb-4 space-y-4 animate-slide-up backdrop-blur-2xl bg-gradient-to-br from-navy/95 via-navy/90 to-navy/95 rounded-xl p-4 border border-cyan-500/30 shadow-[0_8px_32px_0_rgba(0,119,182,0.37)]">
+            <div className="lg:hidden mt-4 pb-4 space-y-4 animate-slide-up bg-navy/95 rounded-xl p-4 border border-cyan-500/30">
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
