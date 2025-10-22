@@ -42,37 +42,40 @@ export default function SiteSettingsPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [message, setMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
   const [settings, setSettings] = useState<SiteSettings>({
     contact: {
-      phone: '',
-      email: '',
-      location: '',
-      address: ''
+      phone: "",
+      email: "",
+      location: "",
+      address: "",
     },
     socialMedia: {
-      youtube: '',
-      facebook: '',
-      tiktok: '',
-      instagram: '',
-      linkedin: '',
-      twitter: ''
+      youtube: "",
+      facebook: "",
+      tiktok: "",
+      instagram: "",
+      linkedin: "",
+      twitter: "",
     },
     businessHours: {
-      weekdays: '',
-      saturday: '',
-      sunday: ''
+      weekdays: "",
+      saturday: "",
+      sunday: "",
     },
     seo: {
-      siteTitle: '',
-      siteDescription: '',
-      keywords: ''
+      siteTitle: "",
+      siteDescription: "",
+      keywords: "",
     },
     company: {
-      name: '',
-      tagline: '',
-      foundedYear: ''
-    }
+      name: "",
+      tagline: "",
+      foundedYear: "",
+    },
   });
 
   useEffect(() => {
@@ -86,13 +89,13 @@ export default function SiteSettingsPage() {
     // Load settings
     const loadSettings = async () => {
       try {
-        const response = await fetch('/api/admin/settings');
+        const response = await fetch("/api/admin/settings");
         if (response.ok) {
           const data = await response.json();
           setSettings(data);
         }
       } catch (error) {
-        console.error('Failed to load settings:', error);
+        console.error("Failed to load settings:", error);
       } finally {
         setLoading(false);
       }
@@ -106,20 +109,23 @@ export default function SiteSettingsPage() {
     setMessage(null);
 
     try {
-      const response = await fetch('/api/admin/settings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(settings)
+      const response = await fetch("/api/admin/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(settings),
       });
 
       if (response.ok) {
-        setMessage({ type: 'success', text: 'Settings saved successfully!' });
+        setMessage({ type: "success", text: "Settings saved successfully!" });
         setTimeout(() => setMessage(null), 3000);
       } else {
-        throw new Error('Failed to save settings');
+        throw new Error("Failed to save settings");
       }
     } catch (error) {
-      setMessage({ type: 'error', text: 'Failed to save settings. Please try again.' });
+      setMessage({
+        type: "error",
+        text: "Failed to save settings. Please try again.",
+      });
     } finally {
       setSaving(false);
     }
@@ -142,28 +148,50 @@ export default function SiteSettingsPage() {
       <div className="max-w-5xl mx-auto px-4">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/admin" className="text-orange hover:text-orange-dark font-montserrat text-sm mb-4 inline-flex items-center">
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          <Link
+            href="/admin"
+            className="text-orange hover:text-orange-dark font-montserrat text-sm mb-4 inline-flex items-center"
+          >
+            <svg
+              className="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
             Back to Dashboard
           </Link>
           <h1 className="text-4xl font-bebas text-navy mb-2">Site Settings</h1>
           <p className="text-gray-600 font-lato">
-            Update your website contact information, social media links, and other settings
+            Update your website contact information, social media links, and
+            other settings
           </p>
         </div>
 
         {/* Success/Error Message */}
         {message && (
-          <div className={`mb-6 p-4 rounded-lg ${message.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}`}>
+          <div
+            className={`mb-6 p-4 rounded-lg ${
+              message.type === "success"
+                ? "bg-green-50 text-green-800 border border-green-200"
+                : "bg-red-50 text-red-800 border border-red-200"
+            }`}
+          >
             <p className="font-montserrat">{message.text}</p>
           </div>
         )}
 
         {/* Contact Information */}
         <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-          <h2 className="text-2xl font-bebas text-navy mb-4">Contact Information</h2>
+          <h2 className="text-2xl font-bebas text-navy mb-4">
+            Contact Information
+          </h2>
           <div className="grid md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-montserrat font-semibold text-navy mb-2">
@@ -172,7 +200,12 @@ export default function SiteSettingsPage() {
               <input
                 type="tel"
                 value={settings.contact.phone}
-                onChange={(e) => setSettings({...settings, contact: {...settings.contact, phone: e.target.value}})}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    contact: { ...settings.contact, phone: e.target.value },
+                  })
+                }
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange font-lato"
                 placeholder="0705204870"
               />
@@ -184,7 +217,12 @@ export default function SiteSettingsPage() {
               <input
                 type="email"
                 value={settings.contact.email}
-                onChange={(e) => setSettings({...settings, contact: {...settings.contact, email: e.target.value}})}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    contact: { ...settings.contact, email: e.target.value },
+                  })
+                }
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange font-lato"
                 placeholder="info@stem-ed-architects.com"
               />
@@ -196,7 +234,12 @@ export default function SiteSettingsPage() {
               <input
                 type="text"
                 value={settings.contact.location}
-                onChange={(e) => setSettings({...settings, contact: {...settings.contact, location: e.target.value}})}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    contact: { ...settings.contact, location: e.target.value },
+                  })
+                }
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange font-lato"
                 placeholder="Nairobi, Kenya"
               />
@@ -208,7 +251,12 @@ export default function SiteSettingsPage() {
               <input
                 type="text"
                 value={settings.contact.address}
-                onChange={(e) => setSettings({...settings, contact: {...settings.contact, address: e.target.value}})}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    contact: { ...settings.contact, address: e.target.value },
+                  })
+                }
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange font-lato"
                 placeholder="Nairobi, Kenya - Serving East Africa & Beyond"
               />
@@ -218,7 +266,9 @@ export default function SiteSettingsPage() {
 
         {/* Social Media Links */}
         <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-          <h2 className="text-2xl font-bebas text-navy mb-4">Social Media Links</h2>
+          <h2 className="text-2xl font-bebas text-navy mb-4">
+            Social Media Links
+          </h2>
           <div className="grid md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-montserrat font-semibold text-navy mb-2">
@@ -227,7 +277,15 @@ export default function SiteSettingsPage() {
               <input
                 type="url"
                 value={settings.socialMedia.youtube}
-                onChange={(e) => setSettings({...settings, socialMedia: {...settings.socialMedia, youtube: e.target.value}})}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    socialMedia: {
+                      ...settings.socialMedia,
+                      youtube: e.target.value,
+                    },
+                  })
+                }
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange font-lato"
                 placeholder="https://www.youtube.com/@yourchannel"
               />
@@ -239,7 +297,15 @@ export default function SiteSettingsPage() {
               <input
                 type="url"
                 value={settings.socialMedia.facebook}
-                onChange={(e) => setSettings({...settings, socialMedia: {...settings.socialMedia, facebook: e.target.value}})}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    socialMedia: {
+                      ...settings.socialMedia,
+                      facebook: e.target.value,
+                    },
+                  })
+                }
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange font-lato"
                 placeholder="https://www.facebook.com/yourpage"
               />
@@ -251,7 +317,15 @@ export default function SiteSettingsPage() {
               <input
                 type="url"
                 value={settings.socialMedia.tiktok}
-                onChange={(e) => setSettings({...settings, socialMedia: {...settings.socialMedia, tiktok: e.target.value}})}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    socialMedia: {
+                      ...settings.socialMedia,
+                      tiktok: e.target.value,
+                    },
+                  })
+                }
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange font-lato"
                 placeholder="https://www.tiktok.com/@youraccount"
               />
@@ -263,7 +337,15 @@ export default function SiteSettingsPage() {
               <input
                 type="url"
                 value={settings.socialMedia.instagram}
-                onChange={(e) => setSettings({...settings, socialMedia: {...settings.socialMedia, instagram: e.target.value}})}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    socialMedia: {
+                      ...settings.socialMedia,
+                      instagram: e.target.value,
+                    },
+                  })
+                }
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange font-lato"
                 placeholder="https://www.instagram.com/youraccount"
               />
@@ -275,7 +357,15 @@ export default function SiteSettingsPage() {
               <input
                 type="url"
                 value={settings.socialMedia.linkedin}
-                onChange={(e) => setSettings({...settings, socialMedia: {...settings.socialMedia, linkedin: e.target.value}})}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    socialMedia: {
+                      ...settings.socialMedia,
+                      linkedin: e.target.value,
+                    },
+                  })
+                }
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange font-lato"
                 placeholder="https://www.linkedin.com/company/yourcompany"
               />
@@ -287,7 +377,15 @@ export default function SiteSettingsPage() {
               <input
                 type="url"
                 value={settings.socialMedia.twitter}
-                onChange={(e) => setSettings({...settings, socialMedia: {...settings.socialMedia, twitter: e.target.value}})}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    socialMedia: {
+                      ...settings.socialMedia,
+                      twitter: e.target.value,
+                    },
+                  })
+                }
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange font-lato"
                 placeholder="https://twitter.com/youraccount"
               />
@@ -306,7 +404,15 @@ export default function SiteSettingsPage() {
               <input
                 type="text"
                 value={settings.businessHours.weekdays}
-                onChange={(e) => setSettings({...settings, businessHours: {...settings.businessHours, weekdays: e.target.value}})}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    businessHours: {
+                      ...settings.businessHours,
+                      weekdays: e.target.value,
+                    },
+                  })
+                }
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange font-lato"
                 placeholder="Monday - Friday: 8:00 AM - 6:00 PM (EAT)"
               />
@@ -318,7 +424,15 @@ export default function SiteSettingsPage() {
               <input
                 type="text"
                 value={settings.businessHours.saturday}
-                onChange={(e) => setSettings({...settings, businessHours: {...settings.businessHours, saturday: e.target.value}})}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    businessHours: {
+                      ...settings.businessHours,
+                      saturday: e.target.value,
+                    },
+                  })
+                }
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange font-lato"
                 placeholder="Saturday: 9:00 AM - 1:00 PM"
               />
@@ -330,7 +444,15 @@ export default function SiteSettingsPage() {
               <input
                 type="text"
                 value={settings.businessHours.sunday}
-                onChange={(e) => setSettings({...settings, businessHours: {...settings.businessHours, sunday: e.target.value}})}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    businessHours: {
+                      ...settings.businessHours,
+                      sunday: e.target.value,
+                    },
+                  })
+                }
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange font-lato"
                 placeholder="Sunday: Closed"
               />
@@ -349,7 +471,12 @@ export default function SiteSettingsPage() {
               <input
                 type="text"
                 value={settings.seo.siteTitle}
-                onChange={(e) => setSettings({...settings, seo: {...settings.seo, siteTitle: e.target.value}})}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    seo: { ...settings.seo, siteTitle: e.target.value },
+                  })
+                }
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange font-lato"
                 placeholder="STEM-ED-ARCHITECTS | Engineering Learning Solutions"
               />
@@ -360,7 +487,12 @@ export default function SiteSettingsPage() {
               </label>
               <textarea
                 value={settings.seo.siteDescription}
-                onChange={(e) => setSettings({...settings, seo: {...settings.seo, siteDescription: e.target.value}})}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    seo: { ...settings.seo, siteDescription: e.target.value },
+                  })
+                }
                 rows={3}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange font-lato"
                 placeholder="A brief description of your website for search engines..."
@@ -373,7 +505,12 @@ export default function SiteSettingsPage() {
               <input
                 type="text"
                 value={settings.seo.keywords}
-                onChange={(e) => setSettings({...settings, seo: {...settings.seo, keywords: e.target.value}})}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    seo: { ...settings.seo, keywords: e.target.value },
+                  })
+                }
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange font-lato"
                 placeholder="STEM Education, Robotics, AI Integration, Teacher Training"
               />
@@ -383,7 +520,9 @@ export default function SiteSettingsPage() {
 
         {/* Company Information */}
         <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-          <h2 className="text-2xl font-bebas text-navy mb-4">Company Information</h2>
+          <h2 className="text-2xl font-bebas text-navy mb-4">
+            Company Information
+          </h2>
           <div className="grid md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-montserrat font-semibold text-navy mb-2">
@@ -392,7 +531,12 @@ export default function SiteSettingsPage() {
               <input
                 type="text"
                 value={settings.company.name}
-                onChange={(e) => setSettings({...settings, company: {...settings.company, name: e.target.value}})}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    company: { ...settings.company, name: e.target.value },
+                  })
+                }
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange font-lato"
                 placeholder="STEM-ED-ARCHITECTS"
               />
@@ -404,7 +548,15 @@ export default function SiteSettingsPage() {
               <input
                 type="text"
                 value={settings.company.foundedYear}
-                onChange={(e) => setSettings({...settings, company: {...settings.company, foundedYear: e.target.value}})}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    company: {
+                      ...settings.company,
+                      foundedYear: e.target.value,
+                    },
+                  })
+                }
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange font-lato"
                 placeholder="2014"
               />
@@ -416,7 +568,12 @@ export default function SiteSettingsPage() {
               <input
                 type="text"
                 value={settings.company.tagline}
-                onChange={(e) => setSettings({...settings, company: {...settings.company, tagline: e.target.value}})}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    company: { ...settings.company, tagline: e.target.value },
+                  })
+                }
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange font-lato"
                 placeholder="Engineering Learning Solutions for Africa's Future"
               />
@@ -437,7 +594,7 @@ export default function SiteSettingsPage() {
             disabled={saving}
             className="px-6 py-3 bg-orange hover:bg-orange-dark text-white rounded-lg font-montserrat font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {saving ? 'Saving...' : 'Save Settings'}
+            {saving ? "Saving..." : "Save Settings"}
           </button>
         </div>
       </div>

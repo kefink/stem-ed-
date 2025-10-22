@@ -7,17 +7,24 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 
 // Import RichTextEditor dynamically to avoid SSR issues with TipTap
-const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), {
+const RichTextEditor = dynamic(() => import("@/components/RichTextEditor"), {
   ssr: false,
-  loading: () => <div className="border border-gray-300 rounded-lg p-4 min-h-[400px] flex items-center justify-center">Loading editor...</div>
+  loading: () => (
+    <div className="border border-gray-300 rounded-lg p-4 min-h-[400px] flex items-center justify-center">
+      Loading editor...
+    </div>
+  ),
 });
 
 export default function NewBlogPostPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
-  
+  const [message, setMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
+
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [content, setContent] = useState("");
@@ -31,14 +38,14 @@ export default function NewBlogPostPage() {
   // Auto-generate slug from title
   const handleTitleChange = (value: string) => {
     setTitle(value);
-    if (!slug || slug === title.toLowerCase().replace(/[^a-z0-9]+/g, '-')) {
-      setSlug(value.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
+    if (!slug || slug === title.toLowerCase().replace(/[^a-z0-9]+/g, "-")) {
+      setSlug(value.toLowerCase().replace(/[^a-z0-9]+/g, "-"));
     }
   };
 
   const handleSave = async (draft: boolean = false) => {
     if (!title || !content) {
-      setMessage({ type: 'error', text: 'Title and content are required' });
+      setMessage({ type: "error", text: "Title and content are required" });
       return;
     }
 
@@ -46,12 +53,12 @@ export default function NewBlogPostPage() {
     setMessage(null);
 
     try {
-      const response = await fetch('/api/v1/admin/blog/posts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/v1/admin/blog/posts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title,
-          slug: slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+          slug: slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
           content,
           excerpt: excerpt || null,
           category: category || null,
@@ -59,21 +66,27 @@ export default function NewBlogPostPage() {
           published: draft ? false : published,
           seo_title: seoTitle || null,
           seo_description: seoDescription || null,
-        })
+        }),
       });
 
       if (response.ok) {
         const data = await response.json();
-        setMessage({ type: 'success', text: 'Blog post created successfully!' });
+        setMessage({
+          type: "success",
+          text: "Blog post created successfully!",
+        });
         setTimeout(() => {
           router.push(`/admin/blog/${data.id}/edit`);
         }, 1500);
       } else {
         const error = await response.json();
-        throw new Error(error.detail || 'Failed to create post');
+        throw new Error(error.detail || "Failed to create post");
       }
     } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || 'Failed to create blog post' });
+      setMessage({
+        type: "error",
+        text: error.message || "Failed to create blog post",
+      });
     } finally {
       setSaving(false);
     }
@@ -87,7 +100,10 @@ export default function NewBlogPostPage() {
     );
   }
 
-  if (status === "unauthenticated" || (session?.user as any)?.role !== "admin") {
+  if (
+    status === "unauthenticated" ||
+    (session?.user as any)?.role !== "admin"
+  ) {
     router.replace("/login?next=/admin/blog/new");
     return null;
   }
@@ -97,13 +113,28 @@ export default function NewBlogPostPage() {
       <div className="max-w-5xl mx-auto px-4">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/admin/blog" className="text-orange hover:text-orange-dark font-montserrat text-sm mb-4 inline-flex items-center">
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          <Link
+            href="/admin/blog"
+            className="text-orange hover:text-orange-dark font-montserrat text-sm mb-4 inline-flex items-center"
+          >
+            <svg
+              className="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
             Back to Blog List
           </Link>
-          <h1 className="text-4xl font-bebas text-navy mb-2">Create New Blog Post</h1>
+          <h1 className="text-4xl font-bebas text-navy mb-2">
+            Create New Blog Post
+          </h1>
           <p className="text-gray-600 font-lato">
             Write and publish a new blog post
           </p>
@@ -111,15 +142,28 @@ export default function NewBlogPostPage() {
 
         {/* Success/Error Message */}
         {message && (
-          <div className={`mb-6 p-4 rounded-lg ${message.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}`}>
+          <div
+            className={`mb-6 p-4 rounded-lg ${
+              message.type === "success"
+                ? "bg-green-50 text-green-800 border border-green-200"
+                : "bg-red-50 text-red-800 border border-red-200"
+            }`}
+          >
             <p className="font-montserrat">{message.text}</p>
           </div>
         )}
 
-        <form onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSave();
+          }}
+        >
           {/* Basic Information */}
           <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-            <h2 className="text-2xl font-bebas text-navy mb-4">Basic Information</h2>
+            <h2 className="text-2xl font-bebas text-navy mb-4">
+              Basic Information
+            </h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-montserrat font-semibold text-navy mb-2">
@@ -134,7 +178,7 @@ export default function NewBlogPostPage() {
                   placeholder="Enter post title..."
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-montserrat font-semibold text-navy mb-2">
                   URL Slug *
@@ -148,7 +192,7 @@ export default function NewBlogPostPage() {
                   placeholder="post-url-slug"
                 />
                 <p className="text-xs text-gray-500 mt-1 font-lato">
-                  This will be the URL: /blog/{slug || 'post-url-slug'}
+                  This will be the URL: /blog/{slug || "post-url-slug"}
                 </p>
               </div>
 
@@ -252,7 +296,9 @@ export default function NewBlogPostPage() {
 
           {/* Publish Settings */}
           <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-            <h2 className="text-2xl font-bebas text-navy mb-4">Publish Settings</h2>
+            <h2 className="text-2xl font-bebas text-navy mb-4">
+              Publish Settings
+            </h2>
             <label className="flex items-center cursor-pointer">
               <input
                 type="checkbox"
@@ -290,7 +336,7 @@ export default function NewBlogPostPage() {
               disabled={saving}
               className="px-6 py-3 bg-orange hover:bg-orange-dark text-white rounded-lg font-montserrat font-semibold transition-all duration-300 disabled:opacity-50"
             >
-              {saving ? 'Saving...' : published ? 'Publish Now' : 'Save Post'}
+              {saving ? "Saving..." : published ? "Publish Now" : "Save Post"}
             </button>
           </div>
         </form>

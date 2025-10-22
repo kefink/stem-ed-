@@ -30,7 +30,9 @@ export default function BlogManagementPage() {
   const [pageSize] = useState(10);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
-  const [publishedFilter, setPublishedFilter] = useState<boolean | undefined>(undefined);
+  const [publishedFilter, setPublishedFilter] = useState<boolean | undefined>(
+    undefined
+  );
   const [deleting, setDeleting] = useState<number | null>(null);
 
   useEffect(() => {
@@ -51,10 +53,11 @@ export default function BlogManagementPage() {
         page: page.toString(),
         page_size: pageSize.toString(),
       });
-      
-      if (search) params.append('search', search);
-      if (categoryFilter) params.append('category', categoryFilter);
-      if (publishedFilter !== undefined) params.append('published', publishedFilter.toString());
+
+      if (search) params.append("search", search);
+      if (categoryFilter) params.append("category", categoryFilter);
+      if (publishedFilter !== undefined)
+        params.append("published", publishedFilter.toString());
 
       const response = await fetch(`/api/v1/admin/blog/posts?${params}`);
       if (response.ok) {
@@ -63,39 +66,39 @@ export default function BlogManagementPage() {
         setTotal(data.total);
       }
     } catch (error) {
-      console.error('Failed to load posts:', error);
+      console.error("Failed to load posts:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (postId: number) => {
-    if (!confirm('Are you sure you want to delete this blog post?')) return;
+    if (!confirm("Are you sure you want to delete this blog post?")) return;
 
     setDeleting(postId);
     try {
       const response = await fetch(`/api/v1/admin/blog/posts/${postId}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
 
       if (response.ok) {
         loadPosts(); // Reload the list
       } else {
-        alert('Failed to delete post');
+        alert("Failed to delete post");
       }
     } catch (error) {
-      console.error('Failed to delete post:', error);
-      alert('Failed to delete post');
+      console.error("Failed to delete post:", error);
+      alert("Failed to delete post");
     } finally {
       setDeleting(null);
     }
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   };
 
@@ -118,15 +121,30 @@ export default function BlogManagementPage() {
       <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/admin" className="text-orange hover:text-orange-dark font-montserrat text-sm mb-4 inline-flex items-center">
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          <Link
+            href="/admin"
+            className="text-orange hover:text-orange-dark font-montserrat text-sm mb-4 inline-flex items-center"
+          >
+            <svg
+              className="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
             Back to Dashboard
           </Link>
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-4xl font-bebas text-navy mb-2">Blog Management</h1>
+              <h1 className="text-4xl font-bebas text-navy mb-2">
+                Blog Management
+              </h1>
               <p className="text-gray-600 font-lato">
                 Create, edit, and manage your blog posts
               </p>
@@ -183,10 +201,18 @@ export default function BlogManagementPage() {
                 Status
               </label>
               <select
-                value={publishedFilter === undefined ? "all" : publishedFilter ? "published" : "draft"}
+                value={
+                  publishedFilter === undefined
+                    ? "all"
+                    : publishedFilter
+                    ? "published"
+                    : "draft"
+                }
                 onChange={(e) => {
                   const value = e.target.value;
-                  setPublishedFilter(value === "all" ? undefined : value === "published");
+                  setPublishedFilter(
+                    value === "all" ? undefined : value === "published"
+                  );
                   setPage(1);
                 }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange font-lato"
@@ -205,19 +231,35 @@ export default function BlogManagementPage() {
             <table className="w-full">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-montserrat font-semibold text-navy">Title</th>
-                  <th className="px-6 py-4 text-left text-sm font-montserrat font-semibold text-navy">Category</th>
-                  <th className="px-6 py-4 text-left text-sm font-montserrat font-semibold text-navy">Author</th>
-                  <th className="px-6 py-4 text-left text-sm font-montserrat font-semibold text-navy">Status</th>
-                  <th className="px-6 py-4 text-left text-sm font-montserrat font-semibold text-navy">Date</th>
-                  <th className="px-6 py-4 text-right text-sm font-montserrat font-semibold text-navy">Actions</th>
+                  <th className="px-6 py-4 text-left text-sm font-montserrat font-semibold text-navy">
+                    Title
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-montserrat font-semibold text-navy">
+                    Category
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-montserrat font-semibold text-navy">
+                    Author
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-montserrat font-semibold text-navy">
+                    Status
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-montserrat font-semibold text-navy">
+                    Date
+                  </th>
+                  <th className="px-6 py-4 text-right text-sm font-montserrat font-semibold text-navy">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {posts.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500 font-lato">
-                      No blog posts found. Create your first post to get started!
+                    <td
+                      colSpan={6}
+                      className="px-6 py-12 text-center text-gray-500 font-lato"
+                    >
+                      No blog posts found. Create your first post to get
+                      started!
                     </td>
                   </tr>
                 ) : (
@@ -225,7 +267,9 @@ export default function BlogManagementPage() {
                     <tr key={post.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4">
                         <div>
-                          <p className="font-montserrat font-semibold text-navy">{post.title}</p>
+                          <p className="font-montserrat font-semibold text-navy">
+                            {post.title}
+                          </p>
                           {post.excerpt && (
                             <p className="text-sm text-gray-600 font-lato line-clamp-1 mt-1">
                               {post.excerpt}
@@ -272,7 +316,7 @@ export default function BlogManagementPage() {
                             disabled={deleting === post.id}
                             className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded text-sm font-montserrat transition-colors disabled:opacity-50"
                           >
-                            {deleting === post.id ? 'Deleting...' : 'Delete'}
+                            {deleting === post.id ? "Deleting..." : "Delete"}
                           </button>
                         </div>
                       </td>
@@ -287,7 +331,8 @@ export default function BlogManagementPage() {
           {totalPages > 1 && (
             <div className="px-6 py-4 border-t border-gray-200 flex justify-between items-center">
               <p className="text-sm text-gray-600 font-lato">
-                Showing {(page - 1) * pageSize + 1} - {Math.min(page * pageSize, total)} of {total} posts
+                Showing {(page - 1) * pageSize + 1} -{" "}
+                {Math.min(page * pageSize, total)} of {total} posts
               </p>
               <div className="flex gap-2">
                 <button

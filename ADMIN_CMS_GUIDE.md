@@ -17,15 +17,18 @@ Your website now has a comprehensive Admin Dashboard that allows you to manage a
 ## 🎛️ Admin Dashboard Features
 
 ### Main Dashboard (`/admin`)
+
 The main dashboard shows:
 
 1. **Quick Stats Cards**
+
    - Total Contact Messages
-   - Total Newsletter Subscribers  
+   - Total Newsletter Subscribers
    - Blog Posts Count
    - Products Count
 
 2. **Content Management Cards** (clickable to navigate)
+
    - 📝 **Manage Blog Posts** - Create, edit, delete blog articles
    - 🏠 **Homepage Content** - Edit statistics, testimonials, featured content
    - 🖼️ **Media Library** - Upload and manage images, logos, files
@@ -43,9 +46,11 @@ The main dashboard shows:
 ## 📝 Content Management Sections
 
 ### 1. Blog Management (`/admin/blog`)
+
 **Status**: 🚧 To be created
 
 **What you'll be able to do:**
+
 - ✅ Create new blog posts
 - ✅ Edit existing blog posts
 - ✅ Delete blog posts
@@ -56,15 +61,18 @@ The main dashboard shows:
 - ✅ Rich text editor for content
 
 **Current Workaround:**
+
 - Blog posts are currently hardcoded in `/src/app/blog/page.tsx`
 - You need to edit the `posts` array in that file to add/edit posts
 
 ---
 
 ### 2. Homepage Content Management (`/admin/homepage`)
+
 **Status**: 🚧 To be created
 
 **What you'll be able to do:**
+
 - ✅ Edit Statistics (Students Trained, Partner Schools, Years Experience, etc.)
 - ✅ Manage Testimonials (add, edit, delete)
 - ✅ Update Featured Products
@@ -73,15 +81,18 @@ The main dashboard shows:
 - ✅ Update Trust Badges/Certifications
 
 **Current Workaround:**
+
 - Homepage content is in `/src/app/page.tsx`
 - Edit directly in code for now
 
 ---
 
 ### 3. Media Library (`/admin/media`)
+
 **Status**: 🚧 To be created
 
 **What you'll be able to do:**
+
 - ✅ Upload images (JPG, PNG, WebP, GIF)
 - ✅ Upload documents (PDF, DOCX)
 - ✅ Organize files in folders
@@ -90,15 +101,18 @@ The main dashboard shows:
 - ✅ Copy file URLs for use in content
 
 **Current Workaround:**
+
 - Place images in `/public/` folder
 - Reference them as `/filename.png` in your code
 
 ---
 
 ### 4. Products Management (`/admin/products`)
+
 **Status**: 🚧 To be created
 
 **What you'll be able to do:**
+
 - ✅ Add new products/services
 - ✅ Edit product descriptions
 - ✅ Upload product images
@@ -107,15 +121,18 @@ The main dashboard shows:
 - ✅ Enable/disable products
 
 **Current Workaround:**
+
 - Product cards are in `/src/app/page.tsx` (Featured Products section)
 - Full product pages are in `/src/app/products/` subdirectories
 
 ---
 
 ### 5. Site Settings (`/admin/settings`)
+
 **Status**: 🚧 To be created
 
 **What you'll be able to do:**
+
 - ✅ Update contact information (phone, email)
 - ✅ Edit social media links (YouTube, Facebook, TikTok, Instagram)
 - ✅ Change business hours
@@ -124,6 +141,7 @@ The main dashboard shows:
 - ✅ Configure email settings
 
 **Current Workaround:**
+
 - Contact info is in `/src/components/Footer.tsx` and `/src/app/contact/page.tsx`
 - Social media links need to be updated in Footer and Contact page
 - Replace `YOUR_YOUTUBE_LINK_HERE`, etc. with actual URLs
@@ -131,9 +149,11 @@ The main dashboard shows:
 ---
 
 ### 6. User Management (`/admin/users`)
+
 **Status**: 🚧 To be created
 
 **What you'll be able to do:**
+
 - ✅ View all registered users
 - ✅ Change user roles (user, admin)
 - ✅ Enable/disable user accounts
@@ -141,6 +161,7 @@ The main dashboard shows:
 - ✅ View user activity
 
 **Current Workaround:**
+
 - Use the backend script: `python backend/make_admin.py <email>` to make users admin
 - Use database tools to manage users directly
 
@@ -151,6 +172,7 @@ The main dashboard shows:
 ### ✅ What's Already Working:
 
 1. **Dashboard Overview**
+
    - View contact messages
    - View newsletter subscribers
    - Search and filter
@@ -158,10 +180,12 @@ The main dashboard shows:
    - Quick stats
 
 2. **Email Links**
+
    - Click any email to send a message directly
    - All emails are mailto: links
 
 3. **Responsive Design**
+
    - Works on mobile, tablet, desktop
    - Professional admin interface
 
@@ -179,6 +203,7 @@ The main dashboard shows:
 1. Open `/src/app/blog/page.tsx`
 2. Find the `posts` array at the top
 3. Add a new post object:
+
 ```typescript
 {
   id: 7, // Next available ID
@@ -191,6 +216,7 @@ The main dashboard shows:
   image: "📖", // Emoji icon or you can add actual image path
 }
 ```
+
 4. Save the file
 5. The new post will appear on the blog page
 
@@ -199,10 +225,12 @@ The main dashboard shows:
 1. Open `/src/app/page.tsx`
 2. Find the "Statistics Section" comment
 3. Update the numbers:
+
 ```tsx
 <div className="text-5xl md:text-6xl font-bebas mb-2">500+</div>
 <p className="font-lato text-white/90">Students Trained</p>
 ```
+
 4. Change `500+` to your actual number
 5. Save the file
 
@@ -211,6 +239,7 @@ The main dashboard shows:
 1. Open `/src/app/page.tsx`
 2. Find the "Testimonials Section" comment
 3. Edit the testimonial cards:
+
 ```tsx
 <h4 className="font-montserrat font-semibold text-navy">Name</h4>
 <p className="font-lato text-sm text-navy/70">Role, Organization</p>
@@ -218,6 +247,7 @@ The main dashboard shows:
   "Your testimonial quote here..."
 </p>
 ```
+
 4. Save the file
 
 ### How to Add Social Media Links
@@ -225,12 +255,14 @@ The main dashboard shows:
 1. Open `/src/components/Footer.tsx`
 2. Find `YOUR_YOUTUBE_LINK_HERE`, `YOUR_FACEBOOK_LINK_HERE`, etc.
 3. Replace with actual URLs:
+
 ```tsx
-href="https://www.youtube.com/@yourchannnel"
-href="https://www.facebook.com/yourpage"
-href="https://www.tiktok.com/@youraccount"
-href="https://www.instagram.com/youraccount"
+href = "https://www.youtube.com/@yourchannnel";
+href = "https://www.facebook.com/yourpage";
+href = "https://www.tiktok.com/@youraccount";
+href = "https://www.instagram.com/youraccount";
 ```
+
 4. Also update in `/src/app/contact/page.tsx`
 5. Save both files
 
@@ -241,15 +273,17 @@ href="https://www.instagram.com/youraccount"
 3. Open `/src/app/page.tsx`
 4. Find the "Partners/Clients Section"
 5. Replace the emoji placeholders:
+
 ```tsx
-<Image 
-  src="/partners/school1-logo.png" 
+<Image
+  src="/partners/school1-logo.png"
   alt="School Name"
   width={150}
   height={80}
   className="object-contain"
 />
 ```
+
 6. Save the file
 
 ---
@@ -268,6 +302,7 @@ I can create complete admin pages for all the sections mentioned above. These wi
 **Would you like me to build out any specific admin section first?**
 
 Recommended priority:
+
 1. **Blog Management** (most requested feature)
 2. **Site Settings** (social media, contact info)
 3. **Homepage Content** (statistics, testimonials)
@@ -278,6 +313,7 @@ Recommended priority:
 ## 📞 Need Help?
 
 If you need any specific admin feature built, just let me know:
+
 - "I want to manage blog posts from admin"
 - "I need to update social media links easily"
 - "I want to upload partner logos"

@@ -92,7 +92,9 @@ export default function AdminPage() {
     return (
       <div className="min-h-screen bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 py-10">
-          <h1 className="text-3xl font-bebas text-navy mb-4">Admin Dashboard</h1>
+          <h1 className="text-3xl font-bebas text-navy mb-4">
+            Admin Dashboard
+          </h1>
           <div className="flex items-center justify-center py-20">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange"></div>
           </div>
@@ -105,7 +107,9 @@ export default function AdminPage() {
     return (
       <div className="min-h-screen bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 py-10">
-          <h1 className="text-3xl font-bebas text-navy mb-4">Admin Dashboard</h1>
+          <h1 className="text-3xl font-bebas text-navy mb-4">
+            Admin Dashboard
+          </h1>
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <p className="text-red-600 font-montserrat">{error}</p>
           </div>
@@ -119,9 +123,12 @@ export default function AdminPage() {
       <div className="max-w-7xl mx-auto px-4 py-10">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bebas text-navy mb-2">Admin Dashboard</h1>
+          <h1 className="text-4xl font-bebas text-navy mb-2">
+            Admin Dashboard
+          </h1>
           <p className="text-gray-600 font-lato">
-            Welcome back, {session?.user?.name || 'Admin'}! Manage your website content here.
+            Welcome back, {session?.user?.name || "Admin"}! Manage your website
+            content here.
           </p>
         </div>
 
@@ -130,7 +137,9 @@ export default function AdminPage() {
           <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-orange">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm font-montserrat">Contact Messages</p>
+                <p className="text-gray-500 text-sm font-montserrat">
+                  Contact Messages
+                </p>
                 <p className="text-3xl font-bebas text-navy">{msgTotal}</p>
               </div>
               <div className="text-4xl">📧</div>
@@ -140,7 +149,9 @@ export default function AdminPage() {
           <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-navy">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm font-montserrat">Subscribers</p>
+                <p className="text-gray-500 text-sm font-montserrat">
+                  Subscribers
+                </p>
                 <p className="text-3xl font-bebas text-navy">{subTotal}</p>
               </div>
               <div className="text-4xl">👥</div>
@@ -150,7 +161,9 @@ export default function AdminPage() {
           <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-cyan-500">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm font-montserrat">Blog Posts</p>
+                <p className="text-gray-500 text-sm font-montserrat">
+                  Blog Posts
+                </p>
                 <p className="text-3xl font-bebas text-navy">6</p>
               </div>
               <div className="text-4xl">📝</div>
@@ -160,7 +173,9 @@ export default function AdminPage() {
           <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm font-montserrat">Products</p>
+                <p className="text-gray-500 text-sm font-montserrat">
+                  Products
+                </p>
                 <p className="text-3xl font-bebas text-navy">3</p>
               </div>
               <div className="text-4xl">🛍️</div>
@@ -170,7 +185,9 @@ export default function AdminPage() {
 
         {/* Content Management Cards */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bebas text-navy mb-4">Content Management</h2>
+          <h2 className="text-2xl font-bebas text-navy mb-4">
+            Content Management
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Blog Management */}
             <Link href="/admin/blog" className="group">
@@ -184,8 +201,18 @@ export default function AdminPage() {
                 </p>
                 <span className="text-orange font-montserrat text-sm font-semibold inline-flex items-center">
                   Manage Posts
-                  <svg className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  <svg
+                    className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
                   </svg>
                 </span>
               </div>
@@ -203,8 +230,18 @@ export default function AdminPage() {
                 </p>
                 <span className="text-orange font-montserrat text-sm font-semibold inline-flex items-center">
                   Edit Content
-                  <svg className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  <svg
+                    className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
                   </svg>
                 </span>
               </div>
@@ -222,8 +259,18 @@ export default function AdminPage() {
                 </p>
                 <span className="text-orange font-montserrat text-sm font-semibold inline-flex items-center">
                   Manage Media
-                  <svg className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  <svg
+                    className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
                   </svg>
                 </span>
               </div>
@@ -241,8 +288,18 @@ export default function AdminPage() {
                 </p>
                 <span className="text-orange font-montserrat text-sm font-semibold inline-flex items-center">
                   Manage Products
-                  <svg className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  <svg
+                    className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
                   </svg>
                 </span>
               </div>
@@ -260,8 +317,18 @@ export default function AdminPage() {
                 </p>
                 <span className="text-orange font-montserrat text-sm font-semibold inline-flex items-center">
                   View Settings
-                  <svg className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  <svg
+                    className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
                   </svg>
                 </span>
               </div>
@@ -279,8 +346,18 @@ export default function AdminPage() {
                 </p>
                 <span className="text-orange font-montserrat text-sm font-semibold inline-flex items-center">
                   Manage Users
-                  <svg className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  <svg
+                    className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
                   </svg>
                 </span>
               </div>
@@ -319,29 +396,49 @@ export default function AdminPage() {
 
         {/* Recent Contact Messages */}
         <section className="mb-10">
-          <h2 className="text-2xl font-bebas text-navy mb-4">Recent Contact Messages</h2>
+          <h2 className="text-2xl font-bebas text-navy mb-4">
+            Recent Contact Messages
+          </h2>
           <div className="bg-white rounded-xl shadow-md overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full">
                 <thead className="bg-navy text-white">
                   <tr>
-                    <th className="text-left p-4 font-montserrat font-semibold">Date</th>
-                    <th className="text-left p-4 font-montserrat font-semibold">Name</th>
-                    <th className="text-left p-4 font-montserrat font-semibold">Email</th>
-                    <th className="text-left p-4 font-montserrat font-semibold">Organization</th>
-                    <th className="text-left p-4 font-montserrat font-semibold">Service</th>
-                    <th className="text-left p-4 font-montserrat font-semibold">Message</th>
+                    <th className="text-left p-4 font-montserrat font-semibold">
+                      Date
+                    </th>
+                    <th className="text-left p-4 font-montserrat font-semibold">
+                      Name
+                    </th>
+                    <th className="text-left p-4 font-montserrat font-semibold">
+                      Email
+                    </th>
+                    <th className="text-left p-4 font-montserrat font-semibold">
+                      Organization
+                    </th>
+                    <th className="text-left p-4 font-montserrat font-semibold">
+                      Service
+                    </th>
+                    <th className="text-left p-4 font-montserrat font-semibold">
+                      Message
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="font-lato">
                   {messages.map((m, idx) => (
-                    <tr key={m.id} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                    <tr
+                      key={m.id}
+                      className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                    >
                       <td className="p-4 whitespace-nowrap text-sm">
                         {m.created_at?.slice(0, 10)}
                       </td>
                       <td className="p-4 whitespace-nowrap">{m.name || "-"}</td>
                       <td className="p-4 whitespace-nowrap">
-                        <a href={`mailto:${m.email}`} className="text-orange hover:underline">
+                        <a
+                          href={`mailto:${m.email}`}
+                          className="text-orange hover:underline"
+                        >
                           {m.email}
                         </a>
                       </td>
@@ -397,34 +494,55 @@ export default function AdminPage() {
 
         {/* Newsletter Subscribers */}
         <section>
-          <h2 className="text-2xl font-bebas text-navy mb-4">Newsletter Subscribers</h2>
+          <h2 className="text-2xl font-bebas text-navy mb-4">
+            Newsletter Subscribers
+          </h2>
           <div className="bg-white rounded-xl shadow-md overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full">
                 <thead className="bg-navy text-white">
                   <tr>
-                    <th className="text-left p-4 font-montserrat font-semibold">Date</th>
-                    <th className="text-left p-4 font-montserrat font-semibold">Email</th>
-                    <th className="text-left p-4 font-montserrat font-semibold">Name</th>
-                    <th className="text-left p-4 font-montserrat font-semibold">Organization</th>
-                    <th className="text-left p-4 font-montserrat font-semibold">Role</th>
-                    <th className="text-left p-4 font-montserrat font-semibold">Interests</th>
+                    <th className="text-left p-4 font-montserrat font-semibold">
+                      Date
+                    </th>
+                    <th className="text-left p-4 font-montserrat font-semibold">
+                      Email
+                    </th>
+                    <th className="text-left p-4 font-montserrat font-semibold">
+                      Name
+                    </th>
+                    <th className="text-left p-4 font-montserrat font-semibold">
+                      Organization
+                    </th>
+                    <th className="text-left p-4 font-montserrat font-semibold">
+                      Role
+                    </th>
+                    <th className="text-left p-4 font-montserrat font-semibold">
+                      Interests
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="font-lato">
                   {subs.map((s, idx) => (
-                    <tr key={s.id} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                    <tr
+                      key={s.id}
+                      className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                    >
                       <td className="p-4 whitespace-nowrap text-sm">
                         {s.created_at?.slice(0, 10)}
                       </td>
                       <td className="p-4 whitespace-nowrap">
-                        <a href={`mailto:${s.email}`} className="text-orange hover:underline">
+                        <a
+                          href={`mailto:${s.email}`}
+                          className="text-orange hover:underline"
+                        >
                           {s.email}
                         </a>
                       </td>
                       <td className="p-4 whitespace-nowrap">
-                        {[s.first_name, s.last_name].filter(Boolean).join(" ") ||
-                          "-"}
+                        {[s.first_name, s.last_name]
+                          .filter(Boolean)
+                          .join(" ") || "-"}
                       </td>
                       <td className="p-4 whitespace-nowrap">
                         {s.organization || "-"}
@@ -434,7 +552,10 @@ export default function AdminPage() {
                         {(s.interests || []).length > 0 ? (
                           <div className="flex flex-wrap gap-1">
                             {s.interests?.map((interest, i) => (
-                              <span key={i} className="px-2 py-1 bg-cyan-100 text-cyan-700 rounded-full text-xs">
+                              <span
+                                key={i}
+                                className="px-2 py-1 bg-cyan-100 text-cyan-700 rounded-full text-xs"
+                              >
                                 {interest}
                               </span>
                             ))}

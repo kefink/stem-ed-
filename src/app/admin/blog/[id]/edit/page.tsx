@@ -7,9 +7,13 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 
 // Import RichTextEditor dynamically to avoid SSR issues with TipTap
-const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), {
+const RichTextEditor = dynamic(() => import("@/components/RichTextEditor"), {
   ssr: false,
-  loading: () => <div className="border border-gray-300 rounded-lg p-4 min-h-[400px] flex items-center justify-center">Loading editor...</div>
+  loading: () => (
+    <div className="border border-gray-300 rounded-lg p-4 min-h-[400px] flex items-center justify-center">
+      Loading editor...
+    </div>
+  ),
 });
 
 type BlogPost = {
@@ -30,11 +34,14 @@ export default function EditBlogPostPage() {
   const router = useRouter();
   const params = useParams();
   const postId = params.id as string;
-  
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
-  
+  const [message, setMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
+
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [content, setContent] = useState("");
@@ -71,11 +78,11 @@ export default function EditBlogPostPage() {
         setSeoTitle(post.seo_title || "");
         setSeoDescription(post.seo_description || "");
       } else {
-        setMessage({ type: 'error', text: 'Failed to load blog post' });
+        setMessage({ type: "error", text: "Failed to load blog post" });
       }
     } catch (error) {
-      console.error('Failed to load post:', error);
-      setMessage({ type: 'error', text: 'Failed to load blog post' });
+      console.error("Failed to load post:", error);
+      setMessage({ type: "error", text: "Failed to load blog post" });
     } finally {
       setLoading(false);
     }
@@ -83,7 +90,7 @@ export default function EditBlogPostPage() {
 
   const handleSave = async () => {
     if (!title || !content) {
-      setMessage({ type: 'error', text: 'Title and content are required' });
+      setMessage({ type: "error", text: "Title and content are required" });
       return;
     }
 
@@ -92,8 +99,8 @@ export default function EditBlogPostPage() {
 
     try {
       const response = await fetch(`/api/v1/admin/blog/posts/${postId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title,
           slug,
@@ -104,18 +111,24 @@ export default function EditBlogPostPage() {
           published,
           seo_title: seoTitle || null,
           seo_description: seoDescription || null,
-        })
+        }),
       });
 
       if (response.ok) {
-        setMessage({ type: 'success', text: 'Blog post updated successfully!' });
+        setMessage({
+          type: "success",
+          text: "Blog post updated successfully!",
+        });
         setTimeout(() => setMessage(null), 3000);
       } else {
         const error = await response.json();
-        throw new Error(error.detail || 'Failed to update post');
+        throw new Error(error.detail || "Failed to update post");
       }
     } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || 'Failed to update blog post' });
+      setMessage({
+        type: "error",
+        text: error.message || "Failed to update blog post",
+      });
     } finally {
       setSaving(false);
     }
@@ -134,9 +147,22 @@ export default function EditBlogPostPage() {
       <div className="max-w-5xl mx-auto px-4">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/admin/blog" className="text-orange hover:text-orange-dark font-montserrat text-sm mb-4 inline-flex items-center">
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          <Link
+            href="/admin/blog"
+            className="text-orange hover:text-orange-dark font-montserrat text-sm mb-4 inline-flex items-center"
+          >
+            <svg
+              className="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
             Back to Blog List
           </Link>
@@ -148,15 +174,28 @@ export default function EditBlogPostPage() {
 
         {/* Success/Error Message */}
         {message && (
-          <div className={`mb-6 p-4 rounded-lg ${message.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}`}>
+          <div
+            className={`mb-6 p-4 rounded-lg ${
+              message.type === "success"
+                ? "bg-green-50 text-green-800 border border-green-200"
+                : "bg-red-50 text-red-800 border border-red-200"
+            }`}
+          >
             <p className="font-montserrat">{message.text}</p>
           </div>
         )}
 
-        <form onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSave();
+          }}
+        >
           {/* Basic Information */}
           <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-            <h2 className="text-2xl font-bebas text-navy mb-4">Basic Information</h2>
+            <h2 className="text-2xl font-bebas text-navy mb-4">
+              Basic Information
+            </h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-montserrat font-semibold text-navy mb-2">
@@ -171,7 +210,7 @@ export default function EditBlogPostPage() {
                   placeholder="Enter post title..."
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-montserrat font-semibold text-navy mb-2">
                   URL Slug *
@@ -289,7 +328,9 @@ export default function EditBlogPostPage() {
 
           {/* Publish Settings */}
           <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-            <h2 className="text-2xl font-bebas text-navy mb-4">Publish Settings</h2>
+            <h2 className="text-2xl font-bebas text-navy mb-4">
+              Publish Settings
+            </h2>
             <label className="flex items-center cursor-pointer">
               <input
                 type="checkbox"
@@ -298,11 +339,13 @@ export default function EditBlogPostPage() {
                 className="w-5 h-5 text-orange focus:ring-orange border-gray-300 rounded"
               />
               <span className="ml-3 font-montserrat text-navy">
-                {published ? 'Post is published' : 'Publish this post'}
+                {published ? "Post is published" : "Publish this post"}
               </span>
             </label>
             <p className="text-sm text-gray-500 mt-2 ml-8 font-lato">
-              {published ? 'Uncheck to unpublish and save as draft' : 'Check to make this post visible to the public'}
+              {published
+                ? "Uncheck to unpublish and save as draft"
+                : "Check to make this post visible to the public"}
             </p>
           </div>
 
@@ -319,7 +362,7 @@ export default function EditBlogPostPage() {
               disabled={saving}
               className="px-6 py-3 bg-orange hover:bg-orange-dark text-white rounded-lg font-montserrat font-semibold transition-all duration-300 disabled:opacity-50"
             >
-              {saving ? 'Saving...' : 'Save Changes'}
+              {saving ? "Saving..." : "Save Changes"}
             </button>
           </div>
         </form>
