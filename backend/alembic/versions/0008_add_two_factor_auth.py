@@ -1,6 +1,6 @@
 """Add two-factor authentication fields
 
-Revision ID: 0006_add_two_factor_auth
+Revision ID: 0008_add_two_factor_auth
 Revises: 0007_add_login_attempts
 Create Date: 2025-10-20
 
@@ -9,7 +9,7 @@ from alembic import op
 import sqlalchemy as sa
 
 
-revision = "0006_add_two_factor_auth"
+revision = "0008_add_two_factor_auth"
 down_revision = "0007_add_login_attempts"
 branch_labels = None
 depends_on = None

@@ -1,5 +1,5 @@
 from sqlalchemy import String, Boolean, DateTime, Integer, Text
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 
 from app.db.session import Base
@@ -34,3 +34,6 @@ class User(Base):
     two_factor_backup_codes: Mapped[str | None] = mapped_column(Text, nullable=True)
     two_factor_confirmed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     two_factor_last_verified_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+    # Relationships
+    blog_posts = relationship("BlogPost", back_populates="author", lazy="dynamic")

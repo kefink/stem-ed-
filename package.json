@@ -12,6 +12,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@tiptap/extension-image": "^3.7.2",
+    "@tiptap/extension-link": "^3.7.2",
+    "@tiptap/extension-placeholder": "^3.7.2",
+    "@tiptap/extension-text-align": "^3.7.2",
+    "@tiptap/extension-underline": "^3.7.2",
+    "@tiptap/react": "^3.7.2",
+    "@tiptap/starter-kit": "^3.7.2",
     "framer-motion": "^11.15.0",
     "next": "15.3.5",
     "next-auth": "5.0.0-beta.25",
@@ -19,12 +26,12 @@
     "react-dom": "19.0.0"
   },
   "devDependencies": {
-    "concurrently": "^9.1.2",
     "@tailwindcss/postcss": "^4.1.14",
     "@types/node": "^22.10.5",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.2",
     "autoprefixer": "^10.4.20",
+    "concurrently": "^9.1.2",
     "eslint": "^9.18.0",
     "eslint-config-next": "15.3.5",
     "postcss": "^8.4.49",
