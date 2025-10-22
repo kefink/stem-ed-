@@ -12,6 +12,7 @@ from app.services.account_lockout import unlock_account
 from app.api.v1.endpoints.admin.blog import router as blog_router
 from app.api.v1.endpoints.admin.homepage import router as homepage_router
 from app.api.v1.endpoints.admin.media import router as media_router
+from app.api.v1.endpoints.admin.settings import router as settings_router
 
 
 router = APIRouter(prefix="/admin", tags=["admin"], dependencies=[Depends(require_role("admin"))])
@@ -24,6 +25,9 @@ router.include_router(homepage_router, prefix="/homepage", tags=["homepage-admin
 
 # Include media library routes
 router.include_router(media_router, prefix="/media", tags=["media-admin"])
+
+# Include site settings routes
+router.include_router(settings_router, tags=["settings-admin"])
 
 
 @router.get("/contact-messages")

@@ -89,10 +89,45 @@ export default function SiteSettingsPage() {
     // Load settings
     const loadSettings = async () => {
       try {
-        const response = await fetch("/api/admin/settings");
+        const response = await fetch("http://localhost:8000/api/v1/admin/settings", {
+          headers: {
+            "Authorization": `Bearer ${(session as any)?.accessToken}`,
+          },
+        });
         if (response.ok) {
           const data = await response.json();
-          setSettings(data);
+          // Map backend response to frontend format
+          setSettings({
+            contact: {
+              phone: data.contact.phone || "",
+              email: data.contact.email || "",
+              location: data.contact.location || "",
+              address: data.contact.address || "",
+            },
+            socialMedia: {
+              youtube: data.social.youtube || "",
+              facebook: data.social.facebook || "",
+              tiktok: data.social.tiktok || "",
+              instagram: data.social.instagram || "",
+              linkedin: data.social.linkedin || "",
+              twitter: data.social.twitter || "",
+            },
+            businessHours: {
+              weekdays: data.hours.weekdays || "",
+              saturday: data.hours.saturday || "",
+              sunday: data.hours.sunday || "",
+            },
+            seo: {
+              siteTitle: data.seo.site_title || "",
+              siteDescription: data.seo.site_description || "",
+              keywords: data.seo.keywords || "",
+            },
+            company: {
+              name: data.company.name || "",
+              tagline: data.company.tagline || "",
+              foundedYear: data.company.founded_year || "",
+            },
+          });
         }
       } catch (error) {
         console.error("Failed to load settings:", error);
@@ -109,22 +144,59 @@ export default function SiteSettingsPage() {
     setMessage(null);
 
     try {
-      const response = await fetch("/api/admin/settings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(settings),
+      // Map frontend format to backend format
+      const backendSettings = {
+        contact: {
+          phone: settings.contact.phone,
+          email: settings.contact.email,
+          location: settings.contact.location,
+          address: settings.contact.address,
+        },
+        social: {
+          youtube: settings.socialMedia.youtube,
+          facebook: settings.socialMedia.facebook,
+          tiktok: settings.socialMedia.tiktok,
+          instagram: settings.socialMedia.instagram,
+          linkedin: settings.socialMedia.linkedin,
+          twitter: settings.socialMedia.twitter,
+        },
+        hours: {
+          weekdays: settings.businessHours.weekdays,
+          saturday: settings.businessHours.saturday,
+          sunday: settings.businessHours.sunday,
+        },
+        seo: {
+          site_title: settings.seo.siteTitle,
+          site_description: settings.seo.siteDescription,
+          keywords: settings.seo.keywords,
+        },
+        company: {
+          name: settings.company.name,
+          tagline: settings.company.tagline,
+          founded_year: settings.company.foundedYear,
+        },
+      };
+
+      const response = await fetch("http://localhost:8000/api/v1/admin/settings", {
+        method: "PUT",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${(session as any)?.accessToken}`,
+        },
+        body: JSON.stringify(backendSettings),
       });
 
       if (response.ok) {
         setMessage({ type: "success", text: "Settings saved successfully!" });
         setTimeout(() => setMessage(null), 3000);
       } else {
-        throw new Error("Failed to save settings");
+        const error = await response.json();
+        throw new Error(error.detail || "Failed to save settings");
       }
-    } catch (error) {
+    } catch (error: any) {
       setMessage({
         type: "error",
-        text: "Failed to save settings. Please try again.",
+        text: error.message || "Failed to save settings. Please try again.",
       });
     } finally {
       setSaving(false);
