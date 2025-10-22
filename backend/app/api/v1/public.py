@@ -5,12 +5,16 @@ from app.db.session import get_session
 from app.schemas.contact import ContactCreate, ContactRead, NewsletterSubscribe, NewsletterRead
 from app.services.contact import create_contact_message, subscribe_newsletter
 from app.api.v1.endpoints.public.blog import router as blog_router
+from app.api.v1.endpoints.public.homepage import router as homepage_router
 
 
 router = APIRouter(prefix="/public", tags=["public"])
 
 # Include public blog routes
 router.include_router(blog_router, prefix="/blog", tags=["blog-public"])
+
+# Include public homepage routes
+router.include_router(homepage_router, prefix="/homepage", tags=["homepage-public"])
 
 
 @router.post("/contact", response_model=ContactRead, status_code=201)

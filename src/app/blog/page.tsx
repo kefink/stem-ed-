@@ -42,7 +42,7 @@ export default function BlogPage() {
         page: page.toString(),
         page_size: "9",
       });
-      
+
       if (selectedCategory && selectedCategory !== "All") {
         params.append("category", selectedCategory);
       }
@@ -53,7 +53,7 @@ export default function BlogPage() {
         if (page === 1) {
           setPosts(data);
         } else {
-          setPosts(prev => [...prev, ...data]);
+          setPosts((prev) => [...prev, ...data]);
         }
         setHasMore(data.length === 9);
       }
@@ -71,7 +71,7 @@ export default function BlogPage() {
   };
 
   const handleLoadMore = () => {
-    setPage(prev => prev + 1);
+    setPage((prev) => prev + 1);
   };
 
   const formatDate = (dateString: string) => {

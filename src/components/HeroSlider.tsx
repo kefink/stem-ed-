@@ -4,7 +4,19 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
-const heroSlides = [
+type HeroSlide = {
+  id: number;
+  title: string;
+  subtitle: string | null;
+  description: string | null;
+  image_url: string | null;
+  cta_text: string | null;
+  cta_link: string | null;
+  order_index: number;
+  is_active: boolean;
+};
+
+const defaultSlides = [
   {
     id: 1,
     image: "/hero/h1.webp",
@@ -43,6 +55,39 @@ const HeroSlider = () => {
   // Prevent hydration errors
   const [mounted, setMounted] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [heroSlides, setHeroSlides] = useState<any[]>(defaultSlides);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch dynamic hero slides
+  useEffect(() => {
+    const fetchHeroSlides = async () => {
+      try {
+        const response = await fetch("/api/v1/public/homepage/hero-slides");
+        if (response.ok) {
+          const data: HeroSlide[] = await response.json();
+          if (data.length > 0) {
+            // Transform database slides to match component format
+            const transformedSlides = data.map((slide) => ({
+              id: slide.id,
+              image: slide.image_url || "/hero/h1.webp",
+              title: slide.title,
+              subtitle: slide.subtitle || slide.description || "",
+              cta: slide.cta_text || "Learn More",
+              ctaLink: slide.cta_link || "/services",
+            }));
+            setHeroSlides(transformedSlides);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching hero slides:", error);
+        // Keep default slides on error
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHeroSlides();
+  }, []);
 
   useEffect(() => {
     setMounted(true);
@@ -142,7 +187,7 @@ const HeroSlider = () => {
                 className="flex flex-col sm:flex-row gap-4"
               >
                 <a
-                  href="/services"
+                  href={heroSlides[currentSlide].ctaLink || "/services"}
                   className="btn-primary inline-block text-center"
                 >
                   {heroSlides[currentSlide].cta}

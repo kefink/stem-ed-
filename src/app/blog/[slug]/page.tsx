@@ -8,7 +8,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     // Fetch the blog post data for metadata
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/v1/public/blog/posts/${params.slug}`,
+      `${
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
+      }/api/v1/public/blog/posts/${params.slug}`,
       { cache: "no-store" }
     );
 
