@@ -130,7 +130,9 @@ export default function MediaLibraryPage() {
     }
   };
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const uploadedFiles = event.target.files;
     if (uploadedFiles) {
       await uploadFiles(uploadedFiles);
@@ -186,9 +188,12 @@ export default function MediaLibraryPage() {
     if (!confirm("Are you sure you want to delete this file?")) return;
 
     try {
-      const response = await fetchWithAuth(`/api/v1/admin/media/files/${fileId}`, {
-        method: "DELETE",
-      });
+      const response = await fetchWithAuth(
+        `/api/v1/admin/media/files/${fileId}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (response.ok) {
         setSelectedFile(null);
@@ -312,9 +317,13 @@ export default function MediaLibraryPage() {
               />
 
               <button
-                onClick={() => setViewMode(viewMode === "grid" ? "list" : "grid")}
+                onClick={() =>
+                  setViewMode(viewMode === "grid" ? "list" : "grid")
+                }
                 className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-                title={`Switch to ${viewMode === "grid" ? "list" : "grid"} view`}
+                title={`Switch to ${
+                  viewMode === "grid" ? "list" : "grid"
+                } view`}
               >
                 {viewMode === "grid" ? "📋" : "🔲"}
               </button>
@@ -359,7 +368,7 @@ export default function MediaLibraryPage() {
         )}
 
         {/* Files Grid/List */}
-        <div 
+        <div
           className="mb-6 relative"
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
@@ -369,11 +378,13 @@ export default function MediaLibraryPage() {
             <div className="absolute inset-0 bg-orange/20 border-4 border-dashed border-orange rounded-xl z-10 flex items-center justify-center">
               <div className="text-center">
                 <div className="text-6xl mb-4">📤</div>
-                <p className="text-2xl font-bebas text-navy">Drop files here to upload</p>
+                <p className="text-2xl font-bebas text-navy">
+                  Drop files here to upload
+                </p>
               </div>
             </div>
           )}
-          
+
           <h2 className="text-xl font-bebas text-navy mb-3">
             Files ({files.length})
           </h2>
@@ -390,7 +401,9 @@ export default function MediaLibraryPage() {
                     <div className="aspect-square mb-2 relative bg-gray-100 rounded overflow-hidden">
                       <Image
                         src={`http://localhost:8000${file.file_url}`}
-                        alt={file.alt_text || file.title || file.original_filename}
+                        alt={
+                          file.alt_text || file.title || file.original_filename
+                        }
                         fill
                         className="object-cover"
                         unoptimized
@@ -401,7 +414,10 @@ export default function MediaLibraryPage() {
                       📄
                     </div>
                   )}
-                  <p className="text-xs font-montserrat truncate" title={file.original_filename}>
+                  <p
+                    className="text-xs font-montserrat truncate"
+                    title={file.original_filename}
+                  >
                     {file.original_filename}
                   </p>
                   <p className="text-xs text-gray-500 font-lato">
@@ -415,12 +431,24 @@ export default function MediaLibraryPage() {
               <table className="min-w-full">
                 <thead className="bg-navy text-white">
                   <tr>
-                    <th className="text-left p-4 font-montserrat font-semibold">Preview</th>
-                    <th className="text-left p-4 font-montserrat font-semibold">Filename</th>
-                    <th className="text-left p-4 font-montserrat font-semibold">Type</th>
-                    <th className="text-left p-4 font-montserrat font-semibold">Size</th>
-                    <th className="text-left p-4 font-montserrat font-semibold">Date</th>
-                    <th className="text-left p-4 font-montserrat font-semibold">Actions</th>
+                    <th className="text-left p-4 font-montserrat font-semibold">
+                      Preview
+                    </th>
+                    <th className="text-left p-4 font-montserrat font-semibold">
+                      Filename
+                    </th>
+                    <th className="text-left p-4 font-montserrat font-semibold">
+                      Type
+                    </th>
+                    <th className="text-left p-4 font-montserrat font-semibold">
+                      Size
+                    </th>
+                    <th className="text-left p-4 font-montserrat font-semibold">
+                      Date
+                    </th>
+                    <th className="text-left p-4 font-montserrat font-semibold">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="font-lato">
@@ -453,7 +481,9 @@ export default function MediaLibraryPage() {
                         </span>
                       </td>
                       <td className="p-4">{formatFileSize(file.file_size)}</td>
-                      <td className="p-4">{new Date(file.created_at).toLocaleDateString()}</td>
+                      <td className="p-4">
+                        {new Date(file.created_at).toLocaleDateString()}
+                      </td>
                       <td className="p-4">
                         <button
                           onClick={() => setSelectedFile(file)}
@@ -497,7 +527,9 @@ export default function MediaLibraryPage() {
         {showNewFolderModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4">
-              <h3 className="text-2xl font-bebas text-navy mb-4">Create New Folder</h3>
+              <h3 className="text-2xl font-bebas text-navy mb-4">
+                Create New Folder
+              </h3>
               <input
                 type="text"
                 value={newFolderName}
@@ -544,7 +576,9 @@ export default function MediaLibraryPage() {
                 <div className="mb-4 relative w-full h-64 bg-gray-100 rounded overflow-hidden">
                   <Image
                     src={`http://localhost:8000${selectedFile.file_url}`}
-                    alt={selectedFile.alt_text || selectedFile.original_filename}
+                    alt={
+                      selectedFile.alt_text || selectedFile.original_filename
+                    }
                     fill
                     className="object-contain"
                     unoptimized
@@ -555,7 +589,9 @@ export default function MediaLibraryPage() {
               <div className="space-y-3 font-lato">
                 <div>
                   <label className="font-semibold text-navy">Filename:</label>
-                  <p className="text-gray-700">{selectedFile.original_filename}</p>
+                  <p className="text-gray-700">
+                    {selectedFile.original_filename}
+                  </p>
                 </div>
                 <div>
                   <label className="font-semibold text-navy">Type:</label>
@@ -563,11 +599,15 @@ export default function MediaLibraryPage() {
                 </div>
                 <div>
                   <label className="font-semibold text-navy">Size:</label>
-                  <p className="text-gray-700">{formatFileSize(selectedFile.file_size)}</p>
+                  <p className="text-gray-700">
+                    {formatFileSize(selectedFile.file_size)}
+                  </p>
                 </div>
                 {selectedFile.width && selectedFile.height && (
                   <div>
-                    <label className="font-semibold text-navy">Dimensions:</label>
+                    <label className="font-semibold text-navy">
+                      Dimensions:
+                    </label>
                     <p className="text-gray-700">
                       {selectedFile.width} × {selectedFile.height}
                     </p>
@@ -611,7 +651,12 @@ export default function MediaLibraryPage() {
                   🗑️ Delete
                 </button>
                 <button
-                  onClick={() => window.open(`http://localhost:8000${selectedFile.file_url}`, "_blank")}
+                  onClick={() =>
+                    window.open(
+                      `http://localhost:8000${selectedFile.file_url}`,
+                      "_blank"
+                    )
+                  }
                   className="px-4 py-2 bg-navy text-white rounded-lg hover:bg-navy/90 font-montserrat font-semibold"
                 >
                   🔗 Open

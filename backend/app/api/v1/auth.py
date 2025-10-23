@@ -194,8 +194,9 @@ async def login(
     await record_successful_login(db, authenticated_user, ip_address=ip, user_agent=ua)
     await rate_limiter.reset(rate_key)
 
+    # Issue access token with user ID as subject for protected endpoints
     access_token = create_access_token(
-        subject=authenticated_user.email,
+        subject=authenticated_user.id,
         additional_claims={"scope": "access"},
     )
     refresh_raw = generate_refresh_token_value()
@@ -275,8 +276,9 @@ async def verify_two_factor_login(
     await rate_limiter.reset(tf_rate_key)
     await rate_limiter.reset(f"login:{final_ip}")
 
+    # After successful 2FA, issue access token with user ID as subject
     access_token = create_access_token(
-        subject=user.email,
+        subject=user.id,
         additional_claims={"scope": "access"},
     )
     refresh_raw = generate_refresh_token_value()
@@ -304,8 +306,9 @@ async def refresh(request: Request, payload: RefreshRequest, db: AsyncSession = 
     user = await get_user_by_email(db, stored.user.email)  # type: ignore
     if not user:
         raise HTTPException(status_code=401, detail="User no longer exists")
+    # Refresh flow: new access token uses user ID as subject
     new_access = create_access_token(
-        subject=user.email,
+        subject=user.id,
         additional_claims={"scope": "access"},
     )
     new_refresh_raw, _ = await rotate_refresh_token(
@@ -378,8 +381,9 @@ async def google_login(
             user_role = new_user.role
         
         # Create tokens
+        # Google login: access token subject should be user ID
         access_token = create_access_token(
-            subject=user_email,
+            subject=user_id,
             additional_claims={"scope": "access"},
         )
         refresh_raw = generate_refresh_token_value()

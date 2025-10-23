@@ -17,4 +17,4 @@ class RefreshToken(Base):
     ip: Mapped[str | None] = mapped_column(String(64), nullable=True)
     user_agent: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
-    user = relationship("User", backref="refresh_tokens")
+    user = relationship("User", back_populates="refresh_tokens")

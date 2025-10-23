@@ -31,7 +31,7 @@ const Footer = () => {
             <div className="flex space-x-4">
               {/* Social Media Icons */}
               <a
-                href="YOUR_YOUTUBE_LINK_HERE"
+                href="https://www.youtube.com/@Stem-ed-Architects"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-orange transition-colors duration-300"
@@ -46,7 +46,7 @@ const Footer = () => {
                 </svg>
               </a>
               <a
-                href="YOUR_FACEBOOK_LINK_HERE"
+                href="https://www.facebook.com/people/Stem-Ed-Architects/61550350587197/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-orange transition-colors duration-300"
@@ -61,7 +61,7 @@ const Footer = () => {
                 </svg>
               </a>
               <a
-                href="YOUR_TIKTOK_LINK_HERE"
+                href="https://www.tiktok.com/@stemedarchitects"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-orange transition-colors duration-300"
@@ -76,7 +76,7 @@ const Footer = () => {
                 </svg>
               </a>
               <a
-                href="YOUR_INSTAGRAM_LINK_HERE"
+                href="https://www.instagram.com/stemedarchitects/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-orange transition-colors duration-300"

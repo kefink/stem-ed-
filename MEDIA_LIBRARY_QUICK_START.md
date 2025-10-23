@@ -9,6 +9,7 @@ All enhancements are now live! Here's how to use each feature:
 ## 1️⃣ Drag & Drop Upload
 
 ### How to Use:
+
 1. Open **Media Library** at `/admin/media`
 2. Open your file explorer (Windows Explorer, Finder, etc.)
 3. Select one or more image files
@@ -18,6 +19,7 @@ All enhancements are now live! Here's how to use each feature:
 7. Files upload automatically!
 
 ### What You'll See:
+
 ```
 ┌─────────────────────────────────────────┐
 │  📤                                      │
@@ -28,6 +30,7 @@ All enhancements are now live! Here's how to use each feature:
 ```
 
 ### Tips:
+
 - ✅ Upload multiple files at once
 - ✅ Goes to current folder automatically
 - ✅ Same 10MB limit applies
@@ -38,6 +41,7 @@ All enhancements are now live! Here's how to use each feature:
 ## 2️⃣ Image Editing (Crop, Rotate, Resize)
 
 ### How to Use:
+
 1. Go to **Media Library** at `/admin/media`
 2. **Click** on any image thumbnail
 3. File details modal opens
@@ -47,28 +51,33 @@ All enhancements are now live! Here's how to use each feature:
 ### Available Tools:
 
 #### 🔲 **Crop**
+
 - Click and drag on the image to select area
 - Resize selection by dragging corners
 - Click "Clear Crop" to reset
 - Dimensions shown below slider
 
 #### 🔄 **Rotation**
+
 - Drag slider: 0° to 360°
 - Click "90°" button for quick rotate
 - Real-time preview
 
 #### 📏 **Scale/Resize**
+
 - Drag slider: 0.5x to 2.0x
 - Click "Reset" to go back to 1.0x
 - Zoom in to see details or zoom out
 
 #### 💾 **Save**
+
 - Click "Save Changes" button
 - New edited file is created
 - Original file is preserved
 - New file appears in your media library
 
 ### Example Workflow:
+
 ```
 1. Upload landscape photo (4000x3000)
 2. Open in editor
@@ -79,6 +88,7 @@ All enhancements are now live! Here's how to use each feature:
 ```
 
 ### Tips:
+
 - ✅ Original is never modified
 - ✅ Can edit the same image multiple times
 - ✅ Each save creates a new file
@@ -91,6 +101,7 @@ All enhancements are now live! Here's how to use each feature:
 ### How to Use:
 
 #### For New Blog Posts:
+
 1. Go to **Admin** → **Blog** → **"Create New Post"**
 2. Write your blog content
 3. Scroll to **"Featured Image"** section
@@ -98,6 +109,7 @@ All enhancements are now live! Here's how to use each feature:
 5. Media Picker modal opens
 
 #### In Media Picker:
+
 1. **Navigate folders** by clicking folder icons
 2. **Search** using search bar at top
 3. **View** image thumbnails in grid
@@ -107,10 +119,12 @@ All enhancements are now live! Here's how to use each feature:
 7. Preview appears below input
 
 #### For Editing Posts:
+
 - Same process, same button
 - Works in `/admin/blog/[id]/edit` page
 
 ### Visual Guide:
+
 ```
 Featured Image Field:
 ┌────────────────────────────┬─────────┐
@@ -123,6 +137,7 @@ Featured Image Field:
 ```
 
 ### Media Picker Layout:
+
 ```
 ┌─────────────────────────────────────────┐
 │ Select Media                          X │
@@ -141,6 +156,7 @@ Featured Image Field:
 ```
 
 ### Tips:
+
 - ✅ Only shows images (not documents)
 - ✅ Can search by filename
 - ✅ Navigate folders easily
@@ -153,6 +169,7 @@ Featured Image Field:
 ## 🎯 Common Use Cases
 
 ### Use Case 1: Batch Upload Product Images
+
 ```
 1. Open Media Library
 2. Create folder "Products"
@@ -163,6 +180,7 @@ Featured Image Field:
 ```
 
 ### Use Case 2: Edit Hero Image
+
 ```
 1. Upload large photo (5000x3000)
 2. Click to open details
@@ -174,6 +192,7 @@ Featured Image Field:
 ```
 
 ### Use Case 3: Blog Post with Featured Image
+
 ```
 1. Create new blog post
 2. Write content
@@ -190,13 +209,16 @@ Featured Image Field:
 ## ⚡ Quick Reference
 
 ### Keyboard Shortcuts:
+
 - **ESC** - Close any modal (Media Picker, Image Editor)
 
 ### File Limits:
+
 - **Max Size:** 10MB per file
 - **Allowed Types:** Images (JPG, PNG, GIF, WebP, SVG), PDFs
 
 ### Browser Support:
+
 - ✅ Chrome, Edge (Chromium)
 - ✅ Firefox
 - ✅ Safari
@@ -206,18 +228,21 @@ Featured Image Field:
 ## 🐛 Troubleshooting
 
 ### Drag & Drop Not Working?
+
 - Check file size (< 10MB)
 - Verify file type is image or PDF
 - Make sure you're dropping in the files area
 - Try refreshing the page
 
 ### Image Editor Save Fails?
+
 - Check internet connection
 - Verify you're still logged in
 - Check browser console for errors
 - Try again with smaller image
 
 ### Media Picker Not Opening?
+
 - Clear browser cache
 - Check if popup blocker is active
 - Refresh the page
@@ -228,12 +253,14 @@ Featured Image Field:
 ## 📞 Need Help?
 
 ### Check These First:
+
 1. Browser console (F12) for errors
 2. File size and type
 3. Admin login status
 4. Internet connection
 
 ### Common Solutions:
+
 - **Refresh the page** - Fixes most issues
 - **Clear cache** - Ctrl+Shift+Del
 - **Try different browser** - Chrome recommended
@@ -244,18 +271,21 @@ Featured Image Field:
 ## ✨ Best Practices
 
 ### Organizing Media:
+
 - Create folders by category (Blog, Products, Team, etc.)
 - Use descriptive filenames
 - Edit images before using in production
 - Keep originals in "Originals" folder
 
 ### Image Editing:
+
 - Crop first, then rotate, then scale
 - Use 0.8x scale for web optimization
 - Keep aspect ratios in mind
 - Test in blog preview before publishing
 
 ### Blog Featured Images:
+
 - Use landscape images (16:9 or 4:3)
 - Minimum 1200px width recommended
 - Optimize with image editor first
@@ -266,6 +296,7 @@ Featured Image Field:
 ## 🎉 You're Ready!
 
 All three enhancements are production-ready. Start using them to:
+
 - ⚡ Upload faster with drag & drop
 - ✂️ Edit images professionally
 - 📝 Pick media easily in blog posts

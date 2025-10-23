@@ -5,6 +5,7 @@
 ### Backend Components
 
 #### 1. **Database Models** (`backend/app/models/media.py`)
+
 - ✅ `MediaFolder` - Organize files in folders
 - ✅ `MediaFile` - Store file metadata
 - ✅ Support for nested folders (parent/subfolder relationships)
@@ -12,12 +13,14 @@
 - ✅ Store image dimensions (width/height)
 
 #### 2. **Database Migration** (`backend/alembic/versions/0011_media_library.py`)
+
 - ✅ `media_folders` table
 - ✅ `media_files` table
 - ✅ Foreign key relationships
 - ✅ Indexes for performance
 
 #### 3. **File Storage** (`backend/app/core/file_storage.py`)
+
 - ✅ Local file system storage in `uploads/media/`
 - ✅ Unique filename generation (UUID-based)
 - ✅ File validation (size, type)
@@ -31,12 +34,14 @@
 #### 4. **API Endpoints** (`backend/app/api/v1/endpoints/admin/media.py`)
 
 **Folder Management:**
+
 - ✅ `GET /api/v1/admin/media/folders` - List folders
 - ✅ `POST /api/v1/admin/media/folders` - Create folder
 - ✅ `PUT /api/v1/admin/media/folders/{id}` - Update folder
 - ✅ `DELETE /api/v1/admin/media/folders/{id}` - Delete folder
 
 **File Management:**
+
 - ✅ `POST /api/v1/admin/media/upload` - Upload files
 - ✅ `GET /api/v1/admin/media/files` - List files (with pagination, filtering, search)
 - ✅ `GET /api/v1/admin/media/files/{id}` - Get file details
@@ -44,12 +49,14 @@
 - ✅ `DELETE /api/v1/admin/media/files/{id}` - Delete file
 
 #### 5. **Static File Serving** (`backend/app/main.py`)
+
 - ✅ `/uploads` route for serving uploaded files
 - ✅ Direct URL access to files
 
 ### Frontend Components
 
 #### 6. **Media Library UI** (`src/app/admin/media/page.tsx`)
+
 - ✅ File upload (drag & drop compatible)
 - ✅ Multiple file upload
 - ✅ Folder creation and navigation
@@ -69,44 +76,52 @@
 ## 🚀 How to Use
 
 ### Accessing Media Library
+
 1. Login as admin at http://localhost:3000/login
 2. Go to http://localhost:3000/admin/media
 3. Or click "Media Library" card from admin dashboard
 
 ### Uploading Files
+
 1. Click "📤 Upload Files" button
 2. Select one or more files (images or PDFs)
 3. Files will be uploaded to current folder
 4. Maximum file size: 10MB per file
 
 ### Creating Folders
+
 1. Click "📁 New Folder" button
 2. Enter folder name
 3. Click "Create"
 4. Click on folder to navigate into it
 
 ### Organizing Files
+
 1. Create folders first
 2. Navigate into folder
 3. Upload files (they'll be stored in that folder)
 4. Use breadcrumb "← Back to Root" to navigate back
 
 ### Using Files in Blog/Homepage
+
 1. Upload your image
 2. Click on the image to view details
 3. Click "Copy" button next to URL
 4. Paste URL in blog post or homepage content
 
 **Example URLs:**
+
 - `http://localhost:8000/uploads/media/abc123.jpg`
 - `http://localhost:8000/uploads/media/my-folder/xyz456.png`
 
 ### Searching Files
+
 - Use search box to find files by filename, title, or description
 - Filter by type: All Types, Images, Documents, Other
 - Results update automatically
 
 ### Viewing File Details
+
 - Click any file in grid or list view
 - View:
   - Full preview (for images)
@@ -164,10 +179,10 @@ Edit `backend/app/core/file_storage.py`:
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB (change as needed)
 
 ALLOWED_IMAGE_TYPES = {
-    "image/jpeg", 
-    "image/png", 
-    "image/gif", 
-    "image/webp", 
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+    "image/webp",
     "image/svg+xml"
 }
 
@@ -278,6 +293,7 @@ Response: 204 No Content
 ## ✅ Features Checklist
 
 ### Core Features
+
 - ✅ File upload (single & multiple)
 - ✅ Folder organization
 - ✅ Image preview
@@ -290,6 +306,7 @@ Response: 204 No Content
 - ✅ Grid/List view toggle
 
 ### Security
+
 - ✅ Admin-only access
 - ✅ File type validation
 - ✅ File size limits
@@ -297,6 +314,7 @@ Response: 204 No Content
 - ✅ Secure file storage
 
 ### Technical
+
 - ✅ Database persistence
 - ✅ Local storage
 - ✅ Image dimension extraction
@@ -311,6 +329,7 @@ Response: 204 No Content
 ### Using in Blog Posts
 
 **Option 1: Manual URL**
+
 1. Upload image in Media Library
 2. Copy URL
 3. In blog editor, use markdown:
@@ -319,6 +338,7 @@ Response: 204 No Content
    ```
 
 **Option 2: Future Enhancement**
+
 - Add "Insert from Media Library" button in blog editor
 - Opens media picker modal
 - Select image and insert automatically
@@ -326,12 +346,14 @@ Response: 204 No Content
 ### Using in Homepage Content
 
 **Hero Slides:**
+
 1. Upload hero image
 2. Copy URL
 3. In Homepage CMS → Hero Slides
 4. Paste URL in `image_url` field
 
 **Testimonials:**
+
 1. Upload testimonial photo
 2. Copy URL
 3. In Homepage CMS → Testimonials
@@ -342,12 +364,14 @@ Response: 204 No Content
 ## 🔮 Future Enhancements (Optional)
 
 ### Phase 1: Cloud Storage
+
 - [ ] AWS S3 integration
 - [ ] Cloudinary integration
 - [ ] CDN support
 - [ ] Automatic backup
 
 ### Phase 2: Advanced Features
+
 - [ ] Image editing (crop, resize, rotate)
 - [ ] Bulk operations (delete, move)
 - [ ] Drag & drop upload
@@ -356,6 +380,7 @@ Response: 204 No Content
 - [ ] Usage tracking (where file is used)
 
 ### Phase 3: Rich Integrations
+
 - [ ] Media picker for blog editor
 - [ ] Media picker for homepage CMS
 - [ ] Alt text editor
@@ -369,6 +394,7 @@ Response: 204 No Content
 ### "Failed to upload file"
 
 **Check:**
+
 1. File size < 10MB
 2. File type is supported (images/PDFs)
 3. Backend server is running
@@ -377,6 +403,7 @@ Response: 204 No Content
 ### "Images not displaying"
 
 **Check:**
+
 1. Backend static files mounted correctly
 2. URL is correct: `http://localhost:8000/uploads/media/...`
 3. File exists in `backend/uploads/media/`
@@ -385,6 +412,7 @@ Response: 204 No Content
 ### "Cannot create folder"
 
 **Check:**
+
 1. Folder name is not empty
 2. You're logged in as admin
 3. Backend database is running
@@ -395,6 +423,7 @@ Response: 204 No Content
 **Reason:** Folder contains files or subfolders
 
 **Solution:**
+
 1. Delete all files in folder first
 2. Delete all subfolders
 3. Then delete parent folder
@@ -404,6 +433,7 @@ Response: 204 No Content
 ## 📊 Performance Notes
 
 ### Current Implementation (Local Storage)
+
 - **Pro:** Fast, simple, no external dependencies
 - **Pro:** No costs
 - **Con:** Limited by server disk space
@@ -411,6 +441,7 @@ Response: 204 No Content
 - **Con:** Single point of failure
 
 ### Recommended for Production
+
 - Use cloud storage (S3, Cloudinary, Azure Blob)
 - Implement CDN for faster delivery
 - Set up automatic backups
@@ -423,6 +454,7 @@ Response: 204 No Content
 **Media Library is COMPLETE!** ✅
 
 You now have:
+
 - ✅ Full file upload and management
 - ✅ Folder organization
 - ✅ Image preview
@@ -432,6 +464,7 @@ You now have:
 - ✅ Local storage (ready for cloud upgrade)
 
 **Next Step:** Start using it!
+
 1. Upload your logo → Use in navbar
 2. Upload hero images → Use in homepage
 3. Upload blog images → Use in posts
@@ -441,6 +474,6 @@ You now have:
 
 ---
 
-*Created: October 22, 2025*  
-*Status: Production Ready (Local Storage)*  
-*Cloud Storage: Ready for future implementation*
+_Created: October 22, 2025_  
+_Status: Production Ready (Local Storage)_  
+_Cloud Storage: Ready for future implementation_

@@ -13,6 +13,8 @@ from app.api.v1.endpoints.admin.blog import router as blog_router
 from app.api.v1.endpoints.admin.homepage import router as homepage_router
 from app.api.v1.endpoints.admin.media import router as media_router
 from app.api.v1.endpoints.admin.settings import router as settings_router
+from app.api.v1.endpoints.admin.analytics import router as analytics_router
+from app.api.v1.endpoints.admin.users import router as users_router
 
 
 router = APIRouter(prefix="/admin", tags=["admin"], dependencies=[Depends(require_role("admin"))])
@@ -28,6 +30,12 @@ router.include_router(media_router, prefix="/media", tags=["media-admin"])
 
 # Include site settings routes
 router.include_router(settings_router, tags=["settings-admin"])
+
+# Include analytics routes
+router.include_router(analytics_router, tags=["analytics-admin"])
+
+# Include user management routes
+router.include_router(users_router, tags=["users-admin"])
 
 
 @router.get("/contact-messages")

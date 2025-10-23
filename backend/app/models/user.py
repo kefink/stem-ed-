@@ -36,4 +36,5 @@ class User(Base):
     two_factor_last_verified_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     # Relationships
-    blog_posts = relationship("BlogPost", back_populates="author", lazy="dynamic")
+    blog_posts = relationship("BlogPost", back_populates="author", cascade="all, delete-orphan", lazy="dynamic")
+    refresh_tokens = relationship("RefreshToken", back_populates="user", cascade="all, delete-orphan", lazy="dynamic")

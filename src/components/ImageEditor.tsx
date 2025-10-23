@@ -10,7 +10,11 @@ interface ImageEditorProps {
   onCancel: () => void;
 }
 
-export default function ImageEditor({ imageUrl, onSave, onCancel }: ImageEditorProps) {
+export default function ImageEditor({
+  imageUrl,
+  onSave,
+  onCancel,
+}: ImageEditorProps) {
   const [crop, setCrop] = useState<Crop>();
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
   const [rotation, setRotation] = useState(0);
@@ -65,12 +69,16 @@ export default function ImageEditor({ imageUrl, onSave, onCancel }: ImageEditorP
     ctx.restore();
 
     // Convert canvas to blob
-    canvas.toBlob((blob) => {
-      if (blob) {
-        const filename = `edited-${Date.now()}.jpg`;
-        onSave(blob, filename);
-      }
-    }, "image/jpeg", 0.95);
+    canvas.toBlob(
+      (blob) => {
+        if (blob) {
+          const filename = `edited-${Date.now()}.jpg`;
+          onSave(blob, filename);
+        }
+      },
+      "image/jpeg",
+      0.95
+    );
   }, [completedCrop, rotation, scale, onSave]);
 
   return (
@@ -101,7 +109,9 @@ export default function ImageEditor({ imageUrl, onSave, onCancel }: ImageEditorP
                 onChange={(e) => setRotation(Number(e.target.value))}
                 className="flex-1"
               />
-              <span className="font-lato text-gray-600 min-w-[60px]">{rotation}°</span>
+              <span className="font-lato text-gray-600 min-w-[60px]">
+                {rotation}°
+              </span>
               <button
                 onClick={() => setRotation((prev) => (prev + 90) % 360)}
                 className="px-3 py-1 bg-navy text-white rounded hover:bg-navy/90 text-sm"
@@ -123,7 +133,9 @@ export default function ImageEditor({ imageUrl, onSave, onCancel }: ImageEditorP
                 onChange={(e) => setScale(Number(e.target.value))}
                 className="flex-1"
               />
-              <span className="font-lato text-gray-600 min-w-[60px]">{scale.toFixed(1)}x</span>
+              <span className="font-lato text-gray-600 min-w-[60px]">
+                {scale.toFixed(1)}x
+              </span>
               <button
                 onClick={() => setScale(1)}
                 className="px-3 py-1 bg-navy text-white rounded hover:bg-navy/90 text-sm"
@@ -138,7 +150,9 @@ export default function ImageEditor({ imageUrl, onSave, onCancel }: ImageEditorP
               </label>
               <span className="font-lato text-gray-600 text-sm">
                 {completedCrop
-                  ? `${Math.round(completedCrop.width)} × ${Math.round(completedCrop.height)}px`
+                  ? `${Math.round(completedCrop.width)} × ${Math.round(
+                      completedCrop.height
+                    )}px`
                   : "Select area to crop"}
               </span>
               {completedCrop && (

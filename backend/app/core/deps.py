@@ -26,13 +26,19 @@ async def get_current_user(
         scope = payload.get("scope")
         if scope and scope != "access":
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token scope")
-        email: str | None = payload.get("sub")
-        if email is None:
+        sub = payload.get("sub")
+        if sub is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
     except Exception:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
 
-    user = await get_user_by_email(db, email)
+    # Accept either user ID (int) or email in sub
+    user: User | None = None
+    try:
+        user_id = int(sub)  # type: ignore[arg-type]
+        user = await db.get(User, user_id)
+    except (TypeError, ValueError):
+        user = await get_user_by_email(db, str(sub))
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
     return user

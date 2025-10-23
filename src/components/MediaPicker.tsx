@@ -32,7 +32,11 @@ interface MediaPickerProps {
   fileType?: "image" | "document" | "all";
 }
 
-export default function MediaPicker({ onSelect, onCancel, fileType = "all" }: MediaPickerProps) {
+export default function MediaPicker({
+  onSelect,
+  onCancel,
+  fileType = "all",
+}: MediaPickerProps) {
   const [loading, setLoading] = useState(true);
   const [files, setFiles] = useState<MediaFile[]>([]);
   const [folders, setFolders] = useState<MediaFolder[]>([]);
@@ -141,8 +145,12 @@ export default function MediaPicker({ onSelect, onCancel, fileType = "all" }: Me
                         className="bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition-all text-center"
                       >
                         <div className="text-3xl mb-1">📁</div>
-                        <p className="font-montserrat text-sm truncate">{folder.name}</p>
-                        <p className="text-xs text-gray-500">{folder.file_count} files</p>
+                        <p className="font-montserrat text-sm truncate">
+                          {folder.name}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {folder.file_count} files
+                        </p>
                       </button>
                     ))}
                   </div>
@@ -157,7 +165,9 @@ export default function MediaPicker({ onSelect, onCancel, fileType = "all" }: Me
                 {files.length === 0 ? (
                   <div className="text-center py-12 text-gray-500">
                     <p className="text-lg">No files found</p>
-                    <p className="text-sm">Try a different folder or search term</p>
+                    <p className="text-sm">
+                      Try a different folder or search term
+                    </p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
@@ -182,10 +192,15 @@ export default function MediaPicker({ onSelect, onCancel, fileType = "all" }: Me
                             📄
                           </div>
                         )}
-                        <p className="font-montserrat text-xs truncate" title={file.original_filename}>
+                        <p
+                          className="font-montserrat text-xs truncate"
+                          title={file.original_filename}
+                        >
                           {file.original_filename}
                         </p>
-                        <p className="text-xs text-gray-500">{formatFileSize(file.file_size)}</p>
+                        <p className="text-xs text-gray-500">
+                          {formatFileSize(file.file_size)}
+                        </p>
                       </button>
                     ))}
                   </div>

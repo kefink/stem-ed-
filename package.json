@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbo",
-    "dev:web": "next dev --turbo",
+    "dev": "next dev",
+    "dev:web": "next dev",
     "dev:api": "node scripts/dev-api.js",
     "dev:all": "concurrently --raw --restart-tries 999 --restart-after 2000 -n api,web -c magenta,cyan \"npm:dev:api\" \"npm:dev:web\"",
     "build": "next build",

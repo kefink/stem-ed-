@@ -89,11 +89,14 @@ export default function SiteSettingsPage() {
     // Load settings
     const loadSettings = async () => {
       try {
-        const response = await fetch("http://localhost:8000/api/v1/admin/settings", {
-          headers: {
-            "Authorization": `Bearer ${(session as any)?.accessToken}`,
-          },
-        });
+        const response = await fetch(
+          "http://localhost:8000/api/v1/admin/settings",
+          {
+            headers: {
+              Authorization: `Bearer ${(session as any)?.accessToken}`,
+            },
+          }
+        );
         if (response.ok) {
           const data = await response.json();
           // Map backend response to frontend format
@@ -177,14 +180,17 @@ export default function SiteSettingsPage() {
         },
       };
 
-      const response = await fetch("http://localhost:8000/api/v1/admin/settings", {
-        method: "PUT",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${(session as any)?.accessToken}`,
-        },
-        body: JSON.stringify(backendSettings),
-      });
+      const response = await fetch(
+        "http://localhost:8000/api/v1/admin/settings",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${(session as any)?.accessToken}`,
+          },
+          body: JSON.stringify(backendSettings),
+        }
+      );
 
       if (response.ok) {
         setMessage({ type: "success", text: "Settings saved successfully!" });

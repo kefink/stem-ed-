@@ -243,7 +243,7 @@ export default function ContactPage() {
               <h3 className="text-2xl font-bebas mb-4">Follow Us</h3>
               <div className="flex space-x-4">
                 <a
-                  href="YOUR_YOUTUBE_LINK_HERE"
+                  href="https://www.youtube.com/@Stem-ed-Architects"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-12 h-12 bg-white/10 hover:bg-orange rounded-full flex items-center justify-center transition-all duration-300"
@@ -258,7 +258,7 @@ export default function ContactPage() {
                   </svg>
                 </a>
                 <a
-                  href="YOUR_FACEBOOK_LINK_HERE"
+                  href="https://www.facebook.com/people/Stem-Ed-Architects/61550350587197/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-12 h-12 bg-white/10 hover:bg-orange rounded-full flex items-center justify-center transition-all duration-300"
@@ -273,7 +273,7 @@ export default function ContactPage() {
                   </svg>
                 </a>
                 <a
-                  href="YOUR_TIKTOK_LINK_HERE"
+                  href="https://www.tiktok.com/@stemedarchitects"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-12 h-12 bg-white/10 hover:bg-orange rounded-full flex items-center justify-center transition-all duration-300"
@@ -288,7 +288,7 @@ export default function ContactPage() {
                   </svg>
                 </a>
                 <a
-                  href="YOUR_INSTAGRAM_LINK_HERE"
+                  href="https://www.instagram.com/stemedarchitects/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-12 h-12 bg-white/10 hover:bg-orange rounded-full flex items-center justify-center transition-all duration-300"
