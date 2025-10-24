@@ -61,7 +61,8 @@ export default function MediaLibraryPage() {
       return;
     }
     loadData();
-  }, [status, session, router, currentFolderId, filterType, searchQuery, page]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, currentFolderId, filterType, searchQuery, page]);
 
   const loadData = async () => {
     setLoading(true);
@@ -205,9 +206,19 @@ export default function MediaLibraryPage() {
   };
 
   const copyUrl = (url: string) => {
-    const fullUrl = `${window.location.origin}${url}`;
+    // If URL already starts with http/https, use as-is (R2), otherwise prepend origin (local)
+    const fullUrl = url.startsWith("http")
+      ? url
+      : `${window.location.origin}${url}`;
     navigator.clipboard.writeText(fullUrl);
     alert("URL copied to clipboard!");
+  };
+
+  const getImageUrl = (fileUrl: string) => {
+    // If URL already starts with http/https, use as-is (R2), otherwise prepend backend URL (local)
+    return fileUrl.startsWith("http")
+      ? fileUrl
+      : `http://localhost:8000${fileUrl}`;
   };
 
   const handleSaveEditedImage = async (blob: Blob, filename: string) => {
@@ -400,7 +411,7 @@ export default function MediaLibraryPage() {
                   {file.file_type === "image" ? (
                     <div className="aspect-square mb-2 relative bg-gray-100 rounded overflow-hidden">
                       <Image
-                        src={`http://localhost:8000${file.file_url}`}
+                        src={getImageUrl(file.file_url)}
                         alt={
                           file.alt_text || file.title || file.original_filename
                         }
@@ -461,7 +472,7 @@ export default function MediaLibraryPage() {
                         {file.file_type === "image" ? (
                           <div className="w-12 h-12 relative bg-gray-100 rounded overflow-hidden">
                             <Image
-                              src={`http://localhost:8000${file.file_url}`}
+                              src={getImageUrl(file.file_url)}
                               alt={file.alt_text || file.original_filename}
                               fill
                               className="object-cover"
@@ -575,7 +586,7 @@ export default function MediaLibraryPage() {
               {selectedFile.file_type === "image" && (
                 <div className="mb-4 relative w-full h-64 bg-gray-100 rounded overflow-hidden">
                   <Image
-                    src={`http://localhost:8000${selectedFile.file_url}`}
+                    src={getImageUrl(selectedFile.file_url)}
                     alt={
                       selectedFile.alt_text || selectedFile.original_filename
                     }
@@ -618,7 +629,7 @@ export default function MediaLibraryPage() {
                   <div className="flex gap-2">
                     <input
                       type="text"
-                      value={`http://localhost:8000${selectedFile.file_url}`}
+                      value={getImageUrl(selectedFile.file_url)}
                       readOnly
                       className="flex-1 px-3 py-2 bg-gray-100 rounded border border-gray-300"
                     />
@@ -652,10 +663,7 @@ export default function MediaLibraryPage() {
                 </button>
                 <button
                   onClick={() =>
-                    window.open(
-                      `http://localhost:8000${selectedFile.file_url}`,
-                      "_blank"
-                    )
+                    window.open(getImageUrl(selectedFile.file_url), "_blank")
                   }
                   className="px-4 py-2 bg-navy text-white rounded-lg hover:bg-navy/90 font-montserrat font-semibold"
                 >
@@ -669,7 +677,7 @@ export default function MediaLibraryPage() {
         {/* Image Editor */}
         {editingImage && (
           <ImageEditor
-            imageUrl={`http://localhost:8000${editingImage.file_url}`}
+            imageUrl={getImageUrl(editingImage.file_url)}
             onSave={handleSaveEditedImage}
             onCancel={() => setEditingImage(null)}
           />

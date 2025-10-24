@@ -58,6 +58,15 @@ class Settings(BaseSettings):
     GOOGLE_SHEETS_CONTACT_SHEET_ID: str | None = None
     GOOGLE_SHEETS_NEWSLETTER_SHEET_ID: str | None = None
 
+    # Cloudflare R2 Storage Configuration
+    R2_ACCOUNT_ID: str | None = None
+    R2_ENDPOINT: str | None = None
+    R2_ACCESS_KEY: str | None = None
+    R2_SECRET_KEY: str | None = None
+    R2_BUCKET_NAME: str | None = None
+    R2_PUBLIC_URL: str | None = None
+    STORAGE_MODE: str = "local"  # 'local' or 'r2'
+
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", case_sensitive=False)
 
 

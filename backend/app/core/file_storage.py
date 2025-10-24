@@ -7,6 +7,9 @@ from fastapi import UploadFile, HTTPException, status
 from PIL import Image
 import mimetypes
 
+from app.core.config import settings
+from app.core.r2_storage import get_r2_storage
+
 # Configuration
 UPLOAD_DIR = Path("uploads/media")
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
@@ -74,7 +77,73 @@ async def save_upload_file(
     folder_path: Optional[str] = None
 ) -> dict:
     """
-    Save uploaded file to disk and return file info
+    Save uploaded file to storage (R2 or local filesystem based on STORAGE_MODE)
+    
+    Returns:
+        dict: File information including path, size, dimensions, etc.
+    """
+    # Validate file
+    validate_file(file)
+    
+    # Check storage mode and route accordingly
+    if settings.STORAGE_MODE == "r2":
+        return await save_to_r2(file, folder_path)
+    else:
+        return await save_to_local(file, folder_path)
+
+
+async def save_to_r2(
+    file: UploadFile,
+    folder_path: Optional[str] = None
+) -> dict:
+    """
+    Save uploaded file to Cloudflare R2 storage
+    
+    Returns:
+        dict: File information including URL, size, etc.
+    """
+    try:
+        # Get R2 storage client
+        r2 = get_r2_storage()
+        
+        # Get file info before upload
+        mime_type = file.content_type or mimetypes.guess_type(file.filename)[0] or "application/octet-stream"
+        file_type = get_file_type(mime_type)
+        
+        # Upload to R2
+        result = r2.upload_file(file, folder_path)
+        
+        # Add image dimensions if it's an image
+        if file_type == "image":
+            try:
+                # For images, we need to read content again to get dimensions
+                file.file.seek(0)
+                from PIL import Image
+                img = Image.open(file.file)
+                result["width"], result["height"] = img.size
+                img.close()
+            except Exception:
+                result["width"] = None
+                result["height"] = None
+        else:
+            result["width"] = None
+            result["height"] = None
+        
+        return result
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to upload to R2: {str(e)}"
+        )
+
+
+async def save_to_local(
+    file: UploadFile,
+    folder_path: Optional[str] = None
+) -> dict:
+    """
+    Save uploaded file to local filesystem (original implementation)
     
     Returns:
         dict: File information including path, size, dimensions, etc.
@@ -136,14 +205,34 @@ async def save_upload_file(
 
 
 def delete_file(file_path: str) -> bool:
-    """Delete a file from disk"""
+    """
+    Delete a file from storage (R2 or local filesystem)
+    
+    Args:
+        file_path: For R2 - object key, For local - file system path
+    
+    Returns:
+        bool: True if deleted successfully
+    """
     try:
-        path = Path(file_path)
-        if path.exists() and path.is_file():
-            path.unlink()
-            return True
-        return False
-    except Exception:
+        if settings.STORAGE_MODE == "r2":
+            # Delete from R2
+            r2 = get_r2_storage()
+            # Extract object key from URL if full URL is provided
+            if file_path.startswith('http'):
+                # Extract key from public URL
+                # e.g., https://pub-xxx.r2.dev/folder/file.jpg -> folder/file.jpg
+                file_path = file_path.split('.r2.dev/')[-1]
+            return r2.delete_file(file_path)
+        else:
+            # Delete from local filesystem
+            path = Path(file_path)
+            if path.exists() and path.is_file():
+                path.unlink()
+                return True
+            return False
+    except Exception as e:
+        print(f"Error deleting file {file_path}: {str(e)}")
         return False
 
 
