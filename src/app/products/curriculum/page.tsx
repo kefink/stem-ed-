@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 // Type definitions
@@ -402,12 +402,82 @@ export default function CurriculumPage() {
   const [selectedEducation, setSelectedEducation] = useState<string>("all");
   const [selectedSkill, setSelectedSkill] = useState<string>("all");
   const [selectedAge, setSelectedAge] = useState<string>("all");
+  const [pageTitle, setPageTitle] = useState<string>("STEM Curriculum Kits");
+  const [pageSubtitle, setPageSubtitle] = useState<string>(
+    "Industry-aligned, SEO-optimized, and globally competitive STEM curriculum packages designed for 21st-century learners. From robotics to AI, game development to digital design."
+  );
+  const [heroBadges, setHeroBadges] = useState<string[]>([
+    "✓ CBC/Cambridge/IB Aligned",
+    "✓ 300+ Lesson Plans",
+    "✓ Industry-Standard Tools",
+    "✓ Teacher Training Included",
+  ]);
+  const [dynamicCategories, setDynamicCategories] = useState<
+    CurriculumCategories | null
+  >(null);
 
   const selectedCurriculum = selectedCategory
     ? curriculumCategories[
         selectedCategory as keyof typeof curriculumCategories
       ]
     : null;
+  // Resolve currently selected curriculum from dynamic override if available
+  const selectedMap = (dynamicCategories ?? curriculumCategories) as any;
+  const selectedDynamic = selectedCategory ? (selectedMap[selectedCategory] as Curriculum | undefined) : undefined;
+
+  // Load optional dynamic content from backend Product Page: slug "curriculum"
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await fetch(
+          "/api/v1/public/product-pages/curriculum",
+          { cache: "no-store" }
+        );
+        if (!res.ok) return; // keep static content
+        const page = await res.json();
+
+        // Override title/subtitle if present
+        if (page.title) setPageTitle(page.title);
+        if (page.subtitle) setPageSubtitle(page.subtitle);
+        if (page.hero_content?.description && !page.subtitle) {
+          setPageSubtitle(page.hero_content.description);
+        }
+        if (Array.isArray(page.hero_content?.badges)) {
+          setHeroBadges(page.hero_content.badges.filter(Boolean));
+        }
+
+        // Map page.products (array) into our curriculumCategories shape if provided
+        if (Array.isArray(page.products) && page.products.length) {
+          const mapped: CurriculumCategories = {};
+          for (const item of page.products) {
+            const id = String(item.id || item.slug || item.key || item.name || Math.random());
+            mapped[id] = {
+              id,
+              name: item.name || "",
+              icon: item.icon || "🎓",
+              color: item.color || "from-blue-500 to-blue-700",
+              description: item.description || "",
+              topics: Array.isArray(item.topics) ? item.topics : [],
+              outcomes: item.outcomes || "",
+              subtypes: Array.isArray(item.subtypes)
+                ? item.subtypes.map((s: any) => ({
+                    id: String(s.id || s.key || s.name || Math.random()),
+                    name: s.name || "",
+                    description: s.description || "",
+                    topics: Array.isArray(s.topics) ? s.topics : [],
+                  }))
+                : undefined,
+            };
+          }
+          setDynamicCategories(mapped);
+        }
+      } catch (e) {
+        // Silent fallback to static content
+        console.warn("Curriculum page: using static content (", (e as Error)?.message, ")");
+      }
+    };
+    load();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -425,27 +495,21 @@ export default function CurriculumPage() {
           </Link>
 
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-bebas mb-6 tracking-wide">
-            STEM Curriculum Kits
+            {pageTitle}
           </h1>
           <div className="w-24 h-1 bg-orange mb-6"></div>
           <p className="text-xl md:text-2xl font-lato max-w-4xl text-white/95 leading-relaxed mb-8">
-            Industry-aligned, SEO-optimized, and globally competitive STEM
-            curriculum packages designed for 21st-century learners. From
-            robotics to AI, game development to digital design.
+            {pageSubtitle}
           </p>
           <div className="flex flex-wrap gap-4 text-sm md:text-base">
-            <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-              ✓ CBC/Cambridge/IB Aligned
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-              ✓ 300+ Lesson Plans
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-              ✓ Industry-Standard Tools
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-              ✓ Teacher Training Included
-            </div>
+            {heroBadges.map((b, i) => (
+              <div
+                key={i}
+                className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full"
+              >
+                {b}
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -469,7 +533,7 @@ export default function CurriculumPage() {
               </div>
 
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-                {Object.values(curriculumCategories).map((curriculum) => (
+                {Object.values(dynamicCategories ?? curriculumCategories).map((curriculum) => (
                   <button
                     key={curriculum.id}
                     onClick={() => setSelectedCategory(curriculum.id)}
@@ -503,7 +567,7 @@ export default function CurriculumPage() {
           )}
 
           {/* Detailed Curriculum View */}
-          {selectedCategory && selectedCurriculum && (
+          {selectedCategory && (selectedDynamic || selectedCurriculum) && (
             <div className="animate-fade-in">
               {/* Back Button */}
               <button
@@ -518,31 +582,29 @@ export default function CurriculumPage() {
 
               {/* Curriculum Header */}
               <div
-                className={`bg-gradient-to-br ${selectedCurriculum.color} text-white rounded-3xl p-8 md:p-12 mb-8 shadow-2xl`}
+                className={`bg-gradient-to-br ${(selectedDynamic ?? selectedCurriculum)!.color} text-white rounded-3xl p-8 md:p-12 mb-8 shadow-2xl`}
               >
                 <div className="flex items-start gap-6">
-                  <div className="text-7xl md:text-8xl">
-                    {selectedCurriculum.icon}
-                  </div>
+                  <div className="text-7xl md:text-8xl">{(selectedDynamic ?? selectedCurriculum)!.icon}</div>
                   <div className="flex-1">
                     <h2 className="text-4xl md:text-6xl font-bebas mb-4 tracking-wide">
-                      {selectedCurriculum.name}
+                      {(selectedDynamic ?? selectedCurriculum)!.name}
                     </h2>
                     <p className="text-lg md:text-xl font-lato leading-relaxed text-white/95">
-                      {selectedCurriculum.description}
+                      {(selectedDynamic ?? selectedCurriculum)!.description}
                     </p>
                   </div>
                 </div>
               </div>
 
               {/* Subtypes (if applicable) */}
-              {selectedCurriculum.subtypes && (
+              {(selectedDynamic ?? selectedCurriculum)?.subtypes && (
                 <div className="mb-8">
                   <h3 className="text-2xl font-bebas text-navy mb-4">
                     Choose Specialization:
                   </h3>
                   <div className="grid sm:grid-cols-2 gap-4">
-                    {selectedCurriculum.subtypes.map((subtype) => (
+                    {(selectedDynamic ?? selectedCurriculum)!.subtypes!.map((subtype) => (
                       <button
                         key={subtype.id}
                         onClick={() => setSelectedSubtype(subtype.id)}
@@ -696,7 +758,7 @@ export default function CurriculumPage() {
                     Topics Covered
                   </h3>
                   <div className="grid sm:grid-cols-2 gap-3">
-                    {selectedCurriculum.topics.map((topic, idx) => (
+                    {(selectedDynamic ?? selectedCurriculum)!.topics.map((topic, idx) => (
                       <div
                         key={idx}
                         className="flex items-start gap-3 p-3 rounded-lg hover:bg-orange/5 transition-colors"
@@ -717,7 +779,7 @@ export default function CurriculumPage() {
                       Learning Outcomes
                     </h3>
                     <p className="font-lato text-gray-700 leading-relaxed">
-                      {selectedCurriculum.outcomes}
+                      {(selectedDynamic ?? selectedCurriculum)!.outcomes}
                     </p>
                   </div>
 
