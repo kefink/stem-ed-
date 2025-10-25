@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 // Type definitions
@@ -402,6 +402,8 @@ export default function CurriculumPage() {
   const [selectedEducation, setSelectedEducation] = useState<string>("all");
   const [selectedSkill, setSelectedSkill] = useState<string>("all");
   const [selectedAge, setSelectedAge] = useState<string>("all");
+
+  // Editable content from Product-Pages (falls back to static content)
   const [pageTitle, setPageTitle] = useState<string>("STEM Curriculum Kits");
   const [pageSubtitle, setPageSubtitle] = useState<string>(
     "Industry-aligned, SEO-optimized, and globally competitive STEM curriculum packages designed for 21st-century learners. From robotics to AI, game development to digital design."
@@ -412,72 +414,61 @@ export default function CurriculumPage() {
     "✓ Industry-Standard Tools",
     "✓ Teacher Training Included",
   ]);
-  const [dynamicCategories, setDynamicCategories] = useState<
-    CurriculumCategories | null
-  >(null);
+  const [curriculumData, setCurriculumData] = useState<CurriculumCategories | null>(null);
 
-  const selectedCurriculum = selectedCategory
-    ? curriculumCategories[
-        selectedCategory as keyof typeof curriculumCategories
-      ]
-    : null;
-  // Resolve currently selected curriculum from dynamic override if available
-  const selectedMap = (dynamicCategories ?? curriculumCategories) as any;
-  const selectedDynamic = selectedCategory ? (selectedMap[selectedCategory] as Curriculum | undefined) : undefined;
-
-  // Load optional dynamic content from backend Product Page: slug "curriculum"
+  // Fetch optional Product-Page content (slug: "curriculum")
   useEffect(() => {
-    const load = async () => {
+    const fetchPageContent = async () => {
       try {
-        const res = await fetch(
-          "/api/v1/public/product-pages/curriculum",
-          { cache: "no-store" }
-        );
-        if (!res.ok) return; // keep static content
-        const page = await res.json();
+        const response = await fetch("/api/v1/public/product-pages/curriculum");
+        if (!response.ok) {
+          // No Product-Page configured - use static content
+          return;
+        }
+        const page = await response.json();
 
-        // Override title/subtitle if present
+        // Override title and subtitle if provided
         if (page.title) setPageTitle(page.title);
         if (page.subtitle) setPageSubtitle(page.subtitle);
-        if (page.hero_content?.description && !page.subtitle) {
-          setPageSubtitle(page.hero_content.description);
-        }
-        if (Array.isArray(page.hero_content?.badges)) {
-          setHeroBadges(page.hero_content.badges.filter(Boolean));
+        
+        // Override hero badges if provided
+        if (page.hero_content?.badges && Array.isArray(page.hero_content.badges)) {
+          setHeroBadges(page.hero_content.badges);
         }
 
-        // Map page.products (array) into our curriculumCategories shape if provided
-        if (Array.isArray(page.products) && page.products.length) {
-          const mapped: CurriculumCategories = {};
-          for (const item of page.products) {
-            const id = String(item.id || item.slug || item.key || item.name || Math.random());
-            mapped[id] = {
-              id,
+        // Override curriculum categories if provided
+        if (page.products && Array.isArray(page.products) && page.products.length > 0) {
+          const dynamicCategories: CurriculumCategories = {};
+          page.products.forEach((item: any) => {
+            const id = item.id || item.slug || item.name?.toLowerCase().replace(/\s+/g, "-");
+            dynamicCategories[id] = {
+              id: id,
               name: item.name || "",
               icon: item.icon || "🎓",
               color: item.color || "from-blue-500 to-blue-700",
               description: item.description || "",
-              topics: Array.isArray(item.topics) ? item.topics : [],
+              topics: item.topics || [],
               outcomes: item.outcomes || "",
-              subtypes: Array.isArray(item.subtypes)
-                ? item.subtypes.map((s: any) => ({
-                    id: String(s.id || s.key || s.name || Math.random()),
-                    name: s.name || "",
-                    description: s.description || "",
-                    topics: Array.isArray(s.topics) ? s.topics : [],
-                  }))
-                : undefined,
+              subtypes: item.subtypes || undefined,
             };
-          }
-          setDynamicCategories(mapped);
+          });
+          setCurriculumData(dynamicCategories);
         }
-      } catch (e) {
+      } catch (error) {
+        console.error("Failed to load curriculum page content:", error);
         // Silent fallback to static content
-        console.warn("Curriculum page: using static content (", (e as Error)?.message, ")");
       }
     };
-    load();
+
+    fetchPageContent();
   }, []);
+
+  // Use dynamic content if available, otherwise fall back to static
+  const activeCategories = curriculumData || curriculumCategories;
+
+  const selectedCurriculum = selectedCategory
+    ? activeCategories[selectedCategory as keyof typeof activeCategories]
+    : null;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -502,12 +493,12 @@ export default function CurriculumPage() {
             {pageSubtitle}
           </p>
           <div className="flex flex-wrap gap-4 text-sm md:text-base">
-            {heroBadges.map((b, i) => (
+            {heroBadges.map((badge, index) => (
               <div
-                key={i}
+                key={index}
                 className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full"
               >
-                {b}
+                {badge}
               </div>
             ))}
           </div>
@@ -533,7 +524,7 @@ export default function CurriculumPage() {
               </div>
 
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-                {Object.values(dynamicCategories ?? curriculumCategories).map((curriculum) => (
+                {Object.values(activeCategories).map((curriculum) => (
                   <button
                     key={curriculum.id}
                     onClick={() => setSelectedCategory(curriculum.id)}
@@ -567,7 +558,7 @@ export default function CurriculumPage() {
           )}
 
           {/* Detailed Curriculum View */}
-          {selectedCategory && (selectedDynamic || selectedCurriculum) && (
+          {selectedCategory && selectedCurriculum && (
             <div className="animate-fade-in">
               {/* Back Button */}
               <button
@@ -582,29 +573,31 @@ export default function CurriculumPage() {
 
               {/* Curriculum Header */}
               <div
-                className={`bg-gradient-to-br ${(selectedDynamic ?? selectedCurriculum)!.color} text-white rounded-3xl p-8 md:p-12 mb-8 shadow-2xl`}
+                className={`bg-gradient-to-br ${selectedCurriculum.color} text-white rounded-3xl p-8 md:p-12 mb-8 shadow-2xl`}
               >
                 <div className="flex items-start gap-6">
-                  <div className="text-7xl md:text-8xl">{(selectedDynamic ?? selectedCurriculum)!.icon}</div>
+                  <div className="text-7xl md:text-8xl">
+                    {selectedCurriculum.icon}
+                  </div>
                   <div className="flex-1">
                     <h2 className="text-4xl md:text-6xl font-bebas mb-4 tracking-wide">
-                      {(selectedDynamic ?? selectedCurriculum)!.name}
+                      {selectedCurriculum.name}
                     </h2>
                     <p className="text-lg md:text-xl font-lato leading-relaxed text-white/95">
-                      {(selectedDynamic ?? selectedCurriculum)!.description}
+                      {selectedCurriculum.description}
                     </p>
                   </div>
                 </div>
               </div>
 
               {/* Subtypes (if applicable) */}
-              {(selectedDynamic ?? selectedCurriculum)?.subtypes && (
+              {selectedCurriculum.subtypes && (
                 <div className="mb-8">
                   <h3 className="text-2xl font-bebas text-navy mb-4">
                     Choose Specialization:
                   </h3>
                   <div className="grid sm:grid-cols-2 gap-4">
-                    {(selectedDynamic ?? selectedCurriculum)!.subtypes!.map((subtype) => (
+                    {selectedCurriculum.subtypes.map((subtype) => (
                       <button
                         key={subtype.id}
                         onClick={() => setSelectedSubtype(subtype.id)}
@@ -758,7 +751,7 @@ export default function CurriculumPage() {
                     Topics Covered
                   </h3>
                   <div className="grid sm:grid-cols-2 gap-3">
-                    {(selectedDynamic ?? selectedCurriculum)!.topics.map((topic, idx) => (
+                    {selectedCurriculum.topics.map((topic, idx) => (
                       <div
                         key={idx}
                         className="flex items-start gap-3 p-3 rounded-lg hover:bg-orange/5 transition-colors"
@@ -779,7 +772,7 @@ export default function CurriculumPage() {
                       Learning Outcomes
                     </h3>
                     <p className="font-lato text-gray-700 leading-relaxed">
-                      {(selectedDynamic ?? selectedCurriculum)!.outcomes}
+                      {selectedCurriculum.outcomes}
                     </p>
                   </div>
 
