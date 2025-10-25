@@ -403,7 +403,7 @@ export default function CurriculumPage() {
   const [selectedSkill, setSelectedSkill] = useState<string>("all");
   const [selectedAge, setSelectedAge] = useState<string>("all");
 
-  // Editable content from Product-Pages (falls back to static content)
+  // Editable content from database (falls back to static)
   const [pageTitle, setPageTitle] = useState<string>("STEM Curriculum Kits");
   const [pageSubtitle, setPageSubtitle] = useState<string>(
     "Industry-aligned, SEO-optimized, and globally competitive STEM curriculum packages designed for 21st-century learners. From robotics to AI, game development to digital design."
@@ -414,57 +414,123 @@ export default function CurriculumPage() {
     "✓ Industry-Standard Tools",
     "✓ Teacher Training Included",
   ]);
-  const [curriculumData, setCurriculumData] = useState<CurriculumCategories | null>(null);
+  const [dynamicCategories, setDynamicCategories] = useState<CurriculumCategories | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch optional Product-Page content (slug: "curriculum")
+  // Fetch curriculum products from database
   useEffect(() => {
-    const fetchPageContent = async () => {
+    const fetchCurriculumData = async () => {
       try {
-        const response = await fetch("/api/v1/public/product-pages/curriculum");
+        setLoading(true);
+        
+        // Fetch all products with category "Curriculum"
+        const response = await fetch("/api/v1/public/products?category=Curriculum&page_size=50");
+        
         if (!response.ok) {
-          // No Product-Page configured - use static content
+          console.log("No curriculum products found, using static content");
+          setLoading(false);
           return;
         }
-        const page = await response.json();
 
-        // Override title and subtitle if provided
-        if (page.title) setPageTitle(page.title);
-        if (page.subtitle) setPageSubtitle(page.subtitle);
+        const data = await response.json();
+        const products = data.items || [];
+
+        if (products.length === 0) {
+          console.log("No curriculum products in database, using static content");
+          setLoading(false);
+          return;
+        }
+
+        // Find the main "STEM Curriculum Kit" product for page hero content
+        const mainProduct = products.find(
+          (p: any) => p.slug === "stem-curriculum-kit" || p.name.includes("STEM Curriculum Kit")
+        );
+
+        if (mainProduct) {
+          if (mainProduct.name) setPageTitle(mainProduct.name);
+          if (mainProduct.short_description) setPageSubtitle(mainProduct.short_description);
+          
+          // Parse features for hero badges
+          if (mainProduct.features) {
+            try {
+              const badges = typeof mainProduct.features === "string" 
+                ? JSON.parse(mainProduct.features) 
+                : mainProduct.features;
+              if (Array.isArray(badges) && badges.length > 0) {
+                setHeroBadges(badges);
+              }
+            } catch (e) {
+              console.log("Could not parse features for badges");
+            }
+          }
+        }
+
+        // Map curriculum products to categories structure
+        const categories: CurriculumCategories = {};
         
-        // Override hero badges if provided
-        if (page.hero_content?.badges && Array.isArray(page.hero_content.badges)) {
-          setHeroBadges(page.hero_content.badges);
+        products.forEach((product: any) => {
+          // Skip the main STEM Curriculum Kit product
+          if (product.slug === "stem-curriculum-kit" || product.name.includes("STEM Curriculum Kit")) {
+            return;
+          }
+
+          const id = product.slug || product.id.toString();
+          
+          // Parse specifications for additional data
+          let specs: any = {};
+          if (product.specifications) {
+            try {
+              specs = typeof product.specifications === "string" 
+                ? JSON.parse(product.specifications) 
+                : product.specifications;
+            } catch (e) {
+              console.log(`Could not parse specifications for ${product.name}`);
+            }
+          }
+
+          // Parse features for topics
+          let topics: string[] = [];
+          if (product.features) {
+            try {
+              topics = typeof product.features === "string" 
+                ? JSON.parse(product.features) 
+                : product.features;
+              if (!Array.isArray(topics)) topics = [];
+            } catch (e) {
+              console.log(`Could not parse features for ${product.name}`);
+            }
+          }
+
+          categories[id] = {
+            id: id,
+            name: product.name || "Curriculum",
+            icon: product.icon || "🎓",
+            color: specs.color || "from-blue-500 to-blue-700",
+            description: product.short_description || product.description || "",
+            topics: topics,
+            outcomes: specs.outcomes || "",
+            subtypes: specs.subtypes || undefined,
+          };
+        });
+
+        if (Object.keys(categories).length > 0) {
+          setDynamicCategories(categories);
+          console.log(`Loaded ${Object.keys(categories).length} curriculum products from database`);
         }
 
-        // Override curriculum categories if provided
-        if (page.products && Array.isArray(page.products) && page.products.length > 0) {
-          const dynamicCategories: CurriculumCategories = {};
-          page.products.forEach((item: any) => {
-            const id = item.id || item.slug || item.name?.toLowerCase().replace(/\s+/g, "-");
-            dynamicCategories[id] = {
-              id: id,
-              name: item.name || "",
-              icon: item.icon || "🎓",
-              color: item.color || "from-blue-500 to-blue-700",
-              description: item.description || "",
-              topics: item.topics || [],
-              outcomes: item.outcomes || "",
-              subtypes: item.subtypes || undefined,
-            };
-          });
-          setCurriculumData(dynamicCategories);
-        }
       } catch (error) {
-        console.error("Failed to load curriculum page content:", error);
+        console.error("Failed to load curriculum products:", error);
         // Silent fallback to static content
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchPageContent();
+    fetchCurriculumData();
   }, []);
 
-  // Use dynamic content if available, otherwise fall back to static
-  const activeCategories = curriculumData || curriculumCategories;
+  // Use dynamic categories if available, otherwise use static
+  const activeCategories = dynamicCategories || curriculumCategories;
 
   const selectedCurriculum = selectedCategory
     ? activeCategories[selectedCategory as keyof typeof activeCategories]
