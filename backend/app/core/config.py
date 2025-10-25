@@ -35,6 +35,9 @@ class Settings(BaseSettings):
     COOKIE_SAMESITE: str = "lax"  # "lax", "strict", or "none"
 
     CORS_ORIGINS: str = "http://localhost:3000"
+    # Optional: allow any LAN dev origin via regex (useful when IP changes)
+    # Example: ^http://(localhost|192\\.168\\.\\d{1,3}\\.\\d{1,3}):3000$
+    CORS_ORIGIN_REGEX: str | None = None
 
     REDIS_URL: str | None = None
 
