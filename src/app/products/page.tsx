@@ -1,3 +1,8 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import Image from "next/image";
+
 interface Product {
   id: number;
   name: string;
@@ -7,10 +12,59 @@ interface Product {
   price: string;
   icon: string;
   link?: string;
+  slug?: string;
+  has_detail_page?: boolean;
+  featured_image?: string | null;
 }
 
 export default function ProductsPage() {
-  const products: Product[] = [
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const getImageUrl = (url?: string | null) => {
+    if (!url) return "";
+    if (url.startsWith("http")) return url;
+    return `http://localhost:8000${url}`;
+  };
+
+  useEffect(() => {
+    // Fetch products from database
+    fetch("/api/v1/public/products")
+      .then((res) => res.json())
+      .then((data) => {
+        // API returns paginated response with items array
+        const items = data.items || [];
+        // Transform database products to match interface
+        const transformedProducts = items.map((p: any) => ({
+          id: p.id,
+          name: p.name,
+          category: p.category,
+          description: p.short_description || p.description,
+          features: p.features
+            ? typeof p.features === "string"
+              ? JSON.parse(p.features)
+              : p.features
+            : [],
+          price: p.price,
+          icon: p.icon || "📦",
+          slug: p.slug,
+          has_detail_page: p.has_detail_page,
+          link: p.has_detail_page ? `/products/${p.slug}` : undefined,
+          featured_image: p.featured_image ?? null,
+        }));
+        setProducts(transformedProducts);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching products:", error);
+        // Fallback to hardcoded products on error
+        setProducts(fallbackProducts);
+        setLoading(false);
+      });
+  }, []);
+
+  // Fallback products in case API fails
+  const fallbackProducts: Product[] = [
     {
       id: 1,
       name: "STEM Curriculum Kit",
@@ -148,73 +202,95 @@ export default function ProductsPage() {
               Everything you need to build a world-class STEM education program
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {products.map((product) => (
-              <div
-                key={product.id}
-                className="group bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden hover:border-orange/30"
-              >
-                {/* Header */}
-                <div className="bg-gradient-to-br from-orange to-orange-dark text-white p-8 text-center">
-                  <div className="text-7xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                    {product.icon}
-                  </div>
-                  <span className="text-sm font-montserrat bg-white/20 px-3 py-1 rounded-full">
-                    {product.category}
-                  </span>
-                  <h3 className="text-2xl font-bebas mt-4 tracking-wide">
-                    {product.name}
-                  </h3>
-                </div>
 
-                {/* Content */}
-                <div className="p-8">
-                  <p className="font-lato text-gray-700 mb-6 leading-relaxed">
-                    {product.description}
-                  </p>
-
-                  <h4 className="font-montserrat font-semibold text-navy mb-4 text-lg">
-                    Key Features:
-                  </h4>
-                  <ul className="space-y-3 mb-6">
-                    {product.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start">
-                        <span className="text-orange mr-2 text-lg flex-shrink-0">
-                          ✓
-                        </span>
-                        <span className="font-lato text-gray-600 text-sm leading-relaxed">
-                          {feature}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className="border-t pt-4">
-                    <p className="text-2xl font-bebas text-navy mb-4">
-                      {product.price}
-                    </p>
-                    {product.link ? (
-                      <a
-                        href={product.link}
-                        className="block w-full bg-orange hover:bg-orange-dark text-white text-center font-montserrat font-semibold py-3 rounded-lg transition-all duration-300 mb-2"
-                      >
-                        {product.id === 1
-                          ? "Explore Curriculum"
-                          : "Browse Products"}
-                      </a>
+          {loading ? (
+            <div className="text-center py-20">
+              <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-orange"></div>
+              <p className="mt-4 text-xl font-lato text-gray-600">
+                Loading products...
+              </p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {products.map((product) => (
+                <div
+                  key={product.id}
+                  className="group bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden hover:border-orange/30"
+                >
+                  {/* Header */}
+                  <div className="bg-gradient-to-br from-orange to-orange-dark text-white p-8 text-center">
+                    {product.featured_image ? (
+                      <div className="relative w-full h-56 mb-4 overflow-hidden rounded-xl">
+                        <Image
+                          src={getImageUrl(product.featured_image)}
+                          alt={product.name}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
                     ) : (
-                      <a
-                        href="/contact"
-                        className="block w-full bg-navy hover:bg-navy-light text-white text-center font-montserrat font-semibold py-3 rounded-lg transition-all duration-300"
-                      >
-                        Request Quote
-                      </a>
+                      <div className="text-7xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                        {product.icon}
+                      </div>
                     )}
+                    <span className="text-sm font-montserrat bg-white/20 px-3 py-1 rounded-full">
+                      {product.category}
+                    </span>
+                    <h3 className="text-2xl font-bebas mt-4 tracking-wide">
+                      {product.name}
+                    </h3>
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-8">
+                    <p className="font-lato text-gray-700 mb-6 leading-relaxed">
+                      {product.description}
+                    </p>
+
+                    <h4 className="font-montserrat font-semibold text-navy mb-4 text-lg">
+                      Key Features:
+                    </h4>
+                    <ul className="space-y-3 mb-6">
+                      {product.features.map((feature, idx) => (
+                        <li key={idx} className="flex items-start">
+                          <span className="text-orange mr-2 text-lg flex-shrink-0">
+                            ✓
+                          </span>
+                          <span className="font-lato text-gray-600 text-sm leading-relaxed">
+                            {feature}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="border-t pt-4">
+                      <p className="text-2xl font-bebas text-navy mb-4">
+                        {product.price}
+                      </p>
+                      {product.link ? (
+                        <a
+                          href={product.link}
+                          className="block w-full bg-orange hover:bg-orange-dark text-white text-center font-montserrat font-semibold py-3 rounded-lg transition-all duration-300 mb-2"
+                        >
+                          {product.id === 1
+                            ? "Explore Curriculum"
+                            : "Browse Products"}
+                        </a>
+                      ) : (
+                        <a
+                          href="/contact"
+                          className="block w-full bg-navy hover:bg-navy-light text-white text-center font-montserrat font-semibold py-3 rounded-lg transition-all duration-300"
+                        >
+                          Request Quote
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
